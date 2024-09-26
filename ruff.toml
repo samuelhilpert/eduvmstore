@@ -1,4 +1,4 @@
-line-length = 88
+line-length = 110
 exclude = ["migrations", "tests/"]
 
 # Aktivieren spezifischer Regelkategorien
@@ -7,8 +7,5 @@ exclude = ["migrations", "tests/"]
 # N: PEP 8 Namenskonventionen (z.B. CamelCase für Klassen, snake_case für Funktionen)
 # I: Import-Check (unbenutzte Importe, Import-Reihenfolge)
 select = ["E", "F", "N", "I"]
-
-# Ignoriere spezifische Regeln, die nicht verwendet werden sollen
-ignore = ["E501", "E203"]  # Ignoriere z. B. die Regel für zu lange Zeilen (E501)
 
 
