@@ -7,7 +7,7 @@ def BADLY_named_function():
 def main():
     print("Dies ist ein Test für Ruff.")
     if True:
-        print("Syntax-Fehler hier!dsaf,jhdklfhlkadhfkjhdfjlkhkhkkdsajhfhkadhfdhkadjhfkjhjkdahkfjhadsbfjkdhfjkhadkfgkajdgfjlgadhjfakjldfgjklhadgfjklgadjkfhgakldjfgkljadf")
+        print("Syntax-Fehler hier!dsaf,jhdklfhlkadhfkjhdfjlkhkhkkddfasdfildafjlhdafkjhakdfhkjadhfkljhadsklfhadksfhlkjdashflkhadflkjhdafljkadhsfkjhasdlfkhsajhfhkadhfdhkadjhfkjhjkdahkfjhadsbfjkdhfjkhadkfgkajdgfjlgadhjfakjldfgjklhadgfjklgadjkfhgakldjfgkljadf")
 
 if __name__ == "__main__":
     main()
