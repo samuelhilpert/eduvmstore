@@ -1,8 +1,4 @@
-[tool.ruff]
-# Maximale Zeilenlänge für den Code
 line-length = 88
-
-# Bestimmte Verzeichnisse oder Dateien ausschließen
 exclude = ["migrations", "tests/"]
 
 # Aktivieren spezifischer Regelkategorien
