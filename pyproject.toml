@@ -1,0 +1,20 @@
+[tool.ruff]
+# Maximale Zeilenlänge für den Code
+line-length = 88
+
+# Bestimmte Verzeichnisse oder Dateien ausschließen
+exclude = ["migrations", "tests/"]
+
+# Aktivieren spezifischer Regelkategorien
+# E: Pyflakes (Syntax-Fehler, undefinierte Namen, etc.)
+# F: Flake8 (Standard-Python-Fehler)
+# N: PEP 8 Namenskonventionen (z.B. CamelCase für Klassen, snake_case für Funktionen)
+# I: Import-Check (unbenutzte Importe, Import-Reihenfolge)
+select = ["E", "F", "N", "I"]
+
+# Ignoriere spezifische Regeln, die nicht verwendet werden sollen
+ignore = ["E501", "W503", "E203"]  # Ignoriere z. B. die Regel für zu lange Zeilen (E501)
+
+# Definieren von spezifischen Regeln für Namenskonventionen
+[tool.ruff.pep8-naming]
+class-name = "^([A-Z][a-z0-9]+)+$"  # CamelCase für Klassennamen
