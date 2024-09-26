@@ -8,7 +8,4 @@ exclude = ["migrations", "tests/"]
 # I: Import-Check (unbenutzte Importe, Import-Reihenfolge)
 select = ["E", "F", "N", "I"]
 
-# Ignoriere spezifische Regeln, die nicht verwendet werden sollen
-ignore = ["E203"]  # Ignoriere z. B. die Regel für zu lange Zeilen (E501)
-
 

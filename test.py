@@ -4,7 +4,6 @@ def HalloWelt():
     print("Hallo Welt")
 
     print("1234567890dajklfhfljkadhjkfhadjkfhjkladshfadhskljfhadjkfhlajkdshfjkladshfkjadshfkjhadsjkfhadlkjfhadljshfkjasdhflkahdskljfhasdkljfhadsjhfhd")
-    print("1234567890dajklfhfljkdakjhfjklashdkjfhadkjlfhljkadhfkladshljfadslkfkjladhfklahdflkjhadflkadhflkhdfljkhajkdsfhlkasdhjfadhjkfhadjkfhjkladshfadhskljfhadjkfhlajkdshfjkladshfkjadshfkjhadsjkfhadlkjfhadljshfkjasdhflkahdskljfhasdkljfhadsjhfhd")
 def unbenutzte_funktion():
     pass
 
