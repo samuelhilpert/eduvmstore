@@ -13,7 +13,7 @@ exclude = ["migrations", "tests/"]
 select = ["E", "F", "N", "I"]
 
 # Ignoriere spezifische Regeln, die nicht verwendet werden sollen
-ignore = ["E501", "W503", "E203"]  # Ignoriere z. B. die Regel für zu lange Zeilen (E501)
+ignore = ["E501", "E203"]  # Ignoriere z. B. die Regel für zu lange Zeilen (E501)
 
 # Definieren von spezifischen Regeln für Namenskonventionen
 [tool.ruff.pep8-naming]
