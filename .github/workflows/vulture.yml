@@ -1,0 +1,34 @@
+name: Vulture Analysis
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  vulture:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'  # oder die Python-Version, die du verwendest
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install vulture
+
+      - name: Run Vulture
+        run: |
+          vulture . 
