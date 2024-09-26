@@ -31,17 +31,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install bandit
 
-      # Get changed files
-      - name: Get changed files
-        id: get_changed_files
-        run: |
-          echo "::set-output name=files::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$' | tr '\n' ' ')"
-
-      # Run Bandit on changed files
+      # Run Bandit security scan
       - name: Run Bandit
-        run: |
-          if [ -z "${{ steps.get_changed_files.outputs.files }}" ]; then
-            echo "No Python files changed."
-          else
-            bandit -r ${{ steps.get_changed_files.outputs.files }}
-          fi
+        run: bandit -r . --exclude eduvmstorebackend/eduvmstorebackend/settings.py
+
+
