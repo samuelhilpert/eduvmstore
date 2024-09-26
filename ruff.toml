@@ -1,4 +1,4 @@
-line-length = 80
+line-length = 110
 exclude = ["migrations", "tests/"]
 
 # Aktivieren spezifischer Regelkategorien
