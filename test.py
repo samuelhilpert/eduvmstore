@@ -6,7 +6,7 @@ def BADLY_named_function():  # Falsche Namenskonvention für Funktionen (sollte 
 
 def main():
     print("Dies ist ein Test für Ruff.")  # Der Code funktioniert, aber enthält Linting-Fehler
-    if True print("Syntax-Fehler hier!")  # Syntaxfehler (fehlendes Doppelpunkt)
+    if True: print("Syntax-Fehler hier!")  # Syntaxfehler (fehlendes Doppelpunkt)
 
 if __name__ == "__main__":
     main()
