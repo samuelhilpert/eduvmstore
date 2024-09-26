@@ -16,5 +16,5 @@ select = ["E", "F", "N", "I"]
 ignore = ["E501", "E203"]  # Ignoriere z. B. die Regel für zu lange Zeilen (E501)
 
 # Definieren von spezifischen Regeln für Namenskonventionen
-[tool.ruff.pep8-naming]
-class-name = "^([A-Z][a-z0-9]+)+$"  # CamelCase für Klassennamen
+[tool.ruff.naming]
+ignore-names = ["CamelCase", "snake_case"]
