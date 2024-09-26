@@ -20,7 +20,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run Ruff
+      - name: Run Ruff Check
         uses: chartboost/ruff-action@v1
         with:
           version: 0.6.7
@@ -28,6 +28,13 @@ jobs:
           args: 'check --config ruff.toml --fix'
           changed-files: 'true'
 
+      - name: Run Ruff Format
+        uses: chartboost/ruff-action@v1
+        with:
+          version: 0.6.7
+          src: '.'
+          args: 'format --config ruff.toml'
+          changed-files: 'true'
       # Set up Python environment
 #      - name: Set up Python
 #        uses: actions/setup-python@v4
