@@ -1,4 +1,4 @@
-line-length = 88
+line-length = 80
 exclude = ["migrations", "tests/"]
 
 # Aktivieren spezifischer Regelkategorien
@@ -9,6 +9,6 @@ exclude = ["migrations", "tests/"]
 select = ["E", "F", "N", "I"]
 
 # Ignoriere spezifische Regeln, die nicht verwendet werden sollen
-ignore = ["E501", "E203"]  # Ignoriere z. B. die Regel für zu lange Zeilen (E501)
+ignore = ["E203"]  # Ignoriere z. B. die Regel für zu lange Zeilen (E501)
 
 
