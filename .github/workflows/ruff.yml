@@ -35,4 +35,4 @@ jobs:
       # Run Ruff Lint with the configuration file
       - name: Run Ruff
         run: |
-          ruff check . --config pyproject.toml
+          ruff check . --config pyproject.toml --fix
