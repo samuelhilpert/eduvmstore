@@ -1,6 +1,6 @@
 name: Assigne Pull-Request Reviewer
 permissions:
-  content: read
+  contents: read
   pull-requests: write
 on:
   pull_request_target:
