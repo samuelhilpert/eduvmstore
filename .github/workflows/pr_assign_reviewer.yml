@@ -1,4 +1,7 @@
 name: Assigne Pull-Request Reviewer
+permissions:
+  content: read
+  pull-requests: write
 on:
   pull_request_target:
     types: [opened, ready_for_review, reopened]
