@@ -1,3 +1,3 @@
 # eduvmstore
 
-Hallo ihr Python-Liebhaber! Java stinkt!
+Hallo ihr Python-Liebhaber!
