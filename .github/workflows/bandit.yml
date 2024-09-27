@@ -15,23 +15,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Check out the repository
+
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Set up Python environment
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      # Install Bandit
       - name: Install Bandit
         run: |
           python -m pip install --upgrade pip
           pip install bandit
 
-      # Run Bandit security scan
       - name: Run Bandit
         run: bandit -r . --exclude eduvmstorebackend/eduvmstorebackend/settings.py
 
