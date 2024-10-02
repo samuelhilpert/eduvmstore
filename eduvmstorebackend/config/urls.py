@@ -20,5 +20,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('app_name.urls')),
+    path('api/', include('eduvomstorebackend.eduvmstore.api.urls')),
 ]
