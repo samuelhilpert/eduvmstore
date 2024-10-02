@@ -7,13 +7,10 @@ on:
     types: [opened, ready_for_review, reopened]
 
 jobs:
-  example_assign_reviews:
+  assign_reviews:
     runs-on: ubuntu-latest
-    name: Assign Reviewer
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Assign random reviewers to PR
-        uses: ihs7/action-reviewer-roulette@v1
-        with:
-          number-of-reviewers: 1
+    - uses: actions/checkout@v4
+    - uses: uesteibar/reviewer-lottery@v3
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
