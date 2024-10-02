@@ -1,13 +1,14 @@
 # app_name/db/models.py
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
+from eduvmstorebackend.eduvmstore.db.session import Base
 from datetime import datetime
 
 Base = declarative_base()
 
 
 class AppTemplate(Base):
-    __tablename__ = 'app_templates'
+    __tablename__ = 'app_template'
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)

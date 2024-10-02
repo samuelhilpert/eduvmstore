@@ -75,6 +75,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+DATABASE_URL = "mysql://your_db_user:your_db_password@localhost:3306/your_db_name"
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -104,6 +106,19 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+# OpenStack
+
+OPENSTACK = {
+    'auth_url': 'http://openstack.example.com:5000/v3',
+    'project_name': 'eduvmstore',
+    'username': 'admin',
+    'password': 'nomoresecret',
+    'user_domain_name': 'default',
+    'project_domain_name': 'default',
+    'region_name': 'nova',
+}
 
 
 # Internationalization
