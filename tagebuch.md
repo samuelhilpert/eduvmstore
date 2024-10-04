@@ -21,6 +21,18 @@
 - **Arbeit**: Research und Support bei Installation von OpenStack
 
 ---
+### Datum: 2024-10-02
+- **Entwickler**: Samuel
+- **Dauer**: 2 Stunden
+- **Arbeit**: Research/Test Plugin für OpenStack (Einbindung/Namenänderungen/etc.)
+
+---
+### Datum: 2024-10-04
+- **Entwickler**: Samuel
+- **Dauer**: 2 Stunden
+- **Arbeit**: Erste Test-Features in Plugin (Variablen/Bilder/Fetch)
+
+---
 
 ### Datum: 2024-MM-DD
 - **Entwickler**: Name
