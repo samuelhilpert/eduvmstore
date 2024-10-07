@@ -48,6 +48,13 @@
   
 ---
 
+- ### Datum: 2024-10-07
+- **Entwickler**: Valentin
+- **Dauer**: 5 Stunden
+- **Arbeit**: REST API Endpunkte nach OpenStack Guidelines definieren
+  
+---
+
 - ### Datum: 2024-MM-DD
 - **Entwickler**: Name
 - **Dauer**: z.B. 1,5 Stunden
