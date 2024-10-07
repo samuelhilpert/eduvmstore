@@ -11,8 +11,8 @@ AppTemplate:
 - deleted_at: DATETIME, nullable
 - deleted: TINYINT(1), default 0
 - version: VARCHAR(10), default '1.0'
-- is_public: TINYINT(1), not nullable
-- is_approved: TINYINT(1), default 0
+- public: TINYINT(1), not nullable
+- approved: TINYINT(1), default 0
 - fixed_RAM_GB: DECIMAL(5,2)
 - fixed_disk_GB: DECIMAL(5,2)
 - fixed_cores: DECIMAL(3,2)
