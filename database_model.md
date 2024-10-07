@@ -27,3 +27,4 @@ User
 Roles
 - id: VARCHAR(36), primary key
 - name: VARCHAR(255), not nullable, unique
+- access_level: INT(11), not nullable, unique
