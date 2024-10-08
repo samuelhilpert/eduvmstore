@@ -24,6 +24,9 @@ AppTemplate:
 User
 - id: VARCHAR(36), primary key, foreign key (references id in keystone User)
 - role_id: VARCHAR(36), foreign key (references id in Roles)
+- created_at: DATETIME, not nullable
+- updated_at: DATETIME, nullable
+- deleted: TINYINT(1), default 0
 
 Roles
 - id: VARCHAR(36), primary key
