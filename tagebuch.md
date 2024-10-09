@@ -34,7 +34,21 @@
 
 ---
 
-### Datum: 2024-MM-DD
+### Datum: 2024-10-02 & 2024-10-03
+- **Entwickler**: Valentin
+- **Dauer**: 4 Stunden
+- **Arbeit**: Versuch Plugin Aufzusetzen und Lernen im Umgang mir Virtual Box
+  
+---
+
+- ### Datum: 2024-10-04
+- **Entwickler**: Valentin
+- **Dauer**: 1 Stunde
+- **Arbeit**: Datenbankmodell für eigene Datenbank erstellen
+  
+---
+
+- ### Datum: 2024-MM-DD
 - **Entwickler**: Name
 - **Dauer**: z.B. 1,5 Stunden
 - **Arbeit**: Kurze Beschreibung der Aufgabe

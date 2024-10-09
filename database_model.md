@@ -11,7 +11,8 @@ AppTemplate:
 - deleted_at: DATETIME, nullable
 - deleted: TINYINT(1), default 0
 - version: VARCHAR(10), default '1.0'
-- is_public: TINYINT(1), not nullable
+- public: TINYINT(1), not nullable
+- approved: TINYINT(1), default 0
 - fixed_RAM_GB: DECIMAL(5,2)
 - fixed_disk_GB: DECIMAL(5,2)
 - fixed_cores: DECIMAL(3,2)
@@ -23,6 +24,9 @@ AppTemplate:
 User
 - id: VARCHAR(36), primary key, foreign key (references id in keystone User)
 - role_id: VARCHAR(36), foreign key (references id in Roles)
+- created_at: DATETIME, not nullable
+- updated_at: DATETIME, nullable
+- deleted: TINYINT(1), default 0
 
 Roles
 - id: VARCHAR(36), primary key
