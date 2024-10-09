@@ -13,11 +13,11 @@ AppTemplate:
 - version: VARCHAR(10), default '1.0'
 - public: TINYINT(1), not nullable
 - approved: TINYINT(1), default 0
-- fixed_RAM_GB: DECIMAL(5,2)
-- fixed_disk_GB: DECIMAL(5,2)
+- fixed_ram_gb: DECIMAL(5,2)
+- fixed_disk_gb: DECIMAL(5,2)
 - fixed_cores: DECIMAL(3,2)
-- per_user_RAM_GB: DECIMAL(5,2)
-- per_user_disk_GB: DECIMAL(5,2)
+- per_user_ram_gb: DECIMAL(5,2)
+- per_user_disk_gb: DECIMAL(5,2)
 - per_user_cores: DECIMAL(3,2)
 
 
