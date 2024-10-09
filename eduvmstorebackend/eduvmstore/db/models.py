@@ -6,8 +6,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from eduvmstorebackend.eduvmstore.db.session import Base
 from datetime import datetime
 
-Base = declarative_base()
-
 
 class AppTemplate(Base):
     __tablename__ = 'app_template'
@@ -26,11 +24,11 @@ class AppTemplate(Base):
     version = Column(String, default="1.0")
     public =Column(Integer, default=0, nullable=False)
     approved = Column(Integer, default=0)
-    fixed_RAM_GB = Column(Double)
-    fixed_disk_GB = Column(Double)
+    fixed_ram_gb = Column(Double)
+    fixed_disk_gb = Column(Double)
     fixed_cores = Column(Integer)
-    per_user_RAM_GB = Column(Double)
-    per_user_disk_GB = Column(Double)
+    per_user_ram_gb = Column(Double)
+    per_user_disk_gb = Column(Double)
     per_user_cores = Column(Integer)
 
 
