@@ -18,11 +18,14 @@ class AppTemplate(Base):
     description = Column(String)
     short_description = Column(String(255))
     instantiation_notice = Column(String)
+    creator_id = Column(Integer, index=True, foreign_key=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, nullable=True)
     deleted_at = Column(DateTime, default=datetime.utcnow, nullable=True)
+    deleted = Column(Integer, default=0)
     version = Column(String, default="1.0")
-    is_public =Column(Integer, default=0, nullable=False)
+    public =Column(Integer, default=0, nullable=False)
+    approved = Column(Integer, default=0)
     fixed_RAM_GB = Column(Double)
     fixed_disk_GB = Column(Double)
     fixed_cores = Column(Integer)
@@ -36,6 +39,9 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     role_id = Column(Integer, index=True, foreign_key=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, nullable=True)
+    deleted = Column(Integer, default=0)
 
 
 class Roles(Base):
@@ -43,6 +49,7 @@ class Roles(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False, unique=True)
+    access_level = Column(Integer, nullable=False)
 
 
 # After defining the model, create the tables:
