@@ -16,3 +16,11 @@ Dieses Projekt wird im Rahmen des Moduls "Projekt" an der DHBW Mannheim im Zeitr
 * ``python3 eduvmstorebackend/manage.py runserver localhost:8000
 ``
 * Zugang über localhost:8000
+
+## Datenbank lokal
+* ``python3 eduvmstorebackend/manage.py migrate ``
+* ODER ``python eduvmstorebackend/manage.py migrate ``
+* ``python3 -m eduvmstorebackend.eduvmstore.db.create_tables ``
+* ODER ``python -m eduvmstorebackend.eduvmstore.db.create_tables ``
+* `db.sqlite3` Datei doppelklicken
+* Im Pop-Up unten auf "Download missing Drivers" gehen und Installation abwarten und auf "OK" gehen
