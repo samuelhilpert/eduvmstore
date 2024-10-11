@@ -1,7 +1,7 @@
 import unittest
 
-from eduvmstorebackend.eduvmstore.db.models import AppTemplate
-from eduvmstorebackend.eduvmstore.db import SessionLocal
+from eduvmstore.db.models import AppTemplate
+from eduvmstore.db import SessionLocal
 
 class MyTestCase(unittest.TestCase):
     def test_something(self):

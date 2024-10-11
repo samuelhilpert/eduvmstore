@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, Mock
-from eduvmstorebackend.eduvmstore.services.nova_service import list_instances
+from eduvmstore.services.nova_service import list_instances
 
 @patch('app.services.nova_service.get_openstack_connection')
 def test_list_instances(mock_conn):

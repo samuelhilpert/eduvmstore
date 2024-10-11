@@ -1,11 +1,11 @@
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from eduvmstorebackend.eduvmstore.services.nova_service import list_instances, create_instance
-from eduvmstorebackend.eduvmstore.services.glance_service import list_images
-from eduvmstorebackend.eduvmstore.api.serializers import AppTemplateSerializer
-from eduvmstorebackend.eduvmstore.db.models import AppTemplate
-from eduvmstorebackend.eduvmstore.db.session import get_db
+from eduvmstore.services.nova_service import list_instances, create_instance
+from eduvmstore.services.glance_service import list_images
+from eduvmstore.api.serializers import AppTemplateSerializer
+from eduvmstore.db.models import AppTemplate
+from eduvmstore.db.session import get_db
 
 
 class AppTemplateViewSet(viewsets.ViewSet):
