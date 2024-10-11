@@ -26,10 +26,20 @@
 - **Dauer**: 2 Stunden
 - **Arbeit**: Research/Test Plugin für OpenStack (Einbindung/Namenänderungen/etc.)
 ---
+### Datum: 2024-10-03
+- **Entwickler**: Jared
+- **Dauer**: 2 Stunden
+- **Arbeit**: Research Development-Environment
+---
 ### Datum: 2024-10-04
 - **Entwickler**: Samuel
 - **Dauer**: 2 Stunden
 - **Arbeit**: Erste Test-Features in Plugin (Variablen/Bilder/Fetch)
+---
+### Datum: 2024-10-04
+- **Entwickler**: Jared
+- **Dauer**: 4 Stunden
+- **Arbeit**: Research Development-Environment
 ---
 ### Datum: 2024-10-02 & 2024-10-03
 - **Entwickler**: Valentin
@@ -46,6 +56,16 @@
 - **Dauer**: 1 Stunde
 - **Arbeit**: Datenbankmodell für eigene Datenbank erstellen
 ---
+### Datum: 2024-10-05
+- **Entwickler**: Jared
+- **Dauer**: 1 Stunden
+- **Arbeit**: Research Development-Environment
+---
+### Datum: 2024-10-06
+- **Entwickler**: Jared
+- **Dauer**: 2 Stunden
+- **Arbeit**: Setup Development-Server auf Openstack
+---
 ### Datum: 2024-10-07
 - **Entwickler**: Valentin
 - **Dauer**: 5 Stunden
@@ -60,6 +80,16 @@
 - **Entwickler**: Valentin, Marian
 - **Dauer**: 3 Stunden
 - **Arbeit**: PoC Backend APIs mit Test Endpoint und weitere erste Endpoints für App-Template Erstellung und Auslesen
+---
+### Datum: 2024-10-09
+- **Entwickler**: Jared
+- **Dauer**: 3 Stunden
+- **Arbeit**: Setup Gerrit-Server auf Openstack und Research für Backend
+---
+### Datum: 2024-10-10
+- **Entwickler**: Jared
+- **Dauer**: 2 Stunden
+- **Arbeit**: Research für Backend
 ---
 ### Datum: 2024-MM-DD
 - **Entwickler**: Name
