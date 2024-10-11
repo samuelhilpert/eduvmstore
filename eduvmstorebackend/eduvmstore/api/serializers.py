@@ -1,7 +1,35 @@
 from rest_framework import serializers
+from eduvmstore.db.models import AppTemplate
 
-class AppTemplateSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=50)
-    description = serializers.CharField()
-    image_id = serializers.CharField(max_length=255)
-    visibility = serializers.CharField(max_length=20)
+class AppTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AppTemplate
+        fields = [
+            'id',
+            'image_id',
+            'name',
+            'description',
+            'short_description',
+            'instantiation_notice',
+            'creator_id',
+            'created_at',
+            'updated_at',
+            'deleted_at',
+            'deleted',
+            'version',
+            'public',
+            'approved',
+            'fixed_ram_gb',
+            'fixed_disk_gb',
+            'fixed_cores',
+            'per_user_ram_gb',
+            'per_user_disk_gb',
+            'per_user_cores'
+        ]
+
+    def create(self, validated_data):
+        """
+        Custom create method if you need to perform additional
+        operations before saving an instance.
+        """
+        return AppTemplate.objects.create(**validated_data)
