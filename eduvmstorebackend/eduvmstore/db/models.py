@@ -54,7 +54,3 @@ class Roles(Base):
 
     # for different rights, e.g. 100 for low rights and 4000 for admin rights
     access_level = Column(Integer, nullable=False)
-
-
-# After defining the model, create the tables:
-# Create the tables by running Base.metadata.create_all(bind=engine)

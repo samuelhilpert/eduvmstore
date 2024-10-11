@@ -18,24 +18,24 @@ def create_app_template(db: Session, data: dict):
 
     # Create a new AppTemplate instance
     new_template = AppTemplate(
-        id=str(uuid.uuid4()),  # Generate a unique UUID for the id
+        id=str(uuid.uuid4()),  # Generate unique UUID
         name=data['name'],
-        description=data.get('description'),  # Optional field
-        short_description=data.get('short_description'),  # Optional field
-        instantiation_notice=data.get('instantiation_notice'),  # Optional field
+        description=data.get('description'),  # Optional
+        short_description=data.get('short_description'),  # Optional
+        instantiation_notice=data.get('instantiation_notice'),  # Optional
         image_id=data['image_id'],
-        creator_id=data['creator_id'],  # Foreign key to User model
+        creator_id=data['creator_id'],
 
         # CRUD info
-        created_at=datetime.utcnow(),  # Automatically set to current timestamp
-        updated_at=None,  # Default to None (will be set during updates)
-        deleted_at=None,  # Default to None (will be set when deleted)
-        deleted=False,  # Default to False
+        created_at=datetime.utcnow(),
+        updated_at=None,
+        deleted_at=None,
+        deleted=False,
 
         # Version and visibility
-        version=data.get('version', '1.0'),  # Default to '1.0'
-        public=data.get('public', False),  # Default to False
-        approved=data.get('approved', False),  # Default to False
+        version=data.get('version', '1.0'),
+        public=data.get('public', False),
+        approved=data.get('approved', False),
 
         # Resource requirements
         fixed_ram_gb=data.get('fixed_ram_gb'),  # Optional
@@ -50,7 +50,7 @@ def create_app_template(db: Session, data: dict):
     try:
         db.add(new_template)
         db.commit()
-        db.refresh(new_template)  # Get the latest state of the new object
+        db.refresh(new_template)
         return new_template
     except Exception as e:
         db.rollback()
@@ -69,22 +69,22 @@ def create_user(id: int, role_id: int):
     new_user = User(
         id=id,
         role_id=role_id,
-        created_at=datetime.utcnow(),  # Automatically set the created_at field
-        updated_at=datetime.utcnow(),  # Automatically set the updated_at field
-        deleted=False  # Set the deleted field to False by default
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow(),
+        deleted=False
     )
     try:
         db.add(new_user)
-        db.commit()  # Commit the transaction
-        db.refresh(new_user)  # Refresh the instance to get the updated data
+        db.commit()
+        db.refresh(new_user)
         return new_user
     except SQLAlchemyError as e:
-        db.rollback()  # Roll back the transaction in case of an error
+        db.rollback()
         raise e
     finally:
         db.close()
 
-# Get
+# User
 def get_user_by_id(id: int):
     """
     Retrieve a User entry from the database by ID.
@@ -93,6 +93,58 @@ def get_user_by_id(id: int):
     :return: The User object if found, else None
     """
     db = SessionLocal()
-    user = db.query(User).filter(User.id == id).first()  # Query for the user
+    user = db.query(User).filter(User.id == id).first()
     db.close()
     return user
+
+# Roles
+def create_role(name: str, access_level: int) -> Roles:
+    """
+    Create a new Role entry in the database.
+
+    :param name: The name of the role
+    :param access_level: The access level for the role (e.g., 100 for low rights, 4000 for admin rights)
+    :return: The newly created Role object or None if an error occurs
+    """
+    new_role = Roles(
+        id=str(uuid.uuid4()),
+        name=name,
+        access_level=access_level
+    )
+
+    with SessionLocal() as db:
+        try:
+            db.add(new_role)
+            db.commit()
+            db.refresh(new_role)
+            return new_role
+        except SQLAlchemyError as e:
+            db.rollback()
+            raise e
+
+def update_role(id: str, name: str = None, access_level: int = None) -> Roles:
+    """
+    Update an existing Role entry in the database.
+
+    :param id: The unique identifier of the role to update
+    :param name: The new name for the role (optional)
+    :param access_level: The new access level for the role (optional)
+    :return: The updated Role object or None if an error occurs
+    """
+    with SessionLocal() as db:
+        try:
+            role = db.query(Roles).filter(Roles.id == id).first()
+            if not role:
+                raise Exception("Role not found")
+                # Exception may need to be adapted to a more specific exception type
+
+            if name is not None:
+                role.name = name
+            if access_level is not None:
+                role.access_level = access_level
+            db.commit()
+            db.refresh(role)
+            return role
+        except SQLAlchemyError as e:
+            db.rollback()
+            raise e
