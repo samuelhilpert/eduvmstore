@@ -8,6 +8,13 @@
 
 ## Einträge
 
+- ### Datum: 2024-09-29
+- **Entwickler**: Marian
+- **Dauer**: 0,5 Stunden
+- **Arbeit**: Backend Repo Init und erste Struktur
+
+---
+
 ### Datum: 2024-10-02
 - **Entwickler**: Samuel
 - **Dauer**: 3 Stunden
@@ -42,6 +49,13 @@
 ---
 
 - ### Datum: 2024-10-04
+- **Entwickler**: Marian
+- **Dauer**: 1 Stunde
+- **Arbeit**: Überarbeitung der Backend Struktur
+
+---
+
+- ### Datum: 2024-10-04
 - **Entwickler**: Valentin
 - **Dauer**: 1 Stunde
 - **Arbeit**: Datenbankmodell für eigene Datenbank erstellen
@@ -52,7 +66,21 @@
 - **Entwickler**: Valentin
 - **Dauer**: 5 Stunden
 - **Arbeit**: REST API Endpunkte nach OpenStack Guidelines definieren
-  
+
+---
+
+- ### Datum: 2024-10-11
+- **Entwickler**: Marian
+- **Dauer**: 1,5 Stunden
+- **Arbeit**: Datenbank Setup und Backend Server startbar machen
+
+---
+
+- ### Datum: 2024-10-11
+- **Entwickler**: Valentin, Marian
+- **Dauer**: 3 Stunden
+- **Arbeit**: PoC Backend APIs mit Test Endpoint und weitere erste Endpoints für App-Template Erstellung und Auslesen
+
 ---
 
 - ### Datum: 2024-MM-DD
