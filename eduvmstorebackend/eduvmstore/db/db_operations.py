@@ -65,7 +65,7 @@ def create_user(id: int, role_id: int):
     :param role_id: Role ID (foreign key to the Roles model)
     :return: The newly created User object or None if an error occurs
     """
-    db = SessionLocal()
+
     new_user = User(
         id=id,
         role_id=role_id,
@@ -73,16 +73,15 @@ def create_user(id: int, role_id: int):
         updated_at=datetime.utcnow(),
         deleted=False
     )
-    try:
-        db.add(new_user)
-        db.commit()
-        db.refresh(new_user)
-        return new_user
-    except SQLAlchemyError as e:
-        db.rollback()
-        raise e
-    finally:
-        db.close()
+    with SessionLocal() as db:
+        try:
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+            return new_user
+        except SQLAlchemyError as e:
+            db.rollback()
+            raise e
 
 # User
 def get_user_by_id(id: int):
@@ -92,10 +91,9 @@ def get_user_by_id(id: int):
     :param id: Unique identifier of the user
     :return: The User object if found, else None
     """
-    db = SessionLocal()
-    user = db.query(User).filter(User.id == id).first()
-    db.close()
-    return user
+    with SessionLocal() as db:
+        user = db.query(User).filter(User.id == id).first()
+        return user
 
 # Roles
 def create_role(name: str, access_level: int) -> Roles:
