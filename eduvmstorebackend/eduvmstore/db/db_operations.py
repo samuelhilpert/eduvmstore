@@ -1,10 +1,12 @@
-from .session import SessionLocal
-from .models import User, Roles, AppTemplate
 import uuid
 from datetime import datetime
-from sqlalchemy.orm import Session
 
-# Create
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+
+from .session import SessionLocal
+from .models import User, Roles, AppTemplate
+
 def create_app_template(db: Session, data: dict):
     """
     Create a new AppTemplate entry in the database.
@@ -51,11 +53,18 @@ def create_app_template(db: Session, data: dict):
         db.refresh(new_template)  # Get the latest state of the new object
         return new_template
     except Exception as e:
-        db.rollback()  # Roll back in case of error
-        raise e  # Raise the exception to be handled at a higher level
+        db.rollback()
+        raise e
 
 
 def create_user(id: int, role_id: int):
+    """
+    Create a new User entry in the database.
+
+    :param id: Unique identifier for the user
+    :param role_id: Role ID (foreign key to the Roles model)
+    :return: The newly created User object or None if an error occurs
+    """
     db = SessionLocal()
     new_user = User(
         id=id,
@@ -71,13 +80,18 @@ def create_user(id: int, role_id: int):
         return new_user
     except SQLAlchemyError as e:
         db.rollback()  # Roll back the transaction in case of an error
-        print(f"Error occurred: {e}")
-        return None
+        raise e
     finally:
         db.close()
 
 # Get
 def get_user_by_id(id: int):
+    """
+    Retrieve a User entry from the database by ID.
+
+    :param id: Unique identifier of the user
+    :return: The User object if found, else None
+    """
     db = SessionLocal()
     user = db.query(User).filter(User.id == id).first()  # Query for the user
     db.close()
