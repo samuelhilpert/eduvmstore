@@ -1,7 +1,4 @@
-# app_name/db/models.py
-from tokenize import Double
-
-from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Float, Boolean, ForeignKey
 from .session import Base
 from datetime import datetime
 
@@ -9,24 +6,24 @@ from datetime import datetime
 class AppTemplate(Base):
     __tablename__ = 'app_template'
 
-    id = Column(Integer, primary_key=True, index=True)
-    image_id = Column(Integer, index=True, unique=True)
+    id = Column(String(36), primary_key=True, index=True)
+    image_id = Column(String(36), index=True)
     name = Column(String(255), nullable=False, unique=True)
     description = Column(String)
     short_description = Column(String(255))
     instantiation_notice = Column(String)
 
     # CRUD info
-    creator_id = Column(Integer, ForeignKey('user.id'), index=True)
+    creator_id = Column(String(36), ForeignKey('user.id'), index=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, nullable=True)
     deleted_at = Column(DateTime, default=datetime.utcnow, nullable=True)
-    deleted = Column(Integer, default=0)
+    deleted = Column(Boolean, default=False)
 
     # version and visibility
     version = Column(String, default="1.0")
-    public =Column(Integer, default=0, nullable=False)
-    approved = Column(Integer, default=0)
+    public =Column(Boolean, default=False, nullable=False)
+    approved = Column(Boolean, default=False)
 
     # resource requirements
     fixed_ram_gb = Column(Float)
@@ -40,19 +37,19 @@ class AppTemplate(Base):
 class User(Base):
     __tablename__ = 'user'
 
-    id = Column(Integer, primary_key=True, index=True)
-    role_id = Column(Integer, ForeignKey('roles.id'), index=True)
+    id = Column(String(36), primary_key=True, index=True)
+    role_id = Column(String(36), ForeignKey('roles.id'), index=True)
 
     # CRUD info
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, nullable=True)
-    deleted = Column(Integer, default=0)
+    deleted = Column(Boolean, default=False)
 
 
 class Roles(Base):
     __tablename__ = 'roles'
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String(36), primary_key=True, index=True)
     name = Column(String(255), nullable=False, unique=True)
 
     # for different rights, e.g. 100 for low rights and 4000 for admin rights
