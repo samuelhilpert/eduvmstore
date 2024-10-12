@@ -1,14 +1,12 @@
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from eduvmstore.services.nova_service import create_instance
+
 from eduvmstore.services.glance_service import list_images
 from eduvmstore.api.serializers import AppTemplateSerializer
 from eduvmstore.db.models import AppTemplate
 from eduvmstore.db.session import get_db
-from eduvmstore.db.db_operations import create_app_template
-from eduvmstore.db.models import User
-
+from eduvmstore.db.operations.app_templates import create_app_template
 
 
 class TestAPI(APIView):
@@ -20,14 +18,12 @@ class AppTemplateViewSet(viewsets.ViewSet):
     def list(self, request):
         db = next(get_db())
         templates = db.query(AppTemplate).all()
-        return Response([template.name for template in templates])
+        return Response([{template.name, template.description} for template in templates])
+        #return  Response({'templates': AppTemplateSerializer(templates, many=True).data})
 
     def create(self, request):
-        db = next(get_db())  # Get the database session
         data = request.data
-
         try:
-            # Prepare the data for the template creation
             template_data = {
                 'name': data.get('name'),
                 'description': data.get('description'),
@@ -46,13 +42,10 @@ class AppTemplateViewSet(viewsets.ViewSet):
                 'per_user_cores': data.get('per_user_cores')
             }
 
-            # Call the create_app_template method from db_operations
-            new_template = create_app_template(db, template_data)
+            new_template = create_app_template(template_data)
 
-            # Serialize the result (assuming you have a serializer for AppTemplate)
-            serializer = AppTemplateSerializer(new_template)  # Adjust serializer as needed
+            serializer = AppTemplateSerializer(new_template)
 
-            # Return the created template data with a 201 status
             return Response(status=status.HTTP_201_CREATED)
 
         except Exception as e:

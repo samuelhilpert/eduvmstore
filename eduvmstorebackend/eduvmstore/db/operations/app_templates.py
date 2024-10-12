@@ -1,10 +1,11 @@
 import uuid
 from datetime import datetime
 
+from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 
-from eduvmstorebackend.eduvmstore.db.session import SessionLocal
-from eduvmstorebackend.eduvmstore.db.models import User, Roles, AppTemplate
+from eduvmstore.db.session import SessionLocal
+from eduvmstore.db.models import AppTemplate
 
 def create_app_template(data: dict):
     """
