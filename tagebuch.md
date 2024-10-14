@@ -67,7 +67,7 @@
 - **Arbeit**: Setup Development-Server auf Openstack
 ---
 ### Datum: 2024-10-07
-- **Entwickler**: Valentin
+- **Entwickler**: Valentin, Samuel
 - **Dauer**: 5 Stunden
 - **Arbeit**: REST API Endpunkte nach OpenStack Guidelines definieren
 ---
@@ -90,6 +90,21 @@
 - **Entwickler**: Jared
 - **Dauer**: 2 Stunden
 - **Arbeit**: Research für Backend
+---
+### Datum: 2024-10-11
+- **Entwickler**: Samuel
+- **Dauer**: 4 Stunden
+- **Arbeit**: Formular für Create Prozess im Frontend
+---
+### Datum: 2024-10-13
+- **Entwickler**: Samuel
+- **Dauer**: 1,5 Stunden
+- **Arbeit**: CSS für Create Formular + Mergen/Debugen von gesamten Frontend-Code
+---
+### Datum: 2024-10-09
+- **Entwickler**: Samuel
+- **Dauer**: 3 Stunden
+- **Arbeit**: Admin Seite
 ---
 ### Datum: 2024-MM-DD
 - **Entwickler**: Name
