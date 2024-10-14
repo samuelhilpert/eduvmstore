@@ -1,58 +1,36 @@
 import uuid
+from django.db import transaction
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from eduvmstore.db.models import Role
 
-from sqlalchemy.exc import SQLAlchemyError
-
-from eduvmstorebackend.eduvmstore.db.session import SessionLocal
-from eduvmstorebackend.eduvmstore.db.models import Roles
-
-
-def create_role(data: dict) -> Roles:
+def create_role(data: dict) -> Role:
     """
-    Create a new Role entry in the database.
-
-    :param name: The name of the role
-    :param access_level: The access level for the role (e.g., 100 for low rights, 4000 for admin rights)
-    :return: The newly created Role object or None if an error occurs
+    Create a new Role entry in the database using Django ORM.
     """
-    new_role = Roles(
-        id=str(uuid.uuid4()),
-        name=data['name'],
-        access_level=data['access_level']
-    )
+    try:
+        new_role = Role.objects.create(
+            id=str(uuid.uuid4()),  # Generate unique UUID
+            name=data['name'],
+            access_level=data['access_level']
+        )
+        return new_role
+    except ValidationError as e:
+        raise e
 
-    with SessionLocal() as db:
-        try:
-            db.add(new_role)
-            db.commit()
-            db.refresh(new_role)
-            return new_role
-        except SQLAlchemyError as e:
-            db.rollback()
-            raise e
-
-def update_role(id: str, name: str = None, access_level: int = None) -> Roles:
+def update_role(id: str, name: str = None, access_level: int = None) -> Role:
     """
-    Update an existing Role entry in the database.
-
-    :param id: The unique identifier of the role to update
-    :param name: The new name for the role (optional)
-    :param access_level: The new access level for the role (optional)
-    :return: The updated Role object or None if an error occurs
+    Update an existing Role entry in the database using Django ORM.
     """
-    with SessionLocal() as db:
-        try:
-            role = db.query(Roles).filter(Roles.id == id).first()
-            if not role:
-                raise Exception("Role not found")
-                # Exception may need to be adapted to a more specific exception type
+    try:
+        role = Role.objects.get(id=id)  # Fetch role by ID
+        if name:
+            role.name = name
+        if access_level:
+            role.access_level = access_level
 
-            if name is not None:
-                role.name = name
-            if access_level is not None:
-                role.access_level = access_level
-            db.commit()
-            db.refresh(role)
-            return role
-        except SQLAlchemyError as e:
-            db.rollback()
-            raise e
+        role.save()  # Save changes
+        return role
+    except ObjectDoesNotExist:
+        raise Exception("Role not found")
+    except ValidationError as e:
+        raise e

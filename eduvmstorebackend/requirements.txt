@@ -1,7 +1,6 @@
-Django==4.2
+Django==4.2.16
 djangorestframework==3.15.2
 openstacksdk==4.0.0
-sqlalchemy==2.0.35
 ruff==0.6.8
 vulture==2.12
 bandit==1.7.10
