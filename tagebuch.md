@@ -115,6 +115,16 @@
 - **Dauer**: 3 Stunden
 - **Arbeit**: Admin Seite
 ---
+### Datum: 2024-10-09 & 2024-10-10
+- **Entwickler**: Monika
+- **Dauer**: 4 Stunden
+- **Arbeit**: Detail Seite (anzeigen der Daten, API Request, Style)
+---
+### Datum: 2024-10-13
+- **Entwickler**: Monika
+- **Dauer**: 1 Stunde
+- **Arbeit**: Navigation Dashboard -> Detail Seite 
+---
 ### Datum: 2024-MM-DD
 - **Entwickler**: Name
 - **Dauer**: z.B. 1,5 Stunden
