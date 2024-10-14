@@ -125,6 +125,11 @@
 - **Dauer**: 1 Stunde
 - **Arbeit**: Navigation Dashboard -> Detail Seite 
 ---
+### Datum: 2024-10-14
+- **Entwickler**: Samuel
+- **Dauer**: 2 Stunden
+- **Arbeit**: Formular Create Instances
+  ---
 ### Datum: 2024-MM-DD
 - **Entwickler**: Name
 - **Dauer**: z.B. 1,5 Stunden
