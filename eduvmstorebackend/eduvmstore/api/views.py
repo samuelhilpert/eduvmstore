@@ -4,9 +4,7 @@ from rest_framework.views import APIView
 
 from eduvmstore.services.glance_service import list_images
 from eduvmstore.api.serializers import AppTemplateSerializer
-from eduvmstore.db.models import AppTemplate
-from eduvmstore.db.session import get_db
-from eduvmstore.db.operations.app_templates import create_app_template
+from eduvmstore.db.operations.app_templates import create_app_template, list_app_templates
 
 
 class TestAPI(APIView):
@@ -16,36 +14,36 @@ class TestAPI(APIView):
 class AppTemplateViewSet(viewsets.ViewSet):
 
     def list(self, request):
-        db = next(get_db())
-        templates = db.query(AppTemplate).all()
-        return Response([{template.name, template.description} for template in templates])
-        #return  Response({'templates': AppTemplateSerializer(templates, many=True).data})
+        templates = list_app_templates()
+        serializer = AppTemplateSerializer(templates, many=True)
+        # return Response({'data': templates}, status=status.HTTP_200_OK)
+        # return Response([{template.name, template.description} for template in templates])
+        return  Response({'templates': serializer.data}, status=status.HTTP_200_OK)
 
     def create(self, request):
         data = request.data
+
         try:
-            template_data = {
-                'name': data.get('name'),
-                'description': data.get('description'),
-                'short_description': data.get('short_description'),
+            app_template_data = {
+                'name': data['name'],
+                'description': data['description'],
+                'short_description': data['short_description'],
                 'instantiation_notice': data.get('instantiation_notice'),
-                'image_id': data.get('image_id'),
+                'image_id': data['image_id'],
                 'creator_id': data.get('creator_id'),
                 'version': data.get('version', '1.0'),  # Default to '1.0'
                 'public': data.get('public', False),
                 'approved': data.get('approved', False),
-                'fixed_ram_gb': data.get('fixed_ram_gb'),
-                'fixed_disk_gb': data.get('fixed_disk_gb'),
-                'fixed_cores': data.get('fixed_cores'),
-                'per_user_ram_gb': data.get('per_user_ram_gb'),
-                'per_user_disk_gb': data.get('per_user_disk_gb'),
-                'per_user_cores': data.get('per_user_cores')
+                'fixed_ram_gb': data['fixed_ram_gb'],
+                'fixed_disk_gb': data['fixed_disk_gb'],
+                'fixed_cores': data['fixed_cores'],
+                'per_user_ram_gb': data['per_user_ram_gb'],
+                'per_user_disk_gb': data['per_user_disk_gb'],
+                'per_user_cores': data['per_user_cores']
             }
 
-            new_template = create_app_template(template_data)
-
-            serializer = AppTemplateSerializer(new_template)
-
+            new_app_template = create_app_template(app_template_data)
+            serializer = AppTemplateSerializer(new_app_template)
             return Response(status=status.HTTP_201_CREATED)
 
         except Exception as e:
