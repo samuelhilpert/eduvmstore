@@ -14,7 +14,7 @@ def create_app_template(app_template_data: dict):
     try:
         # Using Django's ORM to create a new AppTemplate instance
         new_template = AppTemplate.objects.create(
-            id=str(uuid.uuid4()),  # Generate unique UUID
+            id=str(uuid.uuid4()),
             name=app_template_data['name'],
             description=app_template_data['description'],
             short_description=app_template_data.get('short_description'),
@@ -22,7 +22,7 @@ def create_app_template(app_template_data: dict):
             image_id=app_template_data['image_id'],
             creator_id=app_template_data['creator_id'],
 
-            # The fields below are managed by Django automatically
+            # Operational fields
             created_at=timezone.now(),
             updated_at=timezone.now(),
             deleted_at=None,
@@ -34,16 +34,15 @@ def create_app_template(app_template_data: dict):
             approved=app_template_data.get('approved', False),
 
             # Resource requirements
-            fixed_ram_gb=app_template_data.get('fixed_ram_gb', 0),
-            fixed_disk_gb=app_template_data.get('fixed_disk_gb', 0),
-            fixed_cores=app_template_data.get('fixed_cores', 0),
-            per_user_ram_gb=app_template_data.get('per_user_ram_gb', 0),
-            per_user_disk_gb=app_template_data.get('per_user_disk_gb', 0),
-            per_user_cores=app_template_data.get('per_user_cores', 0)
+            fixed_ram_gb=app_template_data['fixed_ram_gb'],
+            fixed_disk_gb=app_template_data['fixed_disk_gb'],
+            fixed_cores=app_template_data['fixed_cores'],
+            per_user_ram_gb=app_template_data['per_user_ram_gb'],
+            per_user_disk_gb=app_template_data['per_user_disk_gb'],
+            per_user_cores=app_template_data['per_user_cores']
         )
         return new_template
     except ValidationError as e:
-        # Handle validation errors from the Django ORM model
         raise e
 
 
@@ -53,4 +52,4 @@ def list_app_templates() -> list[AppTemplate]:
 
     :return: A list of AppTemplate objects
     """
-    return AppTemplate.objects.all()  # Use Django ORM's objects manager to list all templates
+    return AppTemplate.objects.all()
