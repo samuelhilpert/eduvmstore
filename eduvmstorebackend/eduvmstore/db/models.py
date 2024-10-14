@@ -1,56 +1,59 @@
-from sqlalchemy import Column, Integer, String, DateTime, Float, Boolean, ForeignKey
-from .session import Base
-from datetime import datetime
+import uuid
+from email.policy import default
+
+from django.db import models
+
+from django.utils.timezone import now
 
 
-class AppTemplate(Base):
-    __tablename__ = 'app_template'
-
-    id = Column(String(36), primary_key=True, index=True)
-    image_id = Column(String(36), index=True)
-    name = Column(String(255), nullable=False, unique=True)
-    description = Column(String)
-    short_description = Column(String(255))
-    instantiation_notice = Column(String)
+class AppTemplate(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    image_id = models.UUIDField(db_index=True)
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField()
+    short_description = models.CharField(max_length=255)
+    instantiation_notice = models.TextField(blank=True, null=True)
 
     # CRUD info
-    creator_id = Column(String(36), ForeignKey('user.id'), index=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, nullable=True)
-    deleted_at = Column(DateTime, default=datetime.utcnow, nullable=True)
-    deleted = Column(Boolean, default=False)
+    creator_id = models.ForeignKey('User', on_delete=models.DO_NOTHING, db_index=True)
+    created_at = models.DateTimeField(default=now, editable=False)
+    updated_at = models.DateTimeField(default=now)
+    deleted_at = models.DateTimeField()
+    deleted = models.BooleanField(default=False)
 
     # version and visibility
-    version = Column(String, default="1.0")
-    public =Column(Boolean, default=False, nullable=False)
-    approved = Column(Boolean, default=False)
+    version = models.CharField(max_length=50, default="1.0")
+    public = models.BooleanField(default=False)
+    approved = models.BooleanField(default=False)
 
     # resource requirements
-    fixed_ram_gb = Column(Float)
-    fixed_disk_gb = Column(Float)
-    fixed_cores = Column(Integer)
-    per_user_ram_gb = Column(Float)
-    per_user_disk_gb = Column(Float)
-    per_user_cores = Column(Integer)
+    fixed_ram_gb = models.FloatField()
+    fixed_disk_gb = models.FloatField()
+    fixed_cores = models.FloatField()
+    per_user_ram_gb = models.FloatField()
+    per_user_disk_gb = models.FloatField()
+    per_user_cores = models.FloatField()
+
+    def __str__(self):
+        return self.name
 
 
-class User(Base):
-    __tablename__ = 'user'
-
-    id = Column(String(36), primary_key=True, index=True)
-    role_id = Column(String(36), ForeignKey('roles.id'), index=True)
+class User(models.Model):
+    id = models.UUIDField(primary_key=True, editable=False)
+    role = models.ForeignKey('Role', on_delete=models.DO_NOTHING)
 
     # CRUD info
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, nullable=True)
-    deleted = Column(Boolean, default=False)
+    created_at = models.DateTimeField(default=now)
+    updated_at = models.DateTimeField(default=now)
+    deleted = models.BooleanField(default=False)
 
+    def __str__(self):
+        return str(self.id)
 
-class Roles(Base):
-    __tablename__ = 'roles'
+class Role(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255, unique=True)
+    access_level = models.IntegerField()
 
-    id = Column(String(36), primary_key=True, index=True)
-    name = Column(String(255), nullable=False, unique=True)
-
-    # for different rights, e.g. 100 for low rights and 4000 for admin rights
-    access_level = Column(Integer, nullable=False)
+    def __str__(self):
+        return self.name
