@@ -5,7 +5,6 @@ from rest_framework.views import APIView
 from eduvmstore.services.glance_service import list_images
 from eduvmstore.api.serializers import AppTemplateSerializer
 from eduvmstore.db.operations.app_templates import create_app_template, list_app_templates
-from tinycss2 import serialize
 
 
 class TestAPI(APIView):
