@@ -1,5 +1,5 @@
 import uuid
-from django.db import transaction
+
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from eduvmstore.db.models import Role
 
@@ -31,6 +31,19 @@ def update_role(id: str, name: str = None, access_level: int = None) -> Role:
         role.save()  # Save changes
         return role
     except ObjectDoesNotExist:
-        raise Exception("Role not found")
+        raise ObjectDoesNotExist("Role not found")
     except ValidationError as e:
         raise e
+
+def get_role_by_id(id: str) -> Role:
+    """
+    Retrieve a Role entry from the database using its ID.
+
+    :param id: The unique identifier of the role.
+    :return: The Role object if found.
+    :raises ObjectDoesNotExist: If no Role is found with the given ID.
+    """
+    try:
+        return Role.objects.get(id=id)
+    except ObjectDoesNotExist:
+        raise ObjectDoesNotExist(f"Role with id {id} not found")
