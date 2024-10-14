@@ -5,6 +5,15 @@
 - Nutze die vorhandene Struktur für neue Einträge.
 
 ## Einträge
+### Datum: 2024-10-13
+- **Entwickler**: Emese
+- **Dauer**: 1 Stunden
+- **Arbeit**: API Endpoints anpassen, kleinere Fehler fixen (CORS usw. )
+
+### Datum: 2024-10-10
+- **Entwickler**: Emese
+- **Dauer**: 4 Stunden
+- **Arbeit**: Backend - Git Repo clonen, DB aufsetzten, Server Starten + API Request Frontend
 
 ### Datum: 2024-09-29
 - **Entwickler**: Marian
