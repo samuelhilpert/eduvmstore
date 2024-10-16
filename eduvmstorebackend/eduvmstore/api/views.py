@@ -7,7 +7,7 @@ from django.utils.timezone import now
 from django.db.models import Q
 
 # from eduvmstore.services.glance_service import list_images
-from eduvmstore.api.serializers import AppTemplateSerializer, UserSerializer, RoleSerializer, NameCollisionSerializer
+from eduvmstore.api.serializers import AppTemplateSerializer, UserSerializer, RoleSerializer
 from eduvmstore.db.models import AppTemplates, Users, Roles
 # from eduvmstore.db.operations.app_templates import create_app_template, list_app_templates
 

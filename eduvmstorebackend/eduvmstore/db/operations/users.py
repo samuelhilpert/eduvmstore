@@ -2,8 +2,6 @@ from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from eduvmstore.db.models import Users
 
-from eduvmstorebackend.eduvmstore.db.operations.roles import get_role_by_id
-
 
 def create_user(id: str, role_id: int) -> Users:
     """

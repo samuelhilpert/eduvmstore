@@ -99,7 +99,7 @@ def check_app_template_name_collisions(name: str) -> bool:
     return AppTemplates.objects.filter(name=name, deleted=False).exists()
 
 
-def update_app_template(id: str, data: dict) -> AppTemplates:
+def update_app_template(id: str, app_template_data: dict) -> AppTemplates:
     """
     Update an existing AppTemplate record by id.
 
@@ -111,7 +111,7 @@ def update_app_template(id: str, data: dict) -> AppTemplates:
         app_template = AppTemplates.objects.get(id=id, deleted=False)
 
         # Update fields selectively based on input data
-        for field, value in data.items():
+        for field, value in app_template_data.items():
             setattr(app_template, field, value)
 
         app_template.updated_at = timezone.now()

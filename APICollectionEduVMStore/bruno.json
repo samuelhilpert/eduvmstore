@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "name": "APICollectionEduvmStore",
+  "name": "APICollectionEduVMStore",
   "type": "collection",
   "ignore": [
     "node_modules",
