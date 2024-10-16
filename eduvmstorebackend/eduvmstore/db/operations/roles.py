@@ -23,7 +23,8 @@ def update_role(id: str, update_role_data: dict) -> Roles:
     Update an existing Role entry in the database using Django ORM.
 
     :param id: The unique identifier of the role to update
-    :param update_role_data: Dictionary containing the fields to update (e.g., {"name": "new_name", "access_level": 2000})
+    :param update_role_data: Dictionary containing the fields to update
+           (e.g., {"name": "new_name", "access_level": 2000})
     :return: The updated Role object
     """
     try:
