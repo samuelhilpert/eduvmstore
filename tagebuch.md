@@ -125,6 +125,16 @@
 - **Dauer**: 1 Stunde
 - **Arbeit**: Navigation Dashboard -> Detail Seite 
 ---
+### Datum: 2024-10-14
+- **Entwickler**: Valentin
+- **Dauer**: 4 Stunden
+- **Arbeit**: Django ORM Switch, Database Operations und API Definitionen
+---
+### Datum: 2024-10-14
+- **Entwickler**: Samuel
+- **Dauer**: 2 Stunden
+- **Arbeit**: Formular für Create Instances 
+---
 ### Datum: 2024-MM-DD
 - **Entwickler**: Name
 - **Dauer**: z.B. 1,5 Stunden
