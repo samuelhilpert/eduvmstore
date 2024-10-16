@@ -17,7 +17,7 @@ class AppTemplate(models.Model):
     creator_id = models.ForeignKey('User', on_delete=models.DO_NOTHING, db_index=True)
     created_at = models.DateTimeField(default=now, editable=False)
     updated_at = models.DateTimeField(default=now)
-    deleted_at = models.DateTimeField()
+    deleted_at = models.DateTimeField(null=True)
     deleted = models.BooleanField(default=False)
 
     # version and visibility
@@ -38,12 +38,14 @@ class AppTemplate(models.Model):
 
 
 class User(models.Model):
-    id = models.UUIDField(primary_key=True, editable=False)
+    # default needs to be deleted. Just for testing purposes
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     role = models.ForeignKey('Role', on_delete=models.DO_NOTHING)
 
     # CRUD info
     created_at = models.DateTimeField(default=now)
     updated_at = models.DateTimeField(default=now)
+    deleted_at = models.DateTimeField(null=True)
     deleted = models.BooleanField(default=False)
 
     def __str__(self):

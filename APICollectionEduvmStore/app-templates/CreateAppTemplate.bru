@@ -1,0 +1,31 @@
+meta {
+  name: CreateAppTemplate
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8000/api/app-templates/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+  "name": "AI Development Environment",
+  "description": "A VM template for AI development",
+  "short_description": "AI Dev VM",
+  "instantiation_notice": "AI VM will be ready soon",
+  "image_id": "f23e4567-e89b-12d3-a456-426614174001",
+  "creator_id": "4a7c8377-a3de-4350-b25b-38cb112a4d62",
+  "version": "2.0",
+  "public": true,
+  "approved": true,
+  "fixed_ram_gb": 8.0,
+  "fixed_disk_gb": 100.0,
+  "fixed_cores": 4,
+  "per_user_ram_gb": 2.0,
+  "per_user_disk_gb": 20.0,
+  "per_user_cores": 1
+  }
+}

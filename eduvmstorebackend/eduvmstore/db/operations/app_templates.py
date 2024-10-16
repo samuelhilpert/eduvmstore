@@ -1,6 +1,5 @@
 import uuid
 
-from django.contrib.postgres.aggregates import BoolOr
 from django.utils import timezone
 from django.db.models import Q
 

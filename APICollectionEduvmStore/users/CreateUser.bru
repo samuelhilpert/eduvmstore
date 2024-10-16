@@ -1,0 +1,17 @@
+meta {
+  name: CreateUser
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8000/api/users/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "role" : "be9262ed-118b-48d9-8693-dc0e0946dfb2"
+  }
+}
