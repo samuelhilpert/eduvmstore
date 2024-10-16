@@ -1,7 +1,7 @@
 meta {
   name: CreateUser
   type: http
-  seq: 2
+  seq: 3
 }
 
 post {
@@ -12,6 +12,10 @@ post {
 
 body:json {
   {
-    "role" : "be9262ed-118b-48d9-8693-dc0e0946dfb2"
+    "role" : "{{new_role_id}}"
   }
+}
+
+vars:post-response {
+  new_user_id: res("id")
 }

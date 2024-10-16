@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AppTemplateViewSet, ImageListAPI, TestAPI, UserViewSet, RoleViewSet
+from .views import AppTemplateViewSet, ImageListAPI, UserViewSet, RoleViewSet
 from rest_framework.routers import DefaultRouter
 
 

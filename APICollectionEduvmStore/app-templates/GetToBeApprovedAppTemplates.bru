@@ -1,0 +1,16 @@
+meta {
+  name: GetToBeApprovedAppTemplates
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:8000/api/app-templates/?public=True&approved=False
+  body: none
+  auth: none
+}
+
+query {
+  public: True
+  approved: False
+}

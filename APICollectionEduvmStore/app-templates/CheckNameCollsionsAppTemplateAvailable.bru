@@ -1,0 +1,15 @@
+meta {
+  name: CheckNameCollsionsAppTemplateAvailable
+  type: http
+  seq: 10
+}
+
+get {
+  url: http://localhost:8000/api/app-templates/name/{{free_name_app_template}}/collisions
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  free_name_app_template: No one will choose this name
+}

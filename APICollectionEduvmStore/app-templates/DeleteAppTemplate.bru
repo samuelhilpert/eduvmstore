@@ -1,10 +1,10 @@
 meta {
-  name: GetDetailAppTemplate
+  name: DeleteAppTemplate
   type: http
-  seq: 2
+  seq: 7
 }
 
-get {
+delete {
   url: http://localhost:8000/api/app-templates/{{new_app_template_id}}
   body: none
   auth: none

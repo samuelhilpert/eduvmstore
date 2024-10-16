@@ -1,0 +1,28 @@
+meta {
+  name: LaunchInstance
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8000/api/instances/launch
+  body: json
+  auth: none
+}
+
+body:json {
+  { 
+    "app_template_id" : "{{new_app_template_id}}",
+   "flavor_id": "",
+    "accounts": [
+      {
+        "username" : "student1", 
+        "password" : "1234"
+      },
+      {
+        "username" : "student2", 
+        "password" : "5678"
+      }
+    ]
+  }
+}

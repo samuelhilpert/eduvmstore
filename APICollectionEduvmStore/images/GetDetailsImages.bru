@@ -1,0 +1,15 @@
+meta {
+  name: GetDetailsImages
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8000/api/images/{{image_id}}
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  image_id: f23e4567-e89b-12d3-a456-426614174001
+}

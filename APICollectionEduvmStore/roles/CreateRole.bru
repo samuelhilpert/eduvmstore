@@ -12,8 +12,11 @@ post {
 
 body:json {
   {
-    "id" : "323e4567-e89b-12d3-a456-426614174002",
-    "name" : "admin",
-    "access_level" : "6000"
+    "name" : "user",
+    "access_level" : "2000"
   }
+}
+
+vars:post-response {
+  new_role_id: res("id")
 }
