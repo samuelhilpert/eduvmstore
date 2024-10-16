@@ -140,6 +140,11 @@
 - **Dauer**: 7 Stunden
 - **Arbeit**: Bruno Collection anlegen und alle Endpunkte im Backend definieren und manuell testen
 ---
+### Datum: 2024-10-16
+- **Entwickler**: Samuel
+- **Dauer**: 1 Stunde
+- **Arbeit**: Fix Bandit and then Fix Internal Server Error
+---
 ### Datum: 2024-MM-DD
 - **Entwickler**: Name
 - **Dauer**: z.B. 1,5 Stunden
