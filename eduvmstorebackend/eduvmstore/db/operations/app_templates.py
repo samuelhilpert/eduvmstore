@@ -2,7 +2,7 @@ import uuid
 from django.utils import timezone
 from django.db import transaction
 from django.core.exceptions import ValidationError
-from eduvmstore.db.models import AppTemplate
+from eduvmstore.db.models import AppTemplates
 
 def create_app_template(app_template_data: dict):
     """
@@ -13,7 +13,7 @@ def create_app_template(app_template_data: dict):
     """
     try:
         # Using Django's ORM to create a new AppTemplate instance
-        new_template = AppTemplate.objects.create(
+        new_template = AppTemplates.objects.create(
             id=str(uuid.uuid4()),
             name=app_template_data['name'],
             description=app_template_data['description'],
@@ -46,10 +46,10 @@ def create_app_template(app_template_data: dict):
         raise e
 
 
-def list_app_templates() -> list[AppTemplate]:
+def list_app_templates() -> list[AppTemplates]:
     """
     Retrieve all AppTemplate records from the database using Django ORM.
 
     :return: A list of AppTemplate objects
     """
-    return AppTemplate.objects.all()
+    return AppTemplates.objects.all()

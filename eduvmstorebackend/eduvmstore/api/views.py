@@ -15,13 +15,19 @@ class AppTemplateViewSet(viewsets.ViewSet):
     def list(self, request):
         templates = list_app_templates()
         serializer = AppTemplateSerializer(templates, many=True)
-        return Response({"data": serializer.data, "message": "AppTemplates queried"}, status=status.HTTP_200_OK)
+        return Response({
+            "data": serializer.data,
+            "message": "AppTemplates queried"
+        }, status=status.HTTP_200_OK)
 
     def create(self, request):
         try:
             template = create_app_template(request.data)
             serializer = AppTemplateSerializer(template)
-            return Response({"data": serializer.data, "message": "AppTemplate created"}, status=status.HTTP_201_CREATED)
+            return Response({
+                "data": serializer.data,
+                "message": "AppTemplate created"
+            }, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
