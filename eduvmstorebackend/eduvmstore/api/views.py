@@ -6,7 +6,6 @@ from eduvmstore.services.glance_service import list_images
 from eduvmstore.api.serializers import AppTemplateSerializer
 from eduvmstore.db.operations.app_templates import create_app_template, list_app_templates
 
-
 class TestAPI(APIView):
     def get(self, request):
         return Response({'status': 'ok'})
@@ -16,12 +15,13 @@ class AppTemplateViewSet(viewsets.ViewSet):
     def list(self, request):
         templates = list_app_templates()
         serializer = AppTemplateSerializer(templates, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"data": serializer.data, "message": "AppTemplates queried"}, status=status.HTTP_200_OK)
 
     def create(self, request):
         try:
             template = create_app_template(request.data)
-            return Response({"id": template.id, "name": template.name}, status=status.HTTP_201_CREATED)
+            serializer = AppTemplateSerializer(template)
+            return Response({"data": serializer.data, "message": "AppTemplate created"}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
