@@ -38,8 +38,8 @@ class AppTemplates(models.Model):
 
 
 class Users(models.Model):
-    # default needs to be deleted. Just for testing purposes
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
+    # default needs to be deleted, the moment, we get the user from keystone/token
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     role_id = models.ForeignKey('Roles', on_delete=models.DO_NOTHING)
 
     # CRUD info

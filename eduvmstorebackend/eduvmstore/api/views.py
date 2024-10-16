@@ -7,9 +7,9 @@ from django.utils.timezone import now
 from django.db.models import Q
 
 # from eduvmstore.services.glance_service import list_images
-from eduvmstore.api.serializers import AppTemplateSerializer, UserSerializer, RoleSerializer
+from eduvmstore.api.serializers import AppTemplateSerializer, UserSerializer, RoleSerializer, NameCollisionSerializer
 from eduvmstore.db.models import AppTemplates, Users, Roles
-from eduvmstore.db.operations.app_templates import create_app_template, list_app_templates
+# from eduvmstore.db.operations.app_templates import create_app_template, list_app_templates
 
 
 class AppTemplateViewSet(viewsets.ModelViewSet):
@@ -48,25 +48,26 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    # action decorator for custom endpoint
+    # detail = True means it is for a specific AppTemplate
     @action(detail=True, methods=['patch'])
     def approved(self, request, pk=None):
-        # Benutzerdefinierte Aktion zum Genehmigen eines AppTemplates
         app_template = self.get_object()
         app_template.approved = True
         app_template.save()
         return Response(
-            {"data": {"id": app_template.id, "approved": app_template.approved}, "message": "AppTemplate approved"},
+            {"id": app_template.id, "approved": app_template.approved},
             status=status.HTTP_200_OK)
 
+    # action decorator for custom endpoint
+    # detail = False means it is for all AppTemplate
     @action(detail=False, methods=['get'], url_path='name/(?P<name>[^/.]+)\\/collisions')
     def check_name_collisions(self, request, name=None):
         # Check for name collisions
         collisions = AppTemplates.objects.filter(name=name, deleted=False).exists()
 
-        return Response(
-            {"name": name, "collisions": collisions},
-            status=status.HTTP_200_OK
-        )
+        response_object = {"name": name, "collisions": collisions}
+        return Response(response_object, status=status.HTTP_200_OK)
 
     def perform_destroy(self, instance):
         app_template = self.get_object()
@@ -84,30 +85,28 @@ class RoleViewSet(viewsets.ModelViewSet):
     queryset = Roles.objects.all()
     serializer_class = RoleSerializer
 
+# normal ViewSet chosen, as Images are not part of own database
+class ImageViewSet(viewsets.ViewSet):
 
-
-
-
-class ImageListAPI(APIView):
-    """
-    API to list OpenStack images.
-
-    """
     def list(self, request):
-        return Response(status=status.HTTP_200_OK)
+        return Response(
+            [{"message": "not yet implemented"}],
+            status=status.HTTP_200_OK
+        )
 
-class ImageDetailView(APIView):
-    def get(self, request, id):
+    def retrieve(self, request, id):
         print("id: ",id)
         # Placeholder logic to return details of a specific image
-        return Response({"data": {}, "message": "Image found"}, status=status.HTTP_200_OK)
+        return Response({"message": "Not yet implemented"}, status=status.HTTP_200_OK)
 
-class FlavorSelectionView(APIView):
-    def post(self, request):
+# normal ViewSet chosen, as Flavors are not part of own database
+class FlavorViewSet(viewsets.ViewSet):
+    def select_flavor(self, request):
         # Placeholder logic to return possible and best matching flavors
-        return Response({"data": {"best_flavor_id": None, "possible_flavor_ids": []}, "message": "Flavors queried"}, status=status.HTTP_200_OK)
+        return Response({"best_flavor_id": None, "possible_flavor_ids": []}, status=status.HTTP_200_OK)
 
-class InstanceLaunchView(APIView):
-    def post(self, request):
+# normal ViewSet chosen, as Instances are not part of own database
+class InstanceViewSet(viewsets.ViewSet):
+    def perform_create(self, request):
         # Placeholder logic to create an instance
-        return Response({"data": {"id": None, "accounts": []}, "message": "Instance created"}, status=status.HTTP_201_CREATED)
+        return Response({"id": None, "accounts": [] }, status=status.HTTP_201_CREATED)

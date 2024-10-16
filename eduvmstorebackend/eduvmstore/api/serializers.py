@@ -6,16 +6,15 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         model = AppTemplates
         fields = [
             'id',
+            'creator_id',
+            'created_at',
+            'updated_at',
+
             'image_id',
             'name',
             'description',
             'short_description',
             'instantiation_notice',
-            'creator_id',
-            'created_at',
-            'updated_at',
-            'deleted_at',
-            'deleted',
             'version',
             'public',
             'approved',
@@ -25,6 +24,13 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'per_user_ram_gb',
             'per_user_disk_gb',
             'per_user_cores'
+        ]
+        read_only_fields = [
+            'id',
+            'created_at',
+            'updated_at',
+            'deleted_at',
+            'deleted'
         ]
 
     def create(self, validated_data):
@@ -41,7 +47,12 @@ class UserSerializer(serializers.ModelSerializer):
         model = Users
         fields = [
             'id',
-            'role_id',
+            'created_at',
+            'updated_at',
+            'role_id'
+        ]
+        read_only_fields = [
+            'id',
             'created_at',
             'updated_at',
             'deleted_at',
@@ -64,6 +75,9 @@ class RoleSerializer(serializers.ModelSerializer):
             'name',
             'access_level'
         ]
+        read_only_fields = [
+            'id'
+        ]
 
     def create(self, validated_data):
         """
@@ -71,3 +85,4 @@ class RoleSerializer(serializers.ModelSerializer):
         operations before saving an instance.
         """
         return Roles.objects.create(**validated_data)
+

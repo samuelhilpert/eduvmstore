@@ -4,14 +4,15 @@ meta {
   seq: 1
 }
 
-get {
-  url: http://localhost:8000/api/flavors/selection
+post {
+  url: http://localhost:8000/api/flavors/selection/
   body: json
   auth: none
 }
 
 body:json {
-  { "app_template_id" : "{{new_app_template_id}}", 
-   "number_accounts" : 20
+  { 
+    "app_template_id" : "{{new_app_template_id}}", 
+    "number_accounts" : 20
   }
 }
