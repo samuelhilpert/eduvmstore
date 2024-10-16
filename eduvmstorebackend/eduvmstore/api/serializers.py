@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from eduvmstore.db.models import AppTemplate, User, Role
+from eduvmstore.db.models import AppTemplates, Users, Roles
 
 class AppTemplateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AppTemplate
+        model = AppTemplates
         fields = [
             'id',
             'image_id',
@@ -32,16 +32,16 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         Custom create method if you need to perform additional
         operations before saving an instance.
         """
-        return AppTemplate.objects.create(**validated_data)
+        return AppTemplates.objects.create(**validated_data)
 
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = Users
         fields = [
             'id',
-            'role',
+            'role_id',
             'created_at',
             'updated_at',
             'deleted_at',
@@ -53,12 +53,12 @@ class UserSerializer(serializers.ModelSerializer):
         Custom create method if you need to perform additional
         operations before saving an instance.
         """
-        return User.objects.create(**validated_data)
+        return Users.objects.create(**validated_data)
 
 
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Role
+        model = Roles
         fields = [
             'id',
             'name',
@@ -70,4 +70,4 @@ class RoleSerializer(serializers.ModelSerializer):
         Custom create method if you need to perform additional
         operations before saving an instance.
         """
-        return Role.objects.create(**validated_data)
+        return Roles.objects.create(**validated_data)

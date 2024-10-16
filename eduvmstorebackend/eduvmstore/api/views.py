@@ -8,12 +8,12 @@ from django.db.models import Q
 
 # from eduvmstore.services.glance_service import list_images
 from eduvmstore.api.serializers import AppTemplateSerializer, UserSerializer, RoleSerializer
-from eduvmstore.db.models import AppTemplate, User, Role
+from eduvmstore.db.models import AppTemplates, Users, Roles
 from eduvmstore.db.operations.app_templates import create_app_template, list_app_templates
 
 
 class AppTemplateViewSet(viewsets.ModelViewSet):
-    queryset = AppTemplate.objects.filter(deleted=False)
+    queryset = AppTemplates.objects.filter(deleted=False)
     serializer_class = AppTemplateSerializer
 
     def perform_create(self, serializer):
@@ -22,7 +22,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     #     serializer.save(creator_id=self.request.user.id)
 
     def get_queryset(self):
-        queryset = AppTemplate.objects.filter(deleted=False)
+        queryset = AppTemplates.objects.filter(deleted=False)
 
         # Get query parameter
         search = self.request.query_params.get('search', None)
@@ -61,7 +61,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], url_path='name/(?P<name>[^/.]+)\\/collisions')
     def check_name_collisions(self, request, name=None):
         # Check for name collisions
-        collisions = AppTemplate.objects.filter(name=name, deleted=False).exists()
+        collisions = AppTemplates.objects.filter(name=name, deleted=False).exists()
 
         return Response(
             {"name": name, "collisions": collisions},
@@ -76,12 +76,12 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.filter(deleted=False)
+    queryset = Users.objects.filter(deleted=False)
     serializer_class = UserSerializer
 
 
 class RoleViewSet(viewsets.ModelViewSet):
-    queryset = Role.objects.all()
+    queryset = Roles.objects.all()
     serializer_class = RoleSerializer
 
 

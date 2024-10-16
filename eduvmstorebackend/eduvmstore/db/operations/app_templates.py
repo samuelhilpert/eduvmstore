@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.db.models import Q
 
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from eduvmstore.db.models import AppTemplate
+from eduvmstore.db.models import AppTemplates
 
 def create_app_template(app_template_data: dict):
     """
@@ -14,7 +14,7 @@ def create_app_template(app_template_data: dict):
     :return: The newly created AppTemplate object
     """
     try:
-        new_app_template = AppTemplate.objects.create(
+        new_app_template = AppTemplates.objects.create(
             id=str(uuid.uuid4()),
             name=app_template_data['name'],
             description=app_template_data['description'],
@@ -47,31 +47,31 @@ def create_app_template(app_template_data: dict):
         raise e
 
 
-def list_app_templates() -> list[AppTemplate]:
+def list_app_templates() -> list[AppTemplates]:
     """
     Retrieve all AppTemplate records from the database using Django ORM.
 
     :return: A list of AppTemplate objects
     """
-    return AppTemplate.objects.filter(deleted=False)
+    return AppTemplates.objects.filter(deleted=False)
 
-def get_app_template_by_id(template_id: str) -> AppTemplate:
+def get_app_template_by_id(template_id: str) -> AppTemplates:
     """
     Retrieve a specific AppTemplate by id.
 
     :param template_id: The UUID of the AppTemplate
     :return: The AppTemplate object if found, else raises DoesNotExist
     """
-    return AppTemplate.objects.get(id=template_id, deleted=False)
+    return AppTemplates.objects.get(id=template_id, deleted=False)
 
-def search_app_templates(query: str) -> list[AppTemplate]:
+def search_app_templates(query: str) -> list[AppTemplates]:
     """
     Search AppTemplate records where fields like name, id, description, etc., match the search string.
 
     :param query: The search string
     :return: A list of AppTemplate objects matching the query
     """
-    return AppTemplate.objects.filter(
+    return AppTemplates.objects.filter(
         Q(name__icontains=query) |
         Q(id__icontains=query) |
         Q(description__icontains=query) |
@@ -82,13 +82,13 @@ def search_app_templates(query: str) -> list[AppTemplate]:
         deleted=False
     )
 
-def get_to_be_approved_app_templates() -> list[AppTemplate]:
+def get_to_be_approved_app_templates() -> list[AppTemplates]:
     """
     Retrieve AppTemplate records filtered by public and approved fields.
 
     :return: A list of filtered AppTemplate objects
     """
-    return AppTemplate.objects.filter(public = True , approved = False, deleted=False)
+    return AppTemplates.objects.filter(public = True , approved = False, deleted=False)
 
 def check_app_template_name_collisions(name: str) -> bool:
     """
@@ -97,10 +97,10 @@ def check_app_template_name_collisions(name: str) -> bool:
     :param name: The name of the AppTemplate to check
     :return: True if a collision is found, False otherwise
     """
-    return AppTemplate.objects.filter(name=name, deleted=False).exists()
+    return AppTemplates.objects.filter(name=name, deleted=False).exists()
 
 
-def update_app_template(id: str, data: dict) -> AppTemplate:
+def update_app_template(id: str, data: dict) -> AppTemplates:
     """
     Update an existing AppTemplate record by id.
 
@@ -109,7 +109,7 @@ def update_app_template(id: str, data: dict) -> AppTemplate:
     :return: The updated AppTemplate object
     """
     try:
-        app_template = AppTemplate.objects.get(id=id, deleted=False)
+        app_template = AppTemplates.objects.get(id=id, deleted=False)
 
         # Update fields selectively based on input data
         for field, value in data.items():
@@ -122,7 +122,7 @@ def update_app_template(id: str, data: dict) -> AppTemplate:
     except ObjectDoesNotExist as e:
         raise ObjectDoesNotExist("AppTemplate not found")
 
-def approve_app_template(id: str) -> AppTemplate:
+def approve_app_template(id: str) -> AppTemplates:
     """
     Update the approved status of an AppTemplate to true.
 
@@ -130,7 +130,7 @@ def approve_app_template(id: str) -> AppTemplate:
     :return: The updated AppTemplate object
     """
     try:
-        template = AppTemplate.objects.get(id=id, deleted=False)
+        template = AppTemplates.objects.get(id=id, deleted=False)
         template.approved = True
         template.save()
         return template
@@ -145,7 +145,7 @@ def soft_delete_app_template(id: str) -> None:
     :param id: The UUID of the AppTemplate to delete
     """
     try:
-        template = AppTemplate.objects.get(id=id, deleted=False)
+        template = AppTemplates.objects.get(id=id, deleted=False)
         template.deleted = True
         template.deleted_at = timezone.now()
         template.updated_at = template.deleted_at
