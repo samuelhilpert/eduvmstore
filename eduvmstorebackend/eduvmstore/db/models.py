@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.timezone import now
 
 
-class AppTemplate(models.Model):
+class AppTemplates(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     image_id = models.UUIDField(db_index=True)
     name = models.CharField(max_length=255, unique=True)
@@ -37,7 +37,7 @@ class AppTemplate(models.Model):
         return self.name
 
 
-class User(models.Model):
+class Users(models.Model):
     id = models.UUIDField(primary_key=True, editable=False)
     role = models.ForeignKey('Role', on_delete=models.DO_NOTHING)
 
@@ -49,7 +49,7 @@ class User(models.Model):
     def __str__(self):
         return str(self.id)
 
-class Role(models.Model):
+class Roles(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, unique=True)
     access_level = models.IntegerField()

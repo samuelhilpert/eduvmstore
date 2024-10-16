@@ -1,11 +1,10 @@
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from eduvmstore.db.models import User
+from eduvmstore.db.models import Users
+from eduvmstore.db.operations.roles import get_role_by_id
 
-from eduvmstorebackend.eduvmstore.db.operations.roles import get_role_by_id
 
-
-def create_user(id: str, role_id: int) -> User:
+def create_user(id: str, role_id: int) -> Users:
     """
     Create a new User entry in the database.
 
@@ -13,7 +12,7 @@ def create_user(id: str, role_id: int) -> User:
     :param role_id: The ID of the Role associated with the new User
     """
     try:
-        new_user = User.objects.create(
+        new_user = Users.objects.create(
             id=id,
             role_id=role_id,
             created_at=timezone.now(),
@@ -24,7 +23,8 @@ def create_user(id: str, role_id: int) -> User:
     except ValidationError as e:
         raise e
 
-def get_user_by_id(id: str) -> User:
+
+def get_user_by_id(id: int) -> Users:
     """
     Retrieve a User entry from the database by ID.
 
@@ -32,20 +32,20 @@ def get_user_by_id(id: str) -> User:
     :return: The User object if found, None otherwise
     """
     try:
-        return User.objects.get(id=id, deleted=False)
+        return Users.objects.get(id=id)
     except ObjectDoesNotExist:
         return None
 
 
-def list_users() -> list[User]:
+def list_users() -> list[Users]:
     """
     Retrieve all User records from the database.
 
     :return: A list of User objects
     """
-    return User.objects.filter(deleted=False)
+    return Users.objects.filter(deleted=False)
 
-def update_user_role(id: str, role_id: str) -> User:
+def update_user_role(id: str, role_id: str) -> Users:
     """
     Update the role of a specific User by ID.
 
@@ -54,7 +54,7 @@ def update_user_role(id: str, role_id: str) -> User:
     :return: The updated User object
     """
     try:
-        user = User.objects.get(id=id, deleted=False)
+        user = Users.objects.get(id=id, deleted=False)
         user.role_id = role_id
         user.updated_at = timezone.now()
         user.save()
@@ -70,7 +70,7 @@ def soft_delete_user(id: str) -> None:
     :param user_id: The UUID of the User
     """
     try:
-        user = User.objects.get(id=id, deleted=False)
+        user = Users.objects.get(id=id, deleted=False)
         user.deleted = True
         user.deleted_at = timezone.now()
         user.updated_at = user.deleted_at
