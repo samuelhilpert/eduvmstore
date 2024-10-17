@@ -104,13 +104,13 @@ def update_app_template(id: str, app_template_data: dict) -> AppTemplates:
     Update an existing AppTemplate record by id.
 
     :param id: The UUID of the AppTemplate to update
-    :param data: Dictionary containing the updated AppTemplate details
+    :param app_template_data: Dictionary containing the updated AppTemplate details
     :return: The updated AppTemplate object
     """
     try:
         app_template = AppTemplates.objects.get(id=id, deleted=False)
 
-        # Update fields selectively based on input data
+        # Update fields selectively based on input app_template_data
         for field, value in app_template_data.items():
             setattr(app_template, field, value)
 
@@ -151,5 +151,3 @@ def soft_delete_app_template(id: str) -> None:
         template.save()
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist("AppTemplate not found.")
-
-

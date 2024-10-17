@@ -133,7 +133,17 @@
 ### Datum: 2024-10-14
 - **Entwickler**: Samuel
 - **Dauer**: 2 Stunden
-- **Arbeit**: Formular für Create Instances 
+- **Arbeit**: Formular für Create Instances
+---
+### Datum: 2024-10-16
+- **Entwickler**: Valentin
+- **Dauer**: 7 Stunden
+- **Arbeit**: Bruno Collection anlegen und alle Endpunkte im Backend definieren und manuell testen
+---
+### Datum: 2024-10-16
+- **Entwickler**: Samuel
+- **Dauer**: 1 Stunde
+- **Arbeit**: Fix Bandit and then Fix Internal Server Error
 ---
 ### Datum: 2024-MM-DD
 - **Entwickler**: Name

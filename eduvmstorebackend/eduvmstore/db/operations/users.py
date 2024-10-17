@@ -1,8 +1,6 @@
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from eduvmstore.db.models import Users
-
-
 def create_user(id: str, role_id: int) -> Users:
     """
     Create a new User entry in the database.
