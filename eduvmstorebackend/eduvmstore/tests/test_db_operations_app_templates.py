@@ -11,8 +11,8 @@ import uuid
 
 class AppTemplateOperationsTests(TestCase):
 
-    def test_create_user_and_role(self):
-        role = Roles.objects.create(name="Admin", access_level=1)
+    def create_user_and_role(self):
+        role = Roles.objects.create(name="Admin", access_level=6000)
         user = Users.objects.create(role_id=role)
         return user
 
@@ -24,7 +24,7 @@ class AppTemplateOperationsTests(TestCase):
             "short_description": "Test",
             "instantiation_notice": "Notice",
             "image_id": str(uuid.uuid4()),
-            "creator_id": user.id,
+            "creator_id": user,
             "fixed_ram_gb": 1.0,
             "fixed_disk_gb": 10.0,
             "fixed_cores": 1.0,
@@ -38,16 +38,18 @@ class AppTemplateOperationsTests(TestCase):
         self.assertEqual(app_template.version, "1.0")
 
     def test_does_not_create_app_template_with_invalid_data(self):
+        user = self.create_user_and_role()
         app_template_data = {
             "name": "",
             "description": "A test template",
             "short_description": "Test",
             "instantiation_notice": "Notice",
             "image_id": str(uuid.uuid4()),
-            "creator_id": None,
+            "creator_id": user,
+            "version": "1.0",
             "fixed_ram_gb": 1.0,
             "fixed_disk_gb": 10.0,
-            "fixed_cores": 1.0,
+            "fixed_cores": None,
             "per_user_ram_gb": 0.5,
             "per_user_disk_gb": 5.0,
             "per_user_cores": 0.5

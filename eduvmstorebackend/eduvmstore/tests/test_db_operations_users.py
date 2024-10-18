@@ -6,13 +6,13 @@ import uuid
 
 class UserOperationsTests(TestCase):
 
-    def test_create_role(self):
-        return Roles.objects.create(name="Admin", access_level=1)
+    def create_role(self):
+        return Roles.objects.create(name="Admin", access_level=6000)
 
     def test_creates_user_successfully(self):
         role = self.create_role()
-        user = create_user(str(uuid.uuid4()), role.id)
-        self.assertEqual(user.role_id, role.id)
+        user = create_user(str(uuid.uuid4()), role)
+        self.assertEqual(user.role_id, role)
         self.assertFalse(user.deleted)
 
     def test_does_not_create_user_with_invalid_data(self):
@@ -21,25 +21,25 @@ class UserOperationsTests(TestCase):
 
     def test_retrieves_user_by_id_successfully(self):
         role = self.create_role()
-        user = create_user(str(uuid.uuid4()), role.id)
+        user = create_user(str(uuid.uuid4()), role)
         retrieved_user = get_user_by_id(user.id)
-        self.assertEqual(retrieved_user.id, user.id)
+        self.assertEqual(str(retrieved_user.id), user.id)
 
     def test_does_not_retrieve_nonexistent_user(self):
         self.assertIsNone(get_user_by_id(str(uuid.uuid4())))
 
     def test_lists_all_users(self):
         role = self.create_role()
-        create_user(str(uuid.uuid4()), role.id)
+        create_user(str(uuid.uuid4()), role)
         users = list_users()
         self.assertEqual(len(users), 1)
 
     def test_updates_user_role_successfully(self):
         role1 = self.create_role()
-        role2 = Roles.objects.create(name="User", access_level=2)
-        user = create_user(str(uuid.uuid4()), role1.id)
-        updated_user = update_user_role(user.id, role2.id)
-        self.assertEqual(updated_user.role_id, role2.id)
+        role2 = Roles.objects.create(name="User", access_level=1000)
+        user = create_user(str(uuid.uuid4()), role1)
+        updated_user = update_user_role(user.id, role2)
+        self.assertEqual(updated_user.role_id, role2)
 
     def test_does_not_update_role_of_nonexistent_user(self):
         with self.assertRaises(ObjectDoesNotExist):
@@ -47,7 +47,7 @@ class UserOperationsTests(TestCase):
 
     def test_soft_deletes_user_successfully(self):
         role = self.create_role()
-        user = create_user(str(uuid.uuid4()), role.id)
+        user = create_user(str(uuid.uuid4()), role)
         soft_delete_user(user.id)
         user.refresh_from_db()
         self.assertTrue(user.deleted)

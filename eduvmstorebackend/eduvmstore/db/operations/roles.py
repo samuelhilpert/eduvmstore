@@ -7,6 +7,11 @@ def create_role(role_data: dict) -> Roles:
     """
     Create a new Role entry in the database using Django ORM.
     """
+    if not role_data['name']:
+        raise ValidationError("Role name cannot be empty")
+    if role_data['access_level'] is None:
+        raise ValidationError("Access level cannot be empty")
+
     try:
         new_role = Roles.objects.create(
             id=str(uuid.uuid4()),  # Generate unique UUID

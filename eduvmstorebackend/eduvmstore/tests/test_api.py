@@ -5,15 +5,15 @@ import uuid
 
 class AppTemplateViewSetTests(APITestCase):
 
-    def test_create_user_and_role(self):
-        role = Roles.objects.create(name="Admin", access_level=1)
+    def create_user_and_role(self):
+        role = Roles.objects.create(name="Admin", access_level=6000)
         user = Users.objects.create(role_id=role)
         return user
 
     def test_creates_app_template_via_api_successfully(self):
         user = self.create_user_and_role()
         self.client.force_authenticate(user=user)
-        url = reverse('apptemplate-list')
+        url = reverse('app_templates')
         data = {
             "image_id": str(uuid.uuid4()),
             "name": "API Test Template",
@@ -48,7 +48,7 @@ class AppTemplateViewSetTests(APITestCase):
             per_user_disk_gb=5.0,
             per_user_cores=0.5
         )
-        url = reverse('apptemplate-list') + '?search=Searchable'
+        url = reverse('app_templates') + '?search=Searchable'
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
@@ -71,7 +71,7 @@ class AppTemplateViewSetTests(APITestCase):
             per_user_disk_gb=5.0,
             per_user_cores=0.5
         )
-        url = reverse('apptemplate-check-name-collisions', args=["Collision Template"])
+        url = reverse('app_templates', args=["Collision Template"])
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.data['collisions'])
@@ -93,7 +93,7 @@ class AppTemplateViewSetTests(APITestCase):
             per_user_disk_gb=5.0,
             per_user_cores=0.5
         )
-        url = reverse('apptemplate-detail', args=[app_template.id])
+        url = reverse('app_templates', args=[app_template.id])
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code, 204)
         app_template.refresh_from_db()

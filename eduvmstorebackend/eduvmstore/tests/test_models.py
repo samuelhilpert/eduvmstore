@@ -1,11 +1,12 @@
 import uuid
+from django.utils.timezone import now
 from django.test import TestCase
 from eduvmstore.db.models import AppTemplates, Users, Roles
 
 class AppTemplatesModelTests(TestCase):
 
-    def test_create_user_and_role(self):
-        role = Roles.objects.create(name="Admin", access_level=1)
+    def create_user_and_role(self):
+        role = Roles.objects.create(name="Admin", access_level=6000)
         user = Users.objects.create(role_id=role)
         return user
 

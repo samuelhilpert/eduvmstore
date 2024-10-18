@@ -12,6 +12,25 @@ def create_app_template(app_template_data: dict):
     :param app_template_data: Dictionary containing the AppTemplate details
     :return: The newly created AppTemplate object
     """
+    if not app_template_data.get('name'):
+        raise ValidationError("AppTemplate name cannot be empty")
+    if not app_template_data.get('description'):
+        raise ValidationError("AppTemplate description cannot be empty")
+    if not app_template_data.get('image_id'):
+        raise ValidationError("AppTemplate image_id cannot be empty")
+    if app_template_data.get('fixed_ram_gb') is None:
+        raise ValidationError("AppTemplate fixed_ram_gb cannot be None")
+    if app_template_data.get('fixed_disk_gb') is None:
+        raise ValidationError("AppTemplate fixed_disk_gb cannot be None")
+    if app_template_data.get('fixed_cores') is None:
+        raise ValidationError("AppTemplate fixed_cores cannot be None")
+    if app_template_data.get('per_user_ram_gb') is None:
+        raise ValidationError("AppTemplate per_user_ram_gb cannot be None")
+    if app_template_data.get('per_user_disk_gb') is None:
+        raise ValidationError("AppTemplate per_user_disk_gb cannot be None")
+    if app_template_data.get('per_user_cores') is None:
+        raise ValidationError("AppTemplate per_user_cores cannot be None")
+
     try:
         new_app_template = AppTemplates.objects.create(
             id=str(uuid.uuid4()),
