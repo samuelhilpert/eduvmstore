@@ -7,18 +7,20 @@ import uuid
 class RoleOperationsTests(TestCase):
 
     def test_creates_role_successfully(self):
+        name = "Admin"
+        access_level = 6000
         role_data = {
-            "name": "Admin",
-            "access_level": 1
+            "name": name,
+            "access_level": access_level
         }
         role = create_role(role_data)
-        self.assertEqual(role.name, "Admin")
-        self.assertEqual(role.access_level, 1)
+        self.assertEqual(role.name, name)
+        self.assertEqual(role.access_level, access_level)
 
     def test_does_not_create_role_with_invalid_data(self):
         role_data = {
             "name": "",
-            "access_level": 1
+            "access_level": 6000
         }
         with self.assertRaises(ValidationError):
             create_role(role_data)
@@ -27,15 +29,17 @@ class RoleOperationsTests(TestCase):
         role = Roles.objects.create(
             id=str(uuid.uuid4()),
             name="User",
-            access_level=2
+            access_level=1000
         )
+        update_name = "SuperUser"
+        update_access_level = 3000
         update_data = {
-            "name": "SuperUser",
-            "access_level": 3
+            "name": update_name,
+            "access_level": update_access_level
         }
         updated_role = update_role(role.id, update_data)
-        self.assertEqual(updated_role.name, "SuperUser")
-        self.assertEqual(updated_role.access_level, 3)
+        self.assertEqual(updated_role.name, update_name)
+        self.assertEqual(updated_role.access_level, update_access_level)
 
     def test_does_not_update_nonexistent_role(self):
         update_data = {

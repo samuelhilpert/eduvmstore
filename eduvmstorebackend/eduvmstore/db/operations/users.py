@@ -2,17 +2,23 @@ from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from eduvmstore.db.models import Users
 
-def create_user(id: str, role_id: int) -> Users:
+def create_user(user_data: dict) -> Users:
     """
     Create a new User entry in the database.
 
-    :param id: The ID of the new User from keystone
-    :param role_id: The ID of the Role associated with the new User
+    :param user_data: Dictionary containing the user data
+           (e.g., {"id": "user_id", "role_id": "role_id"})
+    :return: The created User object
     """
+    if not user_data.get('id'):
+        raise ValidationError("User ID cannot be empty")
+    if not user_data.get('role_id'):
+        raise ValidationError("Role ID cannot be empty")
+
     try:
         new_user = Users.objects.create(
-            id=id,
-            role_id=role_id,
+            id=user_data['id'],
+            role_id=user_data['role_id'],
             created_at=timezone.now(),
             updated_at=timezone.now(),
             deleted=False

@@ -11,17 +11,29 @@ class UserOperationsTests(TestCase):
 
     def test_creates_user_successfully(self):
         role = self.create_role()
-        user = create_user(str(uuid.uuid4()), role)
+        user_data = {
+            "id": str(uuid.uuid4()),
+            "role_id": role
+        }
+        user = create_user(user_data)
         self.assertEqual(user.role_id, role)
         self.assertFalse(user.deleted)
 
     def test_does_not_create_user_with_invalid_data(self):
+        user_data = {
+            "id": "",
+            "role_id": None
+        }
         with self.assertRaises(ValidationError):
-            create_user("", None)
+            create_user(user_data)
 
     def test_retrieves_user_by_id_successfully(self):
         role = self.create_role()
-        user = create_user(str(uuid.uuid4()), role)
+        user_data = {
+            "id": str(uuid.uuid4()),
+            "role_id": role
+        }
+        user = create_user(user_data)
         retrieved_user = get_user_by_id(user.id)
         self.assertEqual(str(retrieved_user.id), user.id)
 
@@ -30,14 +42,22 @@ class UserOperationsTests(TestCase):
 
     def test_lists_all_users(self):
         role = self.create_role()
-        create_user(str(uuid.uuid4()), role)
+        user_data = {
+            "id": str(uuid.uuid4()),
+            "role_id": role
+        }
+        create_user(user_data)
         users = list_users()
         self.assertEqual(len(users), 1)
 
     def test_updates_user_role_successfully(self):
         role1 = self.create_role()
         role2 = Roles.objects.create(name="User", access_level=1000)
-        user = create_user(str(uuid.uuid4()), role1)
+        user_data = {
+            "id": str(uuid.uuid4()),
+            "role_id": role1
+        }
+        user = create_user(user_data)
         updated_user = update_user_role(user.id, role2)
         self.assertEqual(updated_user.role_id, role2)
 
@@ -47,7 +67,11 @@ class UserOperationsTests(TestCase):
 
     def test_soft_deletes_user_successfully(self):
         role = self.create_role()
-        user = create_user(str(uuid.uuid4()), role)
+        user_data = {
+            "id": str(uuid.uuid4()),
+            "role_id": role
+        }
+        user = create_user(user_data)
         soft_delete_user(user.id)
         user.refresh_from_db()
         self.assertTrue(user.deleted)

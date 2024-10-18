@@ -166,7 +166,7 @@ class AppTemplateOperationsTests(TestCase):
         user = self.create_user_and_role()
         app_template = AppTemplates.objects.create(
             id=str(uuid.uuid4()),
-            name="Update Template",
+            name="Old Template",
             description="A test template",
             short_description="Test",
             instantiation_notice="Notice",
@@ -179,9 +179,11 @@ class AppTemplateOperationsTests(TestCase):
             per_user_disk_gb=5.0,
             per_user_cores=0.5
         )
-        updated_data = {"name": "Updated Template"}
+        updated_data = {"name": "Updated Template", "description": "Updated description"}
         updated_template = update_app_template(app_template.id, updated_data)
         self.assertEqual(updated_template.name, "Updated Template")
+        self.assertEqual(updated_template.description, "Updated description")
+        self.assertEqual(updated_template.version, "1.0") # Check other fields are not updated
 
     def test_approves_app_template_successfully(self):
         user = self.create_user_and_role()
