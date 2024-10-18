@@ -160,6 +160,11 @@
 - **Dauer**: 3 Stunden
 - **Arbeit**: Unit Tests setup and tests for endpoints, models and db operations
 ---
+### Datum: 2024-10-18 & 2024-10-19
+- **Entwickler**: Samuel
+- **Dauer**: 2 Stunden
+- **Arbeit**: Fix Bandit, Add Script Upload und Writer, Fix Size in Table
+---
 ### Datum: 2024-MM-DD
 - **Entwickler**: Name
 - **Dauer**: z.B. 1,5 Stunden
