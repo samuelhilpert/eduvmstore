@@ -27,3 +27,7 @@ Dieses Projekt wird im Rahmen des Moduls "Projekt" an der DHBW Mannheim im Zeitr
 ### API-Zugriff
 * Zugriff über ```localhost:8000/api/<endpoint>```
 * ``<endpoint>``: Z.b. ``<base-url>/app-templates/...``, ``<base-url>/users/...``
+
+### Tests ausführen
+* ``python eduvmstorebackend/manage.py test``
+* ODER ``python3 eduvmstorebackend/manage.py test``

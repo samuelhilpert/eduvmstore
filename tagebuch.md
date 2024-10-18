@@ -145,6 +145,11 @@
 - **Dauer**: 1 Stunde
 - **Arbeit**: Fix Bandit and then Fix Internal Server Error
 ---
+### Datum: 2024-10-17 & 2024-10-18
+- **Entwickler**: Marian
+- **Dauer**: 3 Stunden
+- **Arbeit**: Unit Tests setup and tests for endpoints, models and db operations
+---
 ### Datum: 2024-MM-DD
 - **Entwickler**: Name
 - **Dauer**: z.B. 1,5 Stunden
