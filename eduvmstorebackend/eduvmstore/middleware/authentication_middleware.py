@@ -2,8 +2,11 @@ import logging
 import requests
 from django.utils.timezone import now
 from django.http import JsonResponse
+
 from eduvmstore.db.models import Users, Roles
 from eduvmstore.db.operations.roles import get_role_by_name
+from eduvmstore.db.operations.users import get_user_by_id, create_user
+
 
 logger = logging.getLogger(__name__)
 
@@ -48,10 +51,16 @@ class KeystoneAuthenticationMiddleware:
     def get_or_create_user(self, keystone_user_info):
         user_id = keystone_user_info['id']
         try:
-            user = Users.objects.get(id=user_id)
+            user = get_user_by_id(user_id)
+            if user is None:
+                raise Users.DoesNotExist
         except Users.DoesNotExist:
             role = get_role_by_name("User")
-            user = Users.objects.create(id=user_id, role_id=role)
+            user_data = {
+                'id': user_id,
+                'role_id': role
+            }
+            user = create_user(user_data)
         return user
 
     def check_user_access(self, request, user):
@@ -59,4 +68,4 @@ class KeystoneAuthenticationMiddleware:
         return user.role_id.access_level >= required_access_level
 
     def get_required_access_level(self, path):
-        return 3000
+        return 1000

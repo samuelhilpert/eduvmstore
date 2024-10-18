@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -49,9 +50,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # TODO: Add KeystoneAuthenticationMiddleware to test and use the middleware
-    #'eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware',
 ]
+
+# Enable Keystone authentication middleware for production
+if os.getenv('ENABLE_KEYSTONE_AUTH', 'False') == 'True':
+    MIDDLEWARE.append('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware')
+
 
 ROOT_URLCONF = 'config.urls'
 
