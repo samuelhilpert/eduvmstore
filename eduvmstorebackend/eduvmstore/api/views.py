@@ -61,7 +61,8 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
 
     # action decorator for custom endpoint
     # detail = False means it is for all AppTemplate
-    @action(detail=False, methods=['get'], url_path='name/(?P<name>[^/.]+)\\/collisions', name='check-name-collisions')
+    @action(detail=False, methods=['get'], url_path='name/(?P<name>[^/.]+)\\/collisions',
+            name='check-name-collisions')
     def check_name_collisions(self, request, name=None):
         # Check for name collisions
         collisions = AppTemplates.objects.filter(name=name, deleted=False).exists()
