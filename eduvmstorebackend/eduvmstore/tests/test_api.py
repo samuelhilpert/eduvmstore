@@ -13,9 +13,10 @@ class AppTemplateViewSetTests(APITestCase):
     def test_creates_app_template_via_api_successfully(self):
         user = self.create_user_and_role()
         self.client.force_authenticate(user=user)
-        url = reverse('app_templates')
+        url = reverse('app-template-list')
         data = {
             "image_id": str(uuid.uuid4()),
+            "creator_id": user.id,
             "name": "API Test Template",
             "description": "A test template",
             "short_description": "Test",
@@ -48,7 +49,7 @@ class AppTemplateViewSetTests(APITestCase):
             per_user_disk_gb=5.0,
             per_user_cores=0.5
         )
-        url = reverse('app_templates') + '?search=Searchable'
+        url = reverse('app-template-list') + '?search=Searchable'
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
@@ -71,7 +72,7 @@ class AppTemplateViewSetTests(APITestCase):
             per_user_disk_gb=5.0,
             per_user_cores=0.5
         )
-        url = reverse('app_templates', args=["Collision Template"])
+        url = reverse('app-template-check-name-collisions', kwargs={'name': 'Collision Template'})
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.data['collisions'])
@@ -93,7 +94,7 @@ class AppTemplateViewSetTests(APITestCase):
             per_user_disk_gb=5.0,
             per_user_cores=0.5
         )
-        url = reverse('app_templates', args=[app_template.id])
+        url = reverse('app-template-detail', args=[app_template.id])
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code, 204)
         app_template.refresh_from_db()
