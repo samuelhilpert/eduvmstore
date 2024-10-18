@@ -11,12 +11,12 @@ import uuid
 
 class AppTemplateOperationsTests(TestCase):
 
-    def create_user_and_role(self):
+    def test_create_user_and_role(self):
         role = Roles.objects.create(name="Admin", access_level=1)
         user = Users.objects.create(role_id=role)
         return user
 
-    def creates_app_template_successfully(self):
+    def test_creates_app_template_successfully(self):
         user = self.create_user_and_role()
         app_template_data = {
             "name": "Test Template",
@@ -37,7 +37,7 @@ class AppTemplateOperationsTests(TestCase):
         self.assertFalse(app_template.deleted)
         self.assertEqual(app_template.version, "1.0")
 
-    def does_not_create_app_template_with_invalid_data(self):
+    def test_does_not_create_app_template_with_invalid_data(self):
         app_template_data = {
             "name": "",
             "description": "A test template",
@@ -55,7 +55,7 @@ class AppTemplateOperationsTests(TestCase):
         with self.assertRaises(ValidationError):
             create_app_template(app_template_data)
 
-    def lists_all_app_templates(self):
+    def test_lists_all_app_templates(self):
         user = self.create_user_and_role()
         AppTemplates.objects.create(
             id=str(uuid.uuid4()),
@@ -76,7 +76,7 @@ class AppTemplateOperationsTests(TestCase):
         self.assertEqual(len(templates), 1)
         self.assertEqual(templates[0].name, "List Template")
 
-    def retrieves_app_template_by_id(self):
+    def test_retrieves_app_template_by_id(self):
         user = self.create_user_and_role()
         app_template = AppTemplates.objects.create(
             id=str(uuid.uuid4()),
@@ -96,7 +96,7 @@ class AppTemplateOperationsTests(TestCase):
         retrieved_template = get_app_template_by_id(app_template.id)
         self.assertEqual(retrieved_template.name, "Retrieve Template")
 
-    def searches_app_templates(self):
+    def test_searches_app_templates(self):
         user = self.create_user_and_role()
         AppTemplates.objects.create(
             id=str(uuid.uuid4()),
@@ -117,7 +117,7 @@ class AppTemplateOperationsTests(TestCase):
         self.assertEqual(len(templates), 1)
         self.assertEqual(templates[0].name, "Search Template")
 
-    def retrieves_to_be_approved_app_templates(self):
+    def test_retrieves_to_be_approved_app_templates(self):
         user = self.create_user_and_role()
         AppTemplates.objects.create(
             id=str(uuid.uuid4()),
@@ -140,7 +140,7 @@ class AppTemplateOperationsTests(TestCase):
         self.assertEqual(len(templates), 1)
         self.assertEqual(templates[0].name, "Approval Template")
 
-    def checks_name_collisions(self):
+    def test_checks_name_collisions(self):
         user = self.create_user_and_role()
         AppTemplates.objects.create(
             id=str(uuid.uuid4()),
@@ -160,7 +160,7 @@ class AppTemplateOperationsTests(TestCase):
         collision = check_app_template_name_collisions("Collision Template")
         self.assertTrue(collision)
 
-    def updates_app_template_successfully(self):
+    def test_updates_app_template_successfully(self):
         user = self.create_user_and_role()
         app_template = AppTemplates.objects.create(
             id=str(uuid.uuid4()),
@@ -181,7 +181,7 @@ class AppTemplateOperationsTests(TestCase):
         updated_template = update_app_template(app_template.id, updated_data)
         self.assertEqual(updated_template.name, "Updated Template")
 
-    def approves_app_template_successfully(self):
+    def test_approves_app_template_successfully(self):
         user = self.create_user_and_role()
         app_template = AppTemplates.objects.create(
             id=str(uuid.uuid4()),
@@ -202,7 +202,7 @@ class AppTemplateOperationsTests(TestCase):
         approved_template = approve_app_template(app_template.id)
         self.assertTrue(approved_template.approved)
 
-    def soft_deletes_app_template_successfully(self):
+    def test_soft_deletes_app_template_successfully(self):
         user = self.create_user_and_role()
         app_template = AppTemplates.objects.create(
             id=str(uuid.uuid4()),

@@ -5,12 +5,12 @@ import uuid
 
 class AppTemplateViewSetTests(APITestCase):
 
-    def create_user_and_role(self):
+    def test_create_user_and_role(self):
         role = Roles.objects.create(name="Admin", access_level=1)
         user = Users.objects.create(role_id=role)
         return user
 
-    def creates_app_template_via_api_successfully(self):
+    def test_creates_app_template_via_api_successfully(self):
         user = self.create_user_and_role()
         self.client.force_authenticate(user=user)
         url = reverse('apptemplate-list')
@@ -31,7 +31,7 @@ class AppTemplateViewSetTests(APITestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data['name'], "API Test Template")
 
-    def filters_app_templates_by_search(self):
+    def test_filters_app_templates_by_search(self):
         user = self.create_user_and_role()
         self.client.force_authenticate(user=user)
         AppTemplates.objects.create(
@@ -54,7 +54,7 @@ class AppTemplateViewSetTests(APITestCase):
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['name'], "Searchable Template")
 
-    def checks_name_collisions(self):
+    def test_checks_name_collisions(self):
         user = self.create_user_and_role()
         self.client.force_authenticate(user=user)
         AppTemplates.objects.create(
@@ -76,7 +76,7 @@ class AppTemplateViewSetTests(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.data['collisions'])
 
-    def soft_deletes_app_template_via_api_successfully(self):
+    def test_soft_deletes_app_template_via_api_successfully(self):
         user = self.create_user_and_role()
         self.client.force_authenticate(user=user)
         app_template = AppTemplates.objects.create(

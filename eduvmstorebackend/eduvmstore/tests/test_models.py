@@ -4,12 +4,12 @@ from eduvmstore.db.models import AppTemplates, Users, Roles
 
 class AppTemplatesModelTests(TestCase):
 
-    def create_user_and_role(self):
+    def test_create_user_and_role(self):
         role = Roles.objects.create(name="Admin", access_level=1)
         user = Users.objects.create(role_id=role)
         return user
 
-    def creates_app_template_successfully(self):
+    def test_creates_app_template_successfully(self):
         user = self.create_user_and_role()
         app_template = AppTemplates.objects.create(
             image_id=uuid.uuid4(),
@@ -29,7 +29,7 @@ class AppTemplatesModelTests(TestCase):
         self.assertFalse(app_template.deleted)
         self.assertEqual(app_template.version, "1.0")
 
-    def does_not_create_app_template_with_duplicate_name(self):
+    def test_does_not_create_app_template_with_duplicate_name(self):
         user = self.create_user_and_role()
         AppTemplates.objects.create(
             image_id=uuid.uuid4(),
@@ -61,7 +61,7 @@ class AppTemplatesModelTests(TestCase):
                 per_user_cores=0.5
             )
 
-    def updates_app_template_successfully(self):
+    def test_updates_app_template_successfully(self):
         user = self.create_user_and_role()
         app_template = AppTemplates.objects.create(
             image_id=uuid.uuid4(),
@@ -81,7 +81,7 @@ class AppTemplatesModelTests(TestCase):
         app_template.save()
         self.assertEqual(app_template.name, "Updated Template")
 
-    def soft_deletes_app_template_successfully(self):
+    def test_soft_deletes_app_template_successfully(self):
         user = self.create_user_and_role()
         app_template = AppTemplates.objects.create(
             image_id=uuid.uuid4(),
