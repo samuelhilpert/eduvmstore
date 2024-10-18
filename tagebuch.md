@@ -145,6 +145,16 @@
 - **Dauer**: 1 Stunde
 - **Arbeit**: Fix Bandit and then Fix Internal Server Error
 ---
+### Datum: 2024-10-17
+- **Entwickler**: Marian, Valentin, Emese, Monika, Jared, Samuel
+- **Dauer**: 9 Stunden
+- **Arbeit**: Meeting
+---
+### Datum: 2024-10-17
+- **Entwickler**: Samuel
+- **Dauer**: 0,5 Stunden
+- **Arbeit**: Erstellung Aufgaben GitHub Projects, Erstentwurf Präsentation
+---
 ### Datum: 2024-10-17 & 2024-10-18
 - **Entwickler**: Marian
 - **Dauer**: 3 Stunden
