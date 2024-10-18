@@ -49,6 +49,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # TODO: Add KeystoneAuthenticationMiddleware to test and use the middleware
+    #'eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'

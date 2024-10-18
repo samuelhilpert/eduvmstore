@@ -29,6 +29,7 @@ class AppTemplateViewSetTests(APITestCase):
             "per_user_disk_gb": 5.0,
             "per_user_cores": 0.5
         }
+        self.client.force_authenticate(user=user)
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data['name'], name)
@@ -52,6 +53,7 @@ class AppTemplateViewSetTests(APITestCase):
             per_user_cores=0.5
         )
         url = reverse('app-template-list') + '?search=Searchable'
+        self.client.force_authenticate(user=user)
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
@@ -76,6 +78,7 @@ class AppTemplateViewSetTests(APITestCase):
             per_user_cores=0.5
         )
         url = reverse('app-template-check-name-collisions', kwargs={'name': name})
+        self.client.force_authenticate(user=user)
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.data['collisions'])
@@ -98,6 +101,7 @@ class AppTemplateViewSetTests(APITestCase):
             per_user_cores=0.5
         )
         url = reverse('app-template-check-name-collisions', kwargs={'name': 'Collision Template'})
+        self.client.force_authenticate(user=user)
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.data['collisions'])
@@ -120,6 +124,7 @@ class AppTemplateViewSetTests(APITestCase):
             per_user_cores=0.5
         )
         url = reverse('app-template-detail', args=[app_template.id])
+        self.client.force_authenticate(user=user)
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code, 204)
         app_template.refresh_from_db()
