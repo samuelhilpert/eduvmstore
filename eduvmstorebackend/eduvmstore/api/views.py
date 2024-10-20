@@ -1,14 +1,13 @@
-from rest_framework import status, viewsets
-from rest_framework.response import Response
-from rest_framework.decorators import action
-from rest_framework.views import APIView
-
-from django.utils.timezone import now
 from django.db.models import Q
+from django.utils.timezone import now
 
 # from eduvmstore.services.glance_service import list_images
-from eduvmstore.api.serializers import AppTemplateSerializer, UserSerializer, RoleSerializer
-from eduvmstore.db.models import AppTemplates, Users, Roles
+from eduvmstore.api.serializers import AppTemplateSerializer, RoleSerializer, UserSerializer
+from eduvmstore.db.models import AppTemplates, Roles, Users
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
 # from eduvmstore.db.operations.app_templates import create_app_template, list_app_templates
 
 
@@ -17,11 +16,25 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     serializer_class = AppTemplateSerializer
 
     def perform_create(self, serializer):
+        """
+        Custom handle creation of an AppTemplates instance with initial field values.
+
+        :param AppTemplateSerializer serializer: Serializer for the AppTemplates model
+        :return: None
+        :rtype: None
+        """
         serializer.save(approved=False)
-    #     # Setzt das Feld 'creator_id' auf die ID des aktuell authentifizierten Benutzers
-    #     serializer.save(creator_id=self.request.user.id)
+
+        #     # Set creator_id to the id of the user making the request
+        #     serializer.save(creator_id=self.request.user.id)
 
     def get_queryset(self):
+        """
+        Custom retrieval of the queryset of AppTemplates, optionally filtered by search, public, and approved status.
+
+        :return: Filtered queryset of AppTemplates
+        :rtype: QuerySet
+        """
         queryset = AppTemplates.objects.filter(deleted=False)
 
         # Get query parameter
@@ -52,6 +65,14 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     # detail = True means it is for a specific AppTemplate
     @action(detail=True, methods=['patch'])
     def approved(self, request, pk=None):
+        """
+        Custom endpoint to approve an AppTemplate.
+
+        :param Request request: The HTTP request object
+        :param str pk: Primary key of the AppTemplate to approve
+        :return: HTTP response with the approval status
+        :rtype: Response
+        """
         app_template = self.get_object()
         app_template.approved = True
         app_template.save()
@@ -64,18 +85,33 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], url_path='name/(?P<name>[^/.]+)\\/collisions',
             name='check-name-collisions')
     def check_name_collisions(self, request, name=None):
-        # Check for name collisions
+        """
+        Custom endpoint to check for name collisions in AppTemplates.
+
+        :param Request request: The HTTP request object
+        :param str name: Name to check for collisions
+        :return: HTTP response with collision status
+        :rtype: Response
+        """
         collisions = AppTemplates.objects.filter(name=name, deleted=False).exists()
 
         response_object = {"name": name, "collisions": collisions}
         return Response(response_object, status=status.HTTP_200_OK)
 
     def perform_destroy(self, instance):
+        """
+        Soft delete an AppTemplate by setting its deleted flag and timestamp.
+
+        :param AppTemplates instance: The AppTemplates instance to delete
+        :return: HTTP response with no content
+        :rtype: Response
+        """
         app_template = self.get_object()
         app_template.deleted = True
         app_template.deleted_at = now()
         app_template.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.filter(deleted=False)
@@ -86,28 +122,61 @@ class RoleViewSet(viewsets.ModelViewSet):
     queryset = Roles.objects.all()
     serializer_class = RoleSerializer
 
+
 # normal ViewSet chosen, as Images are not part of own database
 class ImageViewSet(viewsets.ViewSet):
 
     def list(self, request):
+        """
+        List all images (placeholder implementation).
+
+        :param Request request: The HTTP request object
+        :return: HTTP response with a placeholder message
+        :rtype: Response
+        """
         return Response(
             [{"message": "not yet implemented"}],
             status=status.HTTP_200_OK
         )
 
     def retrieve(self, request, id):
-        print("id: ",id)
+        """
+         Retrieve details of a specific image (placeholder implementation).
+
+         :param Request request: The HTTP request object
+         :param str id: The unique identifier of the image
+         :return: HTTP response with a placeholder message
+         :rtype: Response
+         """
+        print("id: ", id)
         # Placeholder logic to return details of a specific image
         return Response({"message": "Not yet implemented"}, status=status.HTTP_200_OK)
 
+
 # normal ViewSet chosen, as Flavors are not part of own database
 class FlavorViewSet(viewsets.ViewSet):
+
     def select_flavor(self, request):
+        """
+        Return possible and best matching flavors (placeholder implementation).
+
+        :param Request request: The HTTP request object
+        :return: HTTP response with best and possible flavor IDs
+        :rtype: Response
+        """
         # Placeholder logic to return possible and best matching flavors
         return Response({"best_flavor_id": None, "possible_flavor_ids": []}, status=status.HTTP_200_OK)
+
 
 # normal ViewSet chosen, as Instances are not part of own database
 class InstanceViewSet(viewsets.ViewSet):
     def perform_create(self, request):
+        """
+        Create an instance (placeholder implementation).
+
+        :param Request request: The HTTP request object
+        :return: HTTP response with instance ID and accounts
+        :rtype: Response
+        """
         # Placeholder logic to create an instance
-        return Response({"id": None, "accounts": [] }, status=status.HTTP_201_CREATED)
+        return Response({"id": None, "accounts": []}, status=status.HTTP_201_CREATED)

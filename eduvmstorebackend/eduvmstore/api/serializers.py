@@ -35,8 +35,12 @@ class AppTemplateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """
-        Custom create method if you need to perform additional
-        operations before saving an instance.
+        Custom create method to handle additional operations
+        before saving an AppTemplates instance to the database.
+
+        :param dict validated_data: Data validated through the serializer
+        :return: Newly created AppTemplates instance
+        :rtype: AppTemplates
         """
         return AppTemplates.objects.create(**validated_data)
 
@@ -61,8 +65,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """
-        Custom create method if you need to perform additional
-        operations before saving an instance.
+        Custom create method to handle additional operations
+        before saving a Users instance to the database.
+
+        :param dict validated_data: Data validated through the serializer
+        :return: Newly created Users instance
+        :rtype: Users
         """
         return Users.objects.create(**validated_data)
 
@@ -81,8 +89,12 @@ class RoleSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """
-        Custom create method if you need to perform additional
-        operations before saving an instance.
+        Custom create method to handle additional operations
+        before saving a Roles instance to the database.
+
+        :param dict validated_data: Data validated through the serializer
+        :return: Newly created Roles instance
+        :rtype: Roles
         """
         return Roles.objects.create(**validated_data)
 
