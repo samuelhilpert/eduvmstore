@@ -2,11 +2,12 @@ import logging
 import requests
 from django.utils.timezone import now
 from django.http import JsonResponse
+from django.urls import resolve
 
-from eduvmstore.db.models import Users, Roles
+from eduvmstore.db.models import Users
 from eduvmstore.db.operations.roles import get_role_by_name
 from eduvmstore.db.operations.users import get_user_by_id, create_user
-
+from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS
 
 logger = logging.getLogger(__name__)
 
@@ -64,8 +65,32 @@ class KeystoneAuthenticationMiddleware:
         return user
 
     def check_user_access(self, request, user):
-        required_access_level = self.get_required_access_level(request.path)
+        required_access_level = self.get_required_access_level(request)
         return user.role_id.access_level >= required_access_level
 
-    def get_required_access_level(self, path):
-        return 1000
+    def get_required_access_level(self, request):
+        resolver_match = resolve(request.path)
+        method = request.method
+        route_name = resolver_match.route
+
+        # Map generated routes of the default router to expected routes
+        route_mapping = {
+            'app-template-list': 'GET /app-templates',
+            'app-template-detail': 'GET /app-templates/{id}',
+            'app-template-create': 'POST /app-templates',
+            'app-template-update': 'PUT /app-templates/{id}',
+            'app-template-partial-update': 'PATCH /app-templates/{id}',
+            'app-template-destroy': 'DELETE /app-templates/{id}',
+            'app-template-check-name-collisions': 'GET /app-templates/name/{name}/collisions',
+            'user-list': 'GET /users',
+            'user-detail': 'GET /users/{id}',
+            'user-change-role': 'PATCH /users/{id}/role',
+            'user-destroy': 'DELETE /users/{id}',
+            'image-list': 'GET /images',
+            'image-detail': 'GET /images/{id}',
+            'flavor-selection': 'POST /flavors/selection',
+            'instance-creation': 'POST /instances/launch',
+        }
+
+        endpoint = route_mapping.get(route_name, f"{method} {resolver_match.route}")
+        return REQUIRED_ACCESS_LEVELS.get(endpoint, 1000)  # Default to 1000 if not found

@@ -1,7 +1,7 @@
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.views import APIView
+# from rest_framework.views import APIView
 
 from django.utils.timezone import now
 from django.db.models import Q
@@ -18,7 +18,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(approved=False)
-    #     # Setzt das Feld 'creator_id' auf die ID des aktuell authentifizierten Benutzers
+    #     Setzt das Feld 'creator_id' auf die ID des aktuell authentifizierten Benutzers
     #     serializer.save(creator_id=self.request.user.id)
 
     def get_queryset(self):
@@ -81,6 +81,14 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.filter(deleted=False)
     serializer_class = UserSerializer
 
+    @action(detail=True, methods=['patch'], url_path='role')
+    def change_role(self, request, pk=None):
+        # TODO: Logic to change user role
+        return Response(
+            {"message": "not yet implemented, but will change Role"},
+            status=status.HTTP_200_OK
+        )
+
 
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Roles.objects.all()
@@ -90,6 +98,7 @@ class RoleViewSet(viewsets.ModelViewSet):
 class ImageViewSet(viewsets.ViewSet):
 
     def list(self, request):
+        # TODO: Placeholder logic to return all
         return Response(
             [{"message": "not yet implemented"}],
             status=status.HTTP_200_OK
@@ -97,17 +106,28 @@ class ImageViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, id):
         print("id: ",id)
-        # Placeholder logic to return details of a specific image
-        return Response({"message": "Not yet implemented"}, status=status.HTTP_200_OK)
+        # TODO: Placeholder logic to return details of a specific image
+        return Response(
+            {"message": "Not yet implemented"},
+            status=status.HTTP_200_OK
+        )
 
 # normal ViewSet chosen, as Flavors are not part of own database
 class FlavorViewSet(viewsets.ViewSet):
+    @action(detail=False, methods=['post'], url_path='selection')
     def select_flavor(self, request):
-        # Placeholder logic to return possible and best matching flavors
-        return Response({"best_flavor_id": None, "possible_flavor_ids": []}, status=status.HTTP_200_OK)
+        # TODO: Placeholder logic to return possible and best matching flavors
+        return Response(
+            {"best_flavor_id": None, "possible_flavor_ids": []},
+            status=status.HTTP_200_OK
+        )
 
 # normal ViewSet chosen, as Instances are not part of own database
 class InstanceViewSet(viewsets.ViewSet):
+    @action(detail=False, methods=['post'], url_path='launch')
     def perform_create(self, request):
-        # Placeholder logic to create an instance
-        return Response({"id": None, "accounts": [] }, status=status.HTTP_201_CREATED)
+        # TODO: Placeholder logic to create an instance
+        return Response(
+            {"id": None, "accounts": [] },
+            status=status.HTTP_201_CREATED
+        )
