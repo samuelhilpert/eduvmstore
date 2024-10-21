@@ -5,7 +5,12 @@ import sys
 
 
 def main():
-    """Run administrative tasks."""
+    """
+    Run administrative tasks.
+    :return: None
+    :rtype: None
+    :raises ImportError: If Django is not installed or not available on PYTHONPATH
+    """
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
     try:
         from django.core.management import execute_from_command_line

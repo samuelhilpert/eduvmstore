@@ -2,6 +2,11 @@ from rest_framework import serializers
 from eduvmstore.db.models import AppTemplates, Users, Roles
 
 class AppTemplateSerializer(serializers.ModelSerializer):
+    """Serializer for the AppTemplates model.
+
+    This serializer handles the conversion of AppTemplates model instances
+    to and from JSON format, including validation and creation of new instances.
+    """
     class Meta:
         model = AppTemplates
         fields = [
@@ -47,6 +52,11 @@ class AppTemplateSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """Serializer for the Users model.
+
+    This serializer handles the conversion of Users model instances
+    to and from JSON format, including validation and creation of new instances.
+    """
     class Meta:
         model = Users
         fields = [
@@ -76,6 +86,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class RoleSerializer(serializers.ModelSerializer):
+    """Serializer for the Roles model.
+
+    This serializer handles the conversion of Roles model instances
+    to and from JSON format, including validation and creation of new instances.
+    """
     class Meta:
         model = Roles
         fields = [
