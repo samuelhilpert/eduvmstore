@@ -12,6 +12,15 @@ from rest_framework.response import Response
 
 
 class AppTemplateViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for handling AppTemplate model operations.
+
+    This ViewSet provides default CRUD operations for the AppTemplates model,
+    including custom actions for approving templates and checking name collisions.
+
+    :param queryset: Queryset of AppTemplates instances, filtered to exclude deleted ones
+    :param serializer_class: Serializer class for AppTemplates model
+    """
     queryset = AppTemplates.objects.filter(deleted=False)
     serializer_class = AppTemplateSerializer
 
@@ -114,17 +123,41 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for handling Users model operations.
+
+    This ViewSet provides default CRUD operations for the Users model.
+
+    :param queryset: Queryset of Users instances, filtered to exclude deleted ones
+    :param serializer_class: Serializer class for Users model
+    """
     queryset = Users.objects.filter(deleted=False)
     serializer_class = UserSerializer
 
 
 class RoleViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for handling Roles model operations.
+
+    This ViewSet provides default CRUD operations for the Roles model.
+
+    :param queryset: Queryset of all Roles instances
+    :param serializer_class: Serializer class for Roles model
+    """
     queryset = Roles.objects.all()
     serializer_class = RoleSerializer
 
 
 # normal ViewSet chosen, as Images are not part of own database
 class ImageViewSet(viewsets.ViewSet):
+    """
+    ViewSet for handling image operations.
+
+    This ViewSet provides OpenStack access to glance images.
+
+    :param list: Method to list all images
+    :param retrieve: Method to retrieve details of a specific image
+    """
 
     def list(self, request):
         """
@@ -155,7 +188,13 @@ class ImageViewSet(viewsets.ViewSet):
 
 # normal ViewSet chosen, as Flavors are not part of own database
 class FlavorViewSet(viewsets.ViewSet):
+    """
+    ViewSet for handling flavor operations.
 
+    This ViewSet gives a selection from the current flavors in OpenStack.
+
+    :param select_flavor: Method to return possible and best matching flavors
+    """
     def select_flavor(self, request):
         """
         Return possible and best matching flavors (placeholder implementation).
@@ -170,6 +209,12 @@ class FlavorViewSet(viewsets.ViewSet):
 
 # normal ViewSet chosen, as Instances are not part of own database
 class InstanceViewSet(viewsets.ViewSet):
+    """ViewSet for handling instance operations.
+
+    This ViewSet provides access to OpenStack Instances.
+
+    :param perform_create: Method to create an instance
+    """
     def perform_create(self, request):
         """
         Create an instance (placeholder implementation).
