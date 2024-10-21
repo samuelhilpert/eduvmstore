@@ -17,7 +17,6 @@ class AppTemplateViewSetTests(APITestCase):
         name = "API Test Template"
         data = {
             "image_id": str(uuid.uuid4()),
-            "creator_id": user.id,
             "name": name,
             "description": "A test template",
             "short_description": "Test",

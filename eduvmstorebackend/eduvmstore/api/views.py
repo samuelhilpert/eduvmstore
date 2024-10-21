@@ -32,10 +32,8 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         :return: None
         :rtype: None
         """
-        serializer.save(approved=False)
-
-        #     # Set creator_id to the id of the user making the request
-        #     serializer.save(creator_id=self.request.user.id)
+        serializer.save(creator_id=self.request.user, approved=False)
+        # creator_id: Ensures that the creator_id is set to the ID of the authenticated user
 
     def get_queryset(self):
         """
