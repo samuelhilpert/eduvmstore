@@ -95,19 +95,26 @@ class ImageViewSet(viewsets.ViewSet):
             status=status.HTTP_200_OK
         )
 
-    def retrieve(self, request, id):
-        print("id: ",id)
+    # Django passes id automatically as pk
+    def retrieve(self, request, pk):
+        print("id: ", pk)
         # Placeholder logic to return details of a specific image
         return Response({"message": "Not yet implemented"}, status=status.HTTP_200_OK)
 
 # normal ViewSet chosen, as Flavors are not part of own database
 class FlavorViewSet(viewsets.ViewSet):
+    # action decorator for custom endpoint
+    # detail = False means it is for all AppTemplate
+    @action(detail=False, methods=['post'], url_path='selection')
     def select_flavor(self, request):
         # Placeholder logic to return possible and best matching flavors
         return Response({"best_flavor_id": None, "possible_flavor_ids": []}, status=status.HTTP_200_OK)
 
 # normal ViewSet chosen, as Instances are not part of own database
 class InstanceViewSet(viewsets.ViewSet):
+    # action decorator for custom endpoint
+    # detail = False means it is for all AppTemplate
+    @action(detail=False, methods=['post'], url_path='launch')
     def perform_create(self, request):
         # Placeholder logic to create an instance
         return Response({"id": None, "accounts": [] }, status=status.HTTP_201_CREATED)
