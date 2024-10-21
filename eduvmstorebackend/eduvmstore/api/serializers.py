@@ -18,6 +18,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'version',
             'public',
             'approved',
+
             'fixed_ram_gb',
             'fixed_disk_gb',
             'fixed_cores',
@@ -28,6 +29,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         read_only_fields = [
             'id',
             'created_at',
+            'creator_id',
             'updated_at',
             'deleted_at',
             'deleted'
