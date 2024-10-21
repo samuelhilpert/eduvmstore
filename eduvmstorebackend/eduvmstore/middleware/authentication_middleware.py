@@ -36,8 +36,8 @@ class KeystoneAuthenticationMiddleware:
         return response
 
     def validate_token_with_keystone(self, token):
-        keystone_url = "http://localhost:3000/auth/tokens"
-        headers = {'X-Auth-Token': token}
+        keystone_url = "http://192.168.64.6/identity/v3/auth/tokens"
+        headers = {'X-Auth-Token': token, 'X-Subject-Token': token}
         try:
             response = requests.get(keystone_url, headers=headers)
             if response.status_code == 200:
