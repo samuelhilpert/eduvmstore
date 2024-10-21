@@ -39,7 +39,8 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """
-        Custom retrieval of the queryset of AppTemplates, optionally filtered by search, public, and approved status.
+        Custom retrieval of the queryset of AppTemplates,
+        optionally filtered by search, public, and approved status.
 
         :return: Filtered queryset of AppTemplates
         :rtype: QuerySet
