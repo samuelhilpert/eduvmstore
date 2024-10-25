@@ -12,10 +12,30 @@ from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS
 logger = logging.getLogger(__name__)
 
 class KeystoneAuthenticationMiddleware:
+    """
+    Middleware for Keystone authentication and user access control.
+
+    This middleware handles token validation with Keystone, user retrieval or creation,
+    if none exists, and access level checking based on request routing.
+
+    :param function get_response: Callable that processes the request after middleware execution
+    """
     def __init__(self, get_response):
+        """
+        Initialize the middleware with a get_response callable.
+
+        :param function get_response: Callable that processes the request after middleware execution
+        """
         self.get_response = get_response
 
     def __call__(self, request):
+        """
+        Process the request to validate the authentication token and user access.
+
+        :param HttpRequest request: The incoming HTTP request
+        :return: JsonResponse or the response from the view function
+        :rtype: JsonResponse or HttpResponse
+        """
         token = request.headers.get('X-Auth-Token')
         if not token:
             logger.error('OpenStack Authentication Token missing')
@@ -36,6 +56,13 @@ class KeystoneAuthenticationMiddleware:
         return response
 
     def validate_token_with_keystone(self, token):
+        """
+        Validate the OpenStack authentication token with Keystone.
+
+        :param str token: The OpenStack token to validate
+        :return: Dictionary with Keystone user information if valid, else None
+        :rtype: dict or None
+        """
         keystone_url = "http://192.168.64.6/identity/v3/auth/tokens"
         headers = {'X-Auth-Token': token, 'X-Subject-Token': token}
         try:
@@ -50,6 +77,13 @@ class KeystoneAuthenticationMiddleware:
             return None
 
     def get_or_create_user(self, keystone_user_info):
+        """
+        Retrieve or create a user based on Keystone user information.
+
+        :param dict keystone_user_info: Keystone user information dictionary
+        :return: User instance
+        :rtype: Users
+        """
         user_id = keystone_user_info['id']
         try:
             user = get_user_by_id(user_id)
@@ -65,10 +99,25 @@ class KeystoneAuthenticationMiddleware:
         return user
 
     def check_user_access(self, request, user):
+        """
+        Check if the user has sufficient access level for the requested route.
+
+        :param HttpRequest request: The HTTP request object
+        :param Users user: The user instance to check access for
+        :return: True if access is allowed, False otherwise
+        :rtype: bool
+        """
         required_access_level = self.get_required_access_level(request)
         return user.role_id.access_level >= required_access_level
 
     def get_required_access_level(self, request):
+        """
+        Determine the required access level for a specific request route.
+
+        :param HttpRequest request: The HTTP request object
+        :return: Required access level for the route
+        :rtype: int
+        """
         resolver_match = resolve(request.path)
         method = request.method
         route_name = resolver_match.route
