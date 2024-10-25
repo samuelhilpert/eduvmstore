@@ -8,7 +8,11 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-# from eduvmstore.db.operations.app_templates import create_app_template, list_app_templates
+from eduvmstore.db.operations.app_templates import (create_app_template,
+                                                    list_app_templates,
+                                                    approve_app_template,
+                                                    check_app_template_name_collisions,
+                                                    soft_delete_app_template)
 
 
 class AppTemplateViewSet(viewsets.ModelViewSet):
@@ -83,9 +87,8 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         :return: HTTP response with the approval status
         :rtype: Response
         """
-        app_template = self.get_object()
-        app_template.approved = True
-        app_template.save()
+        app_template_id = self.get_object().id
+        app_template = approve_app_template(app_template_id)
         return Response(
             {"id": app_template.id, "approved": app_template.approved},
             status=status.HTTP_200_OK)
@@ -103,7 +106,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         :return: HTTP response with collision status
         :rtype: Response
         """
-        collisions = AppTemplates.objects.filter(name=name, deleted=False).exists()
+        collisions = check_app_template_name_collisions(name)
 
         response_object = {"name": name, "collisions": collisions}
         return Response(response_object, status=status.HTTP_200_OK)
@@ -116,10 +119,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         :return: HTTP response with no content
         :rtype: Response
         """
-        app_template = self.get_object()
-        app_template.deleted = True
-        app_template.deleted_at = now()
-        app_template.save()
+        soft_delete_app_template(self.get_object().id)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

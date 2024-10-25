@@ -160,10 +160,10 @@ def approve_app_template(id: str) -> AppTemplates:
     :raises ObjectDoesNotExist: If the AppTemplate is not found
     """
     try:
-        template = AppTemplates.objects.get(id=id, deleted=False)
-        template.approved = True
-        template.save()
-        return template
+        app_template = AppTemplates.objects.get(id=id, deleted=False)
+        app_template.approved = True
+        app_template.save()
+        return app_template
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist("AppTemplate not found.")
 
