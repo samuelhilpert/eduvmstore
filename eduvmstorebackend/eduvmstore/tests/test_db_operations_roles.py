@@ -67,7 +67,7 @@ class RoleOperationsTests(TestCase):
     def test_retrieves_role_by_name_successfully(self):
         name = "User"
         access_level = 1000
-        role = Roles.objects.create(
+        Roles.objects.create(
             id=str(uuid.uuid4()),
             name=name,
             access_level=access_level
