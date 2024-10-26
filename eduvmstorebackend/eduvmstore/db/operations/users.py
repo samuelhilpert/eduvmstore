@@ -4,11 +4,12 @@ from eduvmstore.db.models import Users
 
 def create_user(user_data: dict) -> Users:
     """
-    Create a new User entry in the database.
+    Create a new User entry in the database using Django ORM.
 
-    :param user_data: Dictionary containing the user data
-           (e.g., {"id": "user_id", "role_id": "role_id"})
-    :return: The created User object
+    :param dict user_data: Dictionary containing the User details
+    :return: The newly created User object
+    :rtype: Users
+    :raises ValidationError: If any required field is missing or invalid
     """
     if not user_data.get('id'):
         raise ValidationError("User ID cannot be empty")
@@ -29,10 +30,12 @@ def create_user(user_data: dict) -> Users:
 
 def get_user_by_id(id: str) -> Users:
     """
-    Retrieve a User entry from the database by ID.
+    Retrieve a User entry from the database using its ID.
 
-    :param id: The ID of the User to retrieve
-    :return: The User object if found, None otherwise
+    :param str id: The unique identifier of the user
+    :return: The User object if found
+    :rtype: Users
+    :raises ObjectDoesNotExist: If no User is found with the given ID
     """
     try:
         return Users.objects.get(id=id, deleted=False)
@@ -45,6 +48,7 @@ def list_users() -> list[Users]:
     Retrieve all User records from the database.
 
     :return: A list of User objects
+    :rtype: list[Users]
     """
     return Users.objects.filter(deleted=False)
 
@@ -52,9 +56,11 @@ def update_user_role(id: str, role_id: str) -> Users:
     """
     Update the role of a specific User by ID.
 
-    :param id: The UUID of the User
-    :param role_id: The UUID of the new Role
+    :param str id: The UUID of the User
+    :param str role_id: The UUID of the new Role
     :return: The updated User object
+    :rtype: Users
+    :raises ObjectDoesNotExist: If the User or Role is not found
     """
     try:
         user = Users.objects.get(id=id, deleted=False)
@@ -70,7 +76,10 @@ def soft_delete_user(id: str) -> None:
     """
     Soft delete a User by marking them as deleted.
 
-    :param user_id: The UUID of the User
+    :param str id: The UUID of the User
+    :return: None
+    :rtype: None
+    :raises ObjectDoesNotExist: If the User is not found
     """
     try:
         user = Users.objects.get(id=id, deleted=False)

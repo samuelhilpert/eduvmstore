@@ -2,6 +2,11 @@ from rest_framework import serializers
 from eduvmstore.db.models import AppTemplates, Users, Roles
 
 class AppTemplateSerializer(serializers.ModelSerializer):
+    """Serializer for the AppTemplates model.
+
+    This serializer handles the conversion of AppTemplates model instances
+    to and from JSON format, including validation and creation of new instances.
+    """
     class Meta:
         model = AppTemplates
         fields = [
@@ -18,6 +23,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'version',
             'public',
             'approved',
+
             'fixed_ram_gb',
             'fixed_disk_gb',
             'fixed_cores',
@@ -28,6 +34,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         read_only_fields = [
             'id',
             'created_at',
+            'creator_id',
             'updated_at',
             'deleted_at',
             'deleted'
@@ -35,14 +42,23 @@ class AppTemplateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """
-        Custom create method if you need to perform additional
-        operations before saving an instance.
+        Custom create method to handle additional operations
+        before saving an AppTemplates instance to the database.
+
+        :param dict validated_data: Data validated through the serializer
+        :return: Newly created AppTemplates instance
+        :rtype: AppTemplates
         """
         return AppTemplates.objects.create(**validated_data)
 
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """Serializer for the Users model.
+
+    This serializer handles the conversion of Users model instances
+    to and from JSON format, including validation and creation of new instances.
+    """
     class Meta:
         model = Users
         fields = [
@@ -61,13 +77,22 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """
-        Custom create method if you need to perform additional
-        operations before saving an instance.
+        Custom create method to handle additional operations
+        before saving a Users instance to the database.
+
+        :param dict validated_data: Data validated through the serializer
+        :return: Newly created Users instance
+        :rtype: Users
         """
         return Users.objects.create(**validated_data)
 
 
 class RoleSerializer(serializers.ModelSerializer):
+    """Serializer for the Roles model.
+
+    This serializer handles the conversion of Roles model instances
+    to and from JSON format, including validation and creation of new instances.
+    """
     class Meta:
         model = Roles
         fields = [
@@ -81,8 +106,12 @@ class RoleSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """
-        Custom create method if you need to perform additional
-        operations before saving an instance.
+        Custom create method to handle additional operations
+        before saving a Roles instance to the database.
+
+        :param dict validated_data: Data validated through the serializer
+        :return: Newly created Roles instance
+        :rtype: Roles
         """
         return Roles.objects.create(**validated_data)
 

@@ -6,6 +6,11 @@ from eduvmstore.db.models import Roles
 def create_role(role_data: dict) -> Roles:
     """
     Create a new Role entry in the database using Django ORM.
+
+    :param dict role_data: Dictionary containing the Role details
+    :return: The newly created Role object
+    :rtype: Roles
+    :raises ValidationError: If any required field is missing or invalid
     """
     if not role_data['name']:
         raise ValidationError("Role name cannot be empty")
@@ -27,10 +32,12 @@ def update_role(id: str, update_role_data: dict) -> Roles:
     """
     Update an existing Role entry in the database using Django ORM.
 
-    :param id: The unique identifier of the role to update
-    :param update_role_data: Dictionary containing the fields to update
-           (e.g., {"name": "new_name", "access_level": 2000})
+    :param str id: The unique identifier of the role to update
+    :param dict update_role_data: Dictionary containing the fields to update
     :return: The updated Role object
+    :rtype: Roles
+    :raises ObjectDoesNotExist: If the Role is not found
+    :raises ValidationError: If any field is invalid
     """
     try:
         role = Roles.objects.get(id=id)  # Fetch role by ID
@@ -50,9 +57,10 @@ def get_role_by_id(id: str) -> Roles:
     """
     Retrieve a Role entry from the database using its ID.
 
-    :param id: The unique identifier of the role.
-    :return: The Role object if found.
-    :raises ObjectDoesNotExist: If no Role is found with the given ID.
+    :param str id: The unique identifier of the role
+    :return: The Role object if found
+    :rtype: Roles
+    :raises ObjectDoesNotExist: If no Role is found with the given ID
     """
     try:
         return Roles.objects.get(id=id)
