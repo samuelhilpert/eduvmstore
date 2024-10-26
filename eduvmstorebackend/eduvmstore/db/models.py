@@ -41,6 +41,7 @@ class Users(models.Model):
     # default needs to be deleted, the moment, we get the user from keystone/token
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     role_id = models.ForeignKey('Roles', on_delete=models.DO_NOTHING)
+    is_active = models.BooleanField(default=True)
 
     # CRUD info
     created_at = models.DateTimeField(default=now)

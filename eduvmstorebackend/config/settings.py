@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,8 +26,9 @@ SECRET_KEY = 'django-insecure-9z)3#^qm_pgcf23+h37%$74jo-#($kz#!_$5$6sa@+xk)x&3(c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["192.168.64.1","0.0.0.0"]
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'eduvmstore',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -49,7 +52,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
+
+# Enable Keystone authentication middleware for production
+if os.getenv('ENABLE_KEYSTONE_AUTH', 'False') == 'True':
+    MIDDLEWARE.append('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware')
+
 
 ROOT_URLCONF = 'config.urls'
 

@@ -66,3 +66,16 @@ def get_role_by_id(id: str) -> Roles:
         return Roles.objects.get(id=id)
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist(f"Role with id {id} not found")
+
+def get_role_by_name(name: str) -> Roles:
+    """
+    Retrieve a Role entry from the database using its ID.
+
+    :param name: The unique name of the role.
+    :return: The Role object if found.
+    :raises ObjectDoesNotExist: If no Role is found with the given name.
+    """
+    try:
+        return Roles.objects.get(name=name)
+    except ObjectDoesNotExist:
+        raise ObjectDoesNotExist(f"Role with name {name} not found")

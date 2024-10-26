@@ -36,10 +36,8 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         :return: None
         :rtype: None
         """
-        serializer.save(approved=False)
-
-        #     # Set creator_id to the id of the user making the request
-        #     serializer.save(creator_id=self.request.user.id)
+        serializer.save(creator_id=self.request.user, approved=False)
+        # creator_id: Ensures that the creator_id is set to the ID of the authenticated user
 
     def get_queryset(self):
         """
@@ -173,12 +171,13 @@ class ImageViewSet(viewsets.ViewSet):
             status=status.HTTP_200_OK
         )
 
+    # Django passes id automatically as pk
     def retrieve(self, request, pk):
         """
          Retrieve details of a specific image (placeholder implementation).
 
          :param Request request: The HTTP request object
-         :param str pk: The unique identifier of the image
+         :param str pk: The unique identifier of the image (primary key)
          :return: HTTP response with a placeholder message
          :rtype: Response
          """
@@ -196,6 +195,9 @@ class FlavorViewSet(viewsets.ViewSet):
 
     :param select_flavor: Method to return possible and best matching flavors
     """
+    # action decorator for custom endpoint
+    # detail = False means it is for all AppTemplate
+    @action(detail=False, methods=['post'], url_path='selection')
     def select_flavor(self, request):
         """
         Return possible and best matching flavors (placeholder implementation).
@@ -216,6 +218,9 @@ class InstanceViewSet(viewsets.ViewSet):
 
     :param perform_create: Method to create an instance
     """
+    # action decorator for custom endpoint
+    # detail = False means it is for all AppTemplate
+    @action(detail=False, methods=['post'], url_path='launch')
     def perform_create(self, request):
         """
         Create an instance (placeholder implementation).
@@ -225,4 +230,4 @@ class InstanceViewSet(viewsets.ViewSet):
         :rtype: Response
         """
         # Placeholder logic to create an instance
-        return Response({"id": None, "accounts": []}, status=status.HTTP_201_CREATED)
+        return Response({"id": None, "accounts": [] }, status=status.HTTP_201_CREATED)
