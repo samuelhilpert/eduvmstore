@@ -5,14 +5,14 @@ meta {
 }
 
 post {
-  url: http://localhost:8000/api/app-templates/
+  url: {{base_url}}/api/app-templates/
   body: json
   auth: none
 }
 
 body:json {
   {
-  "name": "New AppTemplate 7",
+  "name": "New AppTemplate",
   "description": "A VM template for AI development",
   "short_description": "AI Dev VM",
   "instantiation_notice": "AI VM will be ready soon",

@@ -173,16 +173,16 @@ class ImageViewSet(viewsets.ViewSet):
             status=status.HTTP_200_OK
         )
 
-    def retrieve(self, request, id):
+    def retrieve(self, request, pk):
         """
          Retrieve details of a specific image (placeholder implementation).
 
          :param Request request: The HTTP request object
-         :param str id: The unique identifier of the image
+         :param str pk: The unique identifier of the image
          :return: HTTP response with a placeholder message
          :rtype: Response
          """
-        print("id: ", id)
+        print("id: ", pk)
         # Placeholder logic to return details of a specific image
         return Response({"message": "Not yet implemented"}, status=status.HTTP_200_OK)
 
