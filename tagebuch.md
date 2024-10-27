@@ -185,7 +185,14 @@
 - **Dauer**: 3,5 Stunden
 - **Arbeit**: Finale Integration und Testung der Keystone-Authentication-Middleware im Backend
 ---
+### Datum: 2024-10-27
+- **Entwickler**: Emese, Monika, Samuel, Jared, Marian, Valentin, 
+- **Dauer**: 24 Stunden
+- **Arbeit**: OpenStack-Endpunkte und Präsentationsvorbereitung
+---
 ### Datum: 2024-MM-DD
 - **Entwickler**: Name
 - **Dauer**: z.B. 1,5 Stunden
 - **Arbeit**: Kurze Beschreibung der Aufgabe
+
+
