@@ -2,6 +2,7 @@ from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 # from rest_framework.views import APIView
+import requests
 
 from django.utils.timezone import now
 from django.db.models import Q
@@ -179,6 +180,19 @@ class ImageViewSet(viewsets.ViewSet):
         :return: HTTP response with a placeholder message
         :rtype: Response
         """
+        headers = {"X-Auth-Token": request.user.token.id}
+        try:
+            openstack_url = "localhost:9292"
+            response = requests.get(f"http://{openstack_url}/image/v2/images/{image_id}",
+                                    headers=headers, timeout=10)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.HTTPError as err:
+            print(f"Error fetching image details: {err}")
+            raise err
+        except requests.exceptions.RequestException as e:
+            print(f"Error contacting the Glance API: {e}")
+            return None
         return Response(
             [{"message": "not yet implemented"}],
             status=status.HTTP_200_OK
