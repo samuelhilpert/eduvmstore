@@ -63,7 +63,7 @@ class KeystoneAuthenticationMiddleware:
         :return: Dictionary with Keystone user information if valid, else None
         :rtype: dict or None
         """
-        keystone_url = "http://192.168.64.6/identity/v3/auth/tokens"
+        keystone_url = "http://192.168.64.7/identity/v3/auth/tokens"
         headers = {'X-Auth-Token': token, 'X-Subject-Token': token}
         try:
             response = requests.get(keystone_url, headers=headers)
