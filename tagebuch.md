@@ -186,9 +186,34 @@
 - **Arbeit**: Finale Integration und Testung der Keystone-Authentication-Middleware im Backend
 ---
 ### Datum: 2024-10-27
-- **Entwickler**: Emese, Monika, Samuel, Jared, Marian, Valentin, 
+- **Entwickler**: Emese, Monika, Samuel, Jared, Marian, Valentin
 - **Dauer**: 24 Stunden
 - **Arbeit**: OpenStack-Endpunkte und Präsentationsvorbereitung
+---
+### Datum: 2024-10-24
+- **Entwickler**: Samuel
+- **Dauer**: 5 Stunden
+- **Arbeit**: Anbindung Launch Instances, CORS, Flavors Selection
+---
+### Datum: 2024-10-26
+- **Entwickler**: Samuel
+- **Dauer**: 0,5 Stunden
+- **Arbeit**: Rufbereitschaft
+---
+### Datum: 2024-10-26
+- **Entwickler**: Emese, Monika, Samuel, Jared, Marian, Valentin
+- **Dauer**: 9 Stunden
+- **Arbeit**: Weekly
+---
+### Datum: 2024-10-25
+- **Entwickler**: Samuel
+- **Dauer**: 3 Stunden
+- **Arbeit**: Präsentationsvorbereitung
+---
+### Datum: 2024-10-26
+- **Entwickler**: Samuel
+- **Dauer**: 2 Stunden
+- **Arbeit**: Code-Aufräumen
 ---
 ### Datum: 2024-MM-DD
 - **Entwickler**: Name
