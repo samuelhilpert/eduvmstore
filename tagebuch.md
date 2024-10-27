@@ -9,12 +9,12 @@
 - **Entwickler**: Emese
 - **Dauer**: 1 Stunden
 - **Arbeit**: API Endpoints anpassen, kleinere Fehler fixen (CORS usw. )
-
+---
 ### Datum: 2024-10-10
 - **Entwickler**: Emese
 - **Dauer**: 4 Stunden
 - **Arbeit**: Backend - Git Repo clonen, DB aufsetzten, Server Starten + API Request Frontend
-
+---
 ### Datum: 2024-09-29
 - **Entwickler**: Marian
 - **Dauer**: 0,5 Stunden
@@ -169,6 +169,21 @@
 - **Entwickler**: Samuel
 - **Dauer**: 2 Stunden
 - **Arbeit**: Fix Bandit, Add Script Upload und Writer, Fix Size in Table
+---
+### Datum: 2024-10-18
+- **Entwickler**: Marian, Valentin
+- **Dauer**: 3 Stunden
+- **Arbeit**: Setup und Implementierung der Keystone-Authentication-Middleware im Backend
+---
+### Datum: 2024-10-20
+- **Entwickler**: Marian
+- **Dauer**: 2,5 Stunden
+- **Arbeit**: Access-Level Implementierung für API-Routes und Test-Anpassungen
+---
+### Datum: 2024-10-26
+- **Entwickler**: Marian, Valentin
+- **Dauer**: 3,5 Stunden
+- **Arbeit**: Finale Integration und Testung der Keystone-Authentication-Middleware im Backend
 ---
 ### Datum: 2024-MM-DD
 - **Entwickler**: Name
