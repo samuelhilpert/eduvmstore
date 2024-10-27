@@ -30,17 +30,17 @@ def create_user(user_data: dict) -> Users:
 
 def get_user_by_id(id: str) -> Users:
     """
-    Retrieve a User entry from the database using its ID.
+    Retrieve a User entry from the database using its ID, including role information.
 
     :param str id: The unique identifier of the user
-    :return: The User object if found
+    :return: The User object if found, with role information accessible
     :rtype: Users
     :raises ObjectDoesNotExist: If no User is found with the given ID
     """
     try:
-        return Users.objects.get(id=id, deleted=False)
+        return Users.objects.select_related('role_id').get(id=id, deleted=False)
     except ObjectDoesNotExist:
-        return None
+        raise ObjectDoesNotExist("User or Role not found.")
 
 
 def list_users() -> list[Users]:
