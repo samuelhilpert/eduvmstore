@@ -13,6 +13,7 @@ from eduvmstore.db.operations.app_templates import (create_app_template,
                                                     approve_app_template,
                                                     check_app_template_name_collisions,
                                                     soft_delete_app_template)
+from eduvmstore.db.operations.users import get_user_by_id
 
 
 class AppTemplateViewSet(viewsets.ModelViewSet):
@@ -132,6 +133,19 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = Users.objects.filter(deleted=False)
     serializer_class = UserSerializer
+
+    def retrieve(self, request, pk=None):
+        """
+        Retrieve details of a specific user with role information.
+
+        :param Request request: The HTTP request object
+        :param str pk: The unique identifier of the user (primary key)
+        :return: HTTP response with a placeholder message
+        :rtype: Response
+        """
+        user = get_user_by_id(pk)
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class RoleViewSet(viewsets.ModelViewSet):
