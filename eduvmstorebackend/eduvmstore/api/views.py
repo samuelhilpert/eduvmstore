@@ -14,6 +14,10 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from eduvmstore.services.app_template_service import get_image_id_from_app_template, get_default_network_id
+from eduvmstore.services.nova_service import create_instance
+
+
 # from eduvmstore.db.operations.app_templates import create_app_template, list_app_templates
 
 
@@ -219,7 +223,8 @@ class FlavorViewSet(viewsets.ViewSet):
         :rtype: Response
         """
         # Placeholder logic to return possible and best matching flavors
-        return Response({"best_flavor_id": None, "possible_flavor_ids": []}, status=status.HTTP_200_OK)
+        return Response({"best_flavor_id": None, "possible_flavor_ids": []},
+                        status=status.HTTP_200_OK)
 
 # normal ViewSet chosen, as Instances are not part of own database
 class InstanceViewSet(viewsets.ViewSet):
@@ -231,6 +236,7 @@ class InstanceViewSet(viewsets.ViewSet):
     """
     # action decorator for custom endpoint
     # detail = False means it is for all AppTemplate
+
     @action(detail=False, methods=['post'], url_path='launch')
     def perform_create(self, request):
         """
@@ -240,5 +246,27 @@ class InstanceViewSet(viewsets.ViewSet):
         :return: HTTP response with instance ID and accounts
         :rtype: Response
         """
-        # Placeholder logic to create an instance
-        return Response({"id": None, "accounts": [] }, status=status.HTTP_201_CREATED)
+        token = request.headers.get('X-Auth-Token')
+        if not token:
+            return Response({"error": "Authorization token missing"},
+                            status=status.HTTP_401_UNAUTHORIZED)
+
+        # network_id = request.data.get('network_id')
+        name = request.data.get('name')
+        app_template_id = request.data.get('app_template_id')
+        flavor_id = request.data.get('flavor_id')
+        accounts = request.data.get('accounts')
+
+        if not all([name, app_template_id, flavor_id]):
+            return Response({"error": "Missing required parameters"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            image_id = get_image_id_from_app_template(app_template_id)
+            network_id = get_default_network_id(token)
+            instance = create_instance(name, image_id, flavor_id, network_id, token)
+            return Response({"id": instance.id, "name": instance.name},
+                            status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)

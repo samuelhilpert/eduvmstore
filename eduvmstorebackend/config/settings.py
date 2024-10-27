@@ -117,13 +117,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # OpenStack
 
 OPENSTACK = {
-    'auth_url': 'http://openstack.example.com:5000/v3',
+    'auth_url': 'http://192.168.64.6/v3',
     'project_name': 'eduvmstore',
-    'username': 'admin',
-    'password': 'nomoresecret',
     'user_domain_name': 'default',
     'project_domain_name': 'default',
     'region_name': 'nova',
+    'verify_ssl': False,
 }
 
 

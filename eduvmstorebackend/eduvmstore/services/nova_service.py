@@ -11,7 +11,7 @@ def list_instances():
     servers = conn.compute.servers()
     return [server.name for server in servers]
 
-def create_instance(name, image_id, flavor_id, network_id):
+def create_instance(name, image_id, flavor_id, network_id, token):
     """
     Create a new instance (server) in OpenStack.
 
@@ -19,10 +19,11 @@ def create_instance(name, image_id, flavor_id, network_id):
     :param str image_id: The ID of the image to use for the instance
     :param str flavor_id: The ID of the flavor to use for the instance
     :param str network_id: The ID of the network to attach to the instance
+    :param str token: The authentication token to use for the request
     :return: The created instance object
     :rtype: object
     """
-    conn = get_openstack_connection()
+    conn = get_openstack_connection(token=token)
     server = conn.compute.create_server(
         name=name,
         image_id=image_id,
