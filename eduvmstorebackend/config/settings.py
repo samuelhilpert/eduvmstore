@@ -117,8 +117,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # OpenStack
 
 OPENSTACK = {
-    'auth_url': 'http://192.168.64.6/v3',
-    'project_name': 'eduvmstore',
+    'auth_url': 'http://192.168.64.7/',
+    'project_id': '160ecca678e84d108501c726f7fa1e34',
+    'project_name': 'admin',
     'user_domain_name': 'default',
     'project_domain_name': 'default',
     'region_name': 'nova',

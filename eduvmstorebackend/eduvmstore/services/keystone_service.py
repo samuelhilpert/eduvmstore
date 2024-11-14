@@ -10,11 +10,13 @@ def get_openstack_connection(token):
     :rtype: openstack.connection.Connection
     """
     conn = openstack.connection.Connection(
+        region_name='regionOne',
         auth=dict(
             auth_url=settings.OPENSTACK['auth_url'],
             token=token,
             project_id=settings.OPENSTACK['project_id']
         ),
-        verify=settings.OPENSTACK.get('verify_ssl', True)
+        compute_api_version='2.1',
+        identity_interface='public',
     )
     return conn

@@ -1,13 +1,13 @@
 from .keystone_service import get_openstack_connection
 
-def list_instances():
+def list_instances(token):
     """
     List all instances (servers) in OpenStack.
 
     :return: A list of instance names
     :rtype: list[str]
     """
-    conn = get_openstack_connection()
+    conn = get_openstack_connection(token=token)
     servers = conn.compute.servers()
     return [server.name for server in servers]
 

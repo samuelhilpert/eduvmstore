@@ -15,5 +15,5 @@ REQUIRED_ACCESS_LEVELS = {
     'GET /images': 1001,
     'GET /images/{id}': 1002,
     'POST /flavors/selection': 1006,
-    'POST /instances/launch': 1007,
+    'POST /instances/launch/': 1007,
 }

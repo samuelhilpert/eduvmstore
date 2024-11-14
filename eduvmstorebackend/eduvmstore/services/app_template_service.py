@@ -13,8 +13,16 @@ def get_image_id_from_app_template(app_template_id):
 
 def get_default_network_id(token):
     conn = get_openstack_connection(token=token)
-    networks = list(conn.network.networks())
-    if networks:
-        return networks[0].id  # Return the first network ID
+    network = conn.network.get_default_network()
+    if network:
+        return network.id
     else:
-        raise ValueError("No networks available")
+        raise ValueError("No default network available")
+
+# def get_default_network_id(token):
+#     conn = get_openstack_connection(token=token)
+#     networks = list(conn.network.networks())
+#     if networks:
+#         return networks[0].id  # Return the first network ID
+#     else:
+#         raise ValueError("No networks available")
