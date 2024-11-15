@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: http://localhost:8000/api/images/{{image_id}}
+  url: {{base_url}}/api/images/{{image_id}}
   body: none
   auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
 }
 
 vars:pre-request {

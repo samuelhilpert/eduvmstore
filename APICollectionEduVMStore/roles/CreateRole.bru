@@ -5,14 +5,14 @@ meta {
 }
 
 post {
-  url: http://localhost:8000/api/roles/
+  url: {{base_url}}/api/roles/
   body: json
   auth: none
 }
 
 body:json {
   {
-    "name" : "user",
+    "name" : "user1",
     "access_level" : "2000"
   }
 }

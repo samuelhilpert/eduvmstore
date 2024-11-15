@@ -1,0 +1,32 @@
+meta {
+  name: AuthenticateUser
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{open_stack_url}}/identity/v3/auth/tokens
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "auth": {
+          "identity": {
+              "methods": [
+                  "password"
+              ],
+              "password": {
+                  "user": {
+                      "name": "admin",
+                      "domain": {
+                          "name": "Default"
+                      },
+                      "password": "admin"
+                  }
+              }
+          }
+      }
+  }
+}

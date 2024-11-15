@@ -5,7 +5,11 @@ meta {
 }
 
 delete {
-  url: http://localhost:8000/api/users/{{new_user_id}}
+  url: {{base_url}}/api/users/{{new_user_id}}
   body: none
   auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
 }

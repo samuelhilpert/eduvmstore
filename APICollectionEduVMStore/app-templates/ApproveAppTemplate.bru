@@ -5,7 +5,11 @@ meta {
 }
 
 patch {
-  url: http://localhost:8000/api/app-templates/{{new_app_template_id}}/approved/
+  url: {{base_url}}/api/app-templates/{{new_app_template_id}}/approved/
   body: none
   auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
 }
