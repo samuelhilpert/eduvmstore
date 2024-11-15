@@ -10,6 +10,10 @@ post {
   auth: none
 }
 
+headers {
+  X-Auth-Token: {{token_id}}
+}
+
 body:json {
   { 
     "app_template_id" : "{{new_app_template_id}}",
