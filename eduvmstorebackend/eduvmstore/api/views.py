@@ -15,7 +15,13 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-# from eduvmstore.db.operations.app_templates import create_app_template, list_app_templates
+from eduvmstore.db.operations.app_templates import (create_app_template,
+                                                    list_app_templates,
+                                                    approve_app_template,
+                                                    check_app_template_name_collisions,
+                                                    soft_delete_app_template)
+from eduvmstore.db.operations.users import get_user_by_id
+
 
 
 class AppTemplateViewSet(viewsets.ModelViewSet):
@@ -88,9 +94,8 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         :return: HTTP response with the approval status
         :rtype: Response
         """
-        app_template = self.get_object()
-        app_template.approved = True
-        app_template.save()
+        app_template_id = self.get_object().id
+        app_template = approve_app_template(app_template_id)
         return Response(
             {"id": app_template.id, "approved": app_template.approved},
             status=status.HTTP_200_OK)
@@ -108,7 +113,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         :return: HTTP response with collision status
         :rtype: Response
         """
-        collisions = AppTemplates.objects.filter(name=name, deleted=False).exists()
+        collisions = check_app_template_name_collisions(name)
 
         response_object = {"name": name, "collisions": collisions}
         return Response(response_object, status=status.HTTP_200_OK)
@@ -121,10 +126,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         :return: HTTP response with no content
         :rtype: Response
         """
-        app_template = self.get_object()
-        app_template.deleted = True
-        app_template.deleted_at = now()
-        app_template.save()
+        soft_delete_app_template(self.get_object().id)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -140,13 +142,18 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.filter(deleted=False)
     serializer_class = UserSerializer
 
-    @action(detail=True, methods=['patch'], url_path='role')
-    def change_role(self, request, pk=None):
-        # TODO: Logic to change user role
-        return Response(
-            {"message": "not yet implemented, but will change Role"},
-            status=status.HTTP_200_OK
-        )
+    def retrieve(self, request, pk=None):
+        """
+        Retrieve details of a specific user with role information.
+
+        :param Request request: The HTTP request object
+        :param str pk: The unique identifier of the user (primary key)
+        :return: HTTP response with a placeholder message
+        :rtype: Response
+        """
+        user = get_user_by_id(pk)
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class RoleViewSet(viewsets.ModelViewSet):
@@ -180,23 +187,18 @@ class ImageViewSet(viewsets.ViewSet):
         :return: HTTP response with a placeholder message
         :rtype: Response
         """
-        headers = {"X-Auth-Token": request.user.token.id}
+        token = request.headers.get('X-Auth-Token')
+        if not token:
+            return Response({"error": "Authorization token missing"},
+                            status=status.HTTP_401_UNAUTHORIZED)
+
         try:
-            openstack_url = "localhost:9292"
-            response = requests.get(f"http://{openstack_url}/image/v2/images/{image_id}",
-                                    headers=headers, timeout=10)
-            response.raise_for_status()
-            return response.json()
-        except requests.exceptions.HTTPError as err:
-            print(f"Error fetching image details: {err}")
-            raise err
-        except requests.exceptions.RequestException as e:
-            print(f"Error contacting the Glance API: {e}")
-            return None
-        return Response(
-            [{"message": "not yet implemented"}],
-            status=status.HTTP_200_OK
-        )
+            images = list_images(token)
+            return Response(images,
+                            status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # Django passes id automatically as pk
     def retrieve(self, request, pk):
