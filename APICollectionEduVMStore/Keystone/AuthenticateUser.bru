@@ -31,6 +31,15 @@ body:json {
   }
 }
 
-vars:post-response {
-  token_id: 
+script:post-response {
+  // Extract the authentication token from the response headers
+  const authToken = response.headers['x-subject-token'];
+  
+  if (authToken) {
+    // Save the token to the 'token_id' variable
+    bruno.setVariable('token_id', authToken);
+    console.log('Token successfully extracted and saved as "token_id".');
+  } else {
+    console.error('Authentication token not found in response headers.');
+  }
 }
