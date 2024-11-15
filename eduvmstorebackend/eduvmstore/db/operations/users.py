@@ -38,9 +38,9 @@ def get_user_by_id(id: str) -> Users:
     :raises ObjectDoesNotExist: If no User is found with the given ID
     """
     try:
-        return Users.objects.select_related('role_id').get(id=id, deleted=False)
+        return Users.objects.get(id=id, deleted=False)
     except ObjectDoesNotExist:
-        raise ObjectDoesNotExist("User or Role not found.")
+        return None # TODO: Purposefully return None instead of raising an exception
 
 
 def list_users() -> list[Users]:

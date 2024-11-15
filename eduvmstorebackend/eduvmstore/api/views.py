@@ -281,9 +281,10 @@ class InstanceViewSet(viewsets.ViewSet):
         try:
             image_id = get_image_id_from_app_template(app_template_id)
             network_id = get_default_network_id(token)
-            instance = create_instance(name, image_id, flavor_id, network_id, token)
-            return Response({"id": instance.id, "name": instance.name}, status=status.HTTP_201_CREATED)
-            # return Response({"message": "not yet implemented"}, status=status.HTTP_200_OK)
+            print('network_id:', network_id)
+            # instance = create_instance(name, image_id, flavor_id, network_id, token)
+            # return Response({"id": instance.id, "name": instance.name}, status=status.HTTP_201_CREATED)
+            return Response({"message": "not yet implemented"}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
