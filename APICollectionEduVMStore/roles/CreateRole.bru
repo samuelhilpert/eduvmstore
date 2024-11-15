@@ -10,9 +10,13 @@ post {
   auth: none
 }
 
+headers {
+  X-Auth-Token: {{token_id}}
+}
+
 body:json {
   {
-    "name" : "user1",
+    "name" : "User",
     "access_level" : "2000"
   }
 }
