@@ -38,7 +38,8 @@ class UserOperationsTests(TestCase):
         self.assertEqual(str(retrieved_user.id), user.id)
 
     def test_does_not_retrieve_nonexistent_user(self):
-        self.assertIsNone(get_user_by_id(str(uuid.uuid4())))
+        with self.assertRaises(ObjectDoesNotExist):
+            get_user_by_id(str(uuid.uuid4()))
 
     def test_lists_all_users(self):
         role = self.create_role()

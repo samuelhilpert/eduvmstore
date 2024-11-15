@@ -5,9 +5,13 @@ meta {
 }
 
 put {
-  url: http://localhost:8000/api/app-templates/{{new_app_template_id}}/
+  url: {{base_url}}/api/app-templates/{{new_app_template_id}}/
   body: json
   auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
 }
 
 body:json {

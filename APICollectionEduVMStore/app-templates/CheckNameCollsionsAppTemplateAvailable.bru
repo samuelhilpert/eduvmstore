@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: http://localhost:8000/api/app-templates/name/{{free_name_app_template}}/collisions
+  url: {{base_url}}/api/app-templates/name/{{free_name_app_template}}/collisions
   body: none
   auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
 }
 
 vars:pre-request {
