@@ -9,14 +9,23 @@ def get_openstack_connection(token):
     :return: An OpenStack connection object
     :rtype: openstack.connection.Connection
     """
-    conn = openstack.connection.Connection(
-        region_name='regionOne',
-        auth=dict(
-            auth_url=settings.OPENSTACK['auth_url'],
-            token=token,
-            project_id=settings.OPENSTACK['project_id']
-        ),
-        compute_api_version='2.1',
-        identity_interface='public',
-    )
+    try:
+        conn = openstack.connection.Connection(
+            region_name='RegionOne',
+            auth=dict(
+                auth_url=settings.OPENSTACK['auth_url'],
+                #token=token,
+                username='admin',
+                password='nomoresecret',
+                project_id=settings.OPENSTACK['project_id'],
+                user_domain_name='default',
+                project_domain_name='default',
+            ),
+            compute_api_version='2.1',
+            identity_interface='public',
+        )
+    except Exception as e:
+        print('error', e)
+
+    print('connection', conn)
     return conn

@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -57,8 +58,8 @@ MIDDLEWARE = [
 ]
 
 # Enable Keystone authentication middleware for production
-if os.getenv('ENABLE_KEYSTONE_AUTH', 'False') == 'True':
-    MIDDLEWARE.append('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware')
+# if os.getenv('ENABLE_KEYSTONE_AUTH', 'False') == 'True':
+#     MIDDLEWARE.append('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware')
 
 
 ROOT_URLCONF = 'config.urls'
@@ -117,8 +118,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # OpenStack
 
 OPENSTACK = {
-    'auth_url': 'http://192.168.64.7/',
-    'project_id': '160ecca678e84d108501c726f7fa1e34',
+    'auth_url': 'http://192.168.64.7/identity/',
+    'project_id': 'aa5e9341447b49349c8ee1bba9a26634',
     'project_name': 'admin',
     'user_domain_name': 'default',
     'project_domain_name': 'default',

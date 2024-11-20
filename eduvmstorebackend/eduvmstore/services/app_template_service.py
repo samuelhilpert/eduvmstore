@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from eduvmstore.db.operations.app_templates import get_app_template_by_id
@@ -13,7 +15,14 @@ def get_image_id_from_app_template(app_template_id):
 
 def get_default_network_id(token):
     conn = get_openstack_connection(token=token)
-    network = conn.network.get_default_network()
+    print('conn.network: ', conn)
+    pprint(vars(conn))
+    try:
+        network = conn.get_network("public", None)
+    except Exception as e:
+        print('error', e)
+    #network = conn.get_default_network()
+    print('network: ', network)
     if network:
         return network.id
     else:

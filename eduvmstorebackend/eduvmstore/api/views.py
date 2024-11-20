@@ -263,6 +263,7 @@ class InstanceViewSet(viewsets.ViewSet):
         :return: HTTP response with instance ID and accounts
         :rtype: Response
         """
+        print('Entered perform_create')
         token = request.headers.get('X-Auth-Token')
         if not token:
             return Response({"error": "Authorization token missing"},
@@ -274,12 +275,15 @@ class InstanceViewSet(viewsets.ViewSet):
         flavor_id = request.data.get('flavor_id')
         accounts = request.data.get('accounts')
 
+        print('name:', name)
+
         if not all([name, app_template_id, flavor_id]):
             return Response({"error": "Missing required parameters"},
                             status=status.HTTP_400_BAD_REQUEST)
 
         try:
             image_id = get_image_id_from_app_template(app_template_id)
+            print('image_id:', image_id)
             network_id = get_default_network_id(token)
             print('network_id:', network_id)
             # instance = create_instance(name, image_id, flavor_id, network_id, token)
