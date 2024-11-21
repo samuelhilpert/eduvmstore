@@ -24,11 +24,16 @@ def create_instance(name, image_id, flavor_id, network_id, token):
     :rtype: object
     """
     conn = get_openstack_connection(token=token)
-    server = conn.compute.create_server(
-        name=name,
-        image_id=image_id,
-        flavor_id=flavor_id,
-        networks=[{"uuid": network_id}],
-    )
-    conn.compute.wait_for_server(server)
+    name = 'jared'
+    try:
+        server = conn.compute.create_server(
+                name=name,
+                image_id=image_id,
+                flavor_id=flavor_id,
+                networks=[{"uuid": network_id}],
+                )
+        conn.compute.wait_for_server(server)
+    except Error as e:
+        print(e)
+
     return server

@@ -52,7 +52,7 @@ class KeystoneAuthenticationMiddleware:
             logger.error('Access denied for user: %s', user.id)
             return JsonResponse({'error': 'Access denied'}, status=403)
 
-        request.user = user
+        request.myuser = user
         response = self.get_response(request)
         return response
 
@@ -64,7 +64,7 @@ class KeystoneAuthenticationMiddleware:
         :return: Dictionary with Keystone user information if valid, else None
         :rtype: dict or None
         """
-        keystone_url = f"{settings.OPENSTACK['auth_url']}v3/auth/tokens"
+        keystone_url = f"http://{settings.OPENSTACK['auth_url']}v3/auth/tokens"
         headers = {'X-Auth-Token': token, 'X-Subject-Token': token}
         try:
             response = requests.get(keystone_url, headers=headers)
