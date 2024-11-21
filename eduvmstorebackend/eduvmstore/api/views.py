@@ -269,26 +269,26 @@ class InstanceViewSet(viewsets.ViewSet):
             return Response({"error": "Authorization token missing"},
                             status=status.HTTP_401_UNAUTHORIZED)
 
-        # network_id = request.data.get('network_id')
         name = request.data.get('name')
+        network_id = request.data.get('network_id')
         app_template_id = request.data.get('app_template_id')
         flavor_id = request.data.get('flavor_id')
         accounts = request.data.get('accounts')
 
         print('name:', name)
 
-        if not all([name, app_template_id, flavor_id]):
+        if not all([name, network_id, app_template_id, flavor_id]):
             return Response({"error": "Missing required parameters"},
                             status=status.HTTP_400_BAD_REQUEST)
 
         try:
             image_id = get_image_id_from_app_template(app_template_id)
             print('image_id:', image_id)
-            network_id = get_default_network_id(token)
-            print('network_id:', network_id)
-            # instance = create_instance(name, image_id, flavor_id, network_id, token)
-            # return Response({"id": instance.id, "name": instance.name}, status=status.HTTP_201_CREATED)
-            return Response({"message": "not yet implemented"}, status=status.HTTP_200_OK)
+            # TODO: network_id currently handed over from frontend should be requested from openstack
+            # network_id = get_default_network_id(token)
+            instance = create_instance(name, image_id, flavor_id, network_id, token)
+            return Response({"id": instance.id, "name": instance.name}, status=status.HTTP_201_CREATED)
+            # return Response({"message": "not yet implemented"}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
