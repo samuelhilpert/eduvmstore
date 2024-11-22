@@ -17,3 +17,15 @@ REQUIRED_ACCESS_LEVELS = {
     'POST /flavors/selection': 1006,
     'POST /instances/launch/': 1007,
 }
+
+
+DEFAULT_ROLES = {
+    'User': {
+        'name': 'User',
+        'access_level': 2000
+    },
+    'Admin': {
+        'name': 'Admin',
+        'access_level': 6000
+    }
+}

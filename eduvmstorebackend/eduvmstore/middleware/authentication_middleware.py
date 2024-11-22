@@ -6,9 +6,9 @@ from django.urls import resolve
 from django.conf import settings
 
 from eduvmstore.db.models import Users
-from eduvmstore.db.operations.roles import get_role_by_name
+from eduvmstore.db.operations.roles import get_role_by_name, create_role
 from eduvmstore.db.operations.users import get_user_by_id, create_user
-from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS
+from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS, DEFAULT_ROLES
 
 logger = logging.getLogger(__name__)
 
@@ -86,18 +86,48 @@ class KeystoneAuthenticationMiddleware:
         :rtype: Users
         """
         user_id = keystone_user_info['id']
+        print(keystone_user_info)
+        keystone_role = keystone_user_info
         try:
             user = get_user_by_id(user_id)
             if user is None:
                 raise Users.DoesNotExist
         except Users.DoesNotExist:
-            role = get_role_by_name("User")
-            user_data = {
-                'id': user_id,
-                'role_id': role
-            }
-            user = create_user(user_data)
+            create_user(user_id)
         return user
+
+    def create_user(self, user_id, openstack_role):
+        """
+        Match the OpenStack role to the corresponding role in the application,
+        create the role if it does not exist, and then create the user with the assigned role.
+
+        :param str user_id: The unique identifier of the user
+        :param str openstack_role: The role of the user in OpenStack
+            according to definition in eduvmstore/config/access_levels.py
+        :return: The newly created User instance
+        :rtype: Users
+        """
+
+        # match statement for extensibility with further roles, add them in eduvmstore/config/access_levels.py
+        match openstack_role:
+            case 'Admin':
+                role_name = DEFAULT_ROLES['Admin']['name']
+                default_access_level = DEFAULT_ROLES['Admin']['access_level']
+            case _ :
+                role_name = DEFAULT_ROLES['User']['name']
+                default_access_level = DEFAULT_ROLES['User']['access_level']
+
+
+        role = get_role_by_name(role_name)
+
+        if role is None:
+            role = create_role({'name' : role_name, 'access_level': default_access_level})
+
+        user_data = {
+            'id': user_id,
+            'role_id': role
+        }
+        user = create_user(user_data)
 
     def check_user_access(self, request, user):
         """
