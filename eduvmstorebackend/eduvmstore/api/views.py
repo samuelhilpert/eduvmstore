@@ -8,7 +8,7 @@ from django.utils.timezone import now
 from django.db.models import Q
 from django.utils.timezone import now
 
-# from eduvmstore.services.glance_service import list_images
+from eduvmstore.services.glance_service import list_images
 from eduvmstore.api.serializers import AppTemplateSerializer, RoleSerializer, UserSerializer
 from eduvmstore.db.models import AppTemplates, Roles, Users
 from rest_framework import status, viewsets
