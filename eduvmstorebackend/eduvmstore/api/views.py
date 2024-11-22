@@ -239,6 +239,15 @@ class FlavorViewSet(viewsets.ViewSet):
         :return: HTTP response with best and possible flavor IDs
         :rtype: Response
         """
+
+        # Retrieve All possible flavors from OpenStack
+
+        # Filter Flavors not matching any of the required parameters of the app template and openstack
+        # get app template minimal requirements
+        # Query Nova Service for available user ressource (instance count, RAM, CPU, Disk)
+        # check for each flavor if it is larger than the requirements
+
+
         # Placeholder logic to return possible and best matching flavors
         return Response({"best_flavor_id": None, "possible_flavor_ids": []},
                         status=status.HTTP_200_OK)
