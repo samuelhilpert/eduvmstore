@@ -1,0 +1,32 @@
+meta {
+  name: AuthenticateUserToken
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{open_stack_url}}/identity/v3/auth/tokens
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "auth": {
+      "identity": {
+        "methods": ["password"],
+        "password": {
+          "user": {
+            "name": "{{keystone_username}}",
+            "domain": { "id": "default" },
+            "password": "{{keystone_password}}"
+          }
+        }
+      }
+    }
+  }
+}
+
+vars:post-response {
+  token_id: res.headers["x-subject-token"]
+}
