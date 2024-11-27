@@ -220,10 +220,30 @@
 - **Dauer**: 18 Stunden
 - **Arbeit**: Versuch SDK Problematiken zu lösen und Demofähige Version herzustellen
 ---
+### Datum: 2024-11-20
+- **Entwickler**: Valentin, Marian, Jared, Emese, Samuel 
+- **Dauer**: 5 Stunden
+- **Arbeit**: Besprechung zum weiteren Vorgehen
+---
+### Datum: 2024-11-21
+- **Entwickler**: Samuel
+- **Dauer**: 5 Stunden
+- **Arbeit**: Launch Instances Anbindung des Frontends
+---
+### Datum: 2024-11-25
+- **Entwickler**: Samuel
+- **Dauer**: 2 Stunden
+- **Arbeit**: API Endpoints für Admin Seite anlegen und erste Tests
+---
+### Datum: 2024-11-26
+- **Entwickler**: Samuel
+- **Dauer**: 2 Stunden
+- **Arbeit**: Darstellung Users auf Admin Seite und Abfrage der auswählbaren Rollen
+---
 ### Datum: 2024-11-DD
 - **Entwickler**: Name
-- **Dauer**: z.B. 1,5 Stunden
-- **Arbeit**: Kurze Beschreibung der Aufgabe
+- **Dauer**:  Stunden
+- **Arbeit**: 
 
 
 
