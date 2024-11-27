@@ -215,9 +215,15 @@
 - **Dauer**: 2 Stunden
 - **Arbeit**: Code-Aufräumen
 ---
-### Datum: 2024-MM-DD
+### Datum: 2024-11-20 & 2024-11-21 & 2024-11-22
+- **Entwickler**: Valentin
+- **Dauer**: 18 Stunden
+- **Arbeit**: Versuch SDK Problematiken zu lösen und Demofähige Version herzustellen
+---
+### Datum: 2024-11-DD
 - **Entwickler**: Name
 - **Dauer**: z.B. 1,5 Stunden
 - **Arbeit**: Kurze Beschreibung der Aufgabe
+
 
 
