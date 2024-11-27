@@ -173,6 +173,7 @@ class RoleViewSet(viewsets.ModelViewSet):
     queryset = Roles.objects.all()
     serializer_class = RoleSerializer
 
+
 # normal ViewSet chosen, as Images are not part of own database
 class ImageViewSet(viewsets.ViewSet):
     """
@@ -219,6 +220,7 @@ class ImageViewSet(viewsets.ViewSet):
         # Placeholder logic to return details of a specific image
         return Response({"message": "Not yet implemented"}, status=status.HTTP_200_OK)
 
+
 # normal ViewSet chosen, as Flavors are not part of own database
 class FlavorViewSet(viewsets.ViewSet):
     """
@@ -251,6 +253,7 @@ class FlavorViewSet(viewsets.ViewSet):
         # Placeholder logic to return possible and best matching flavors
         return Response({"best_flavor_id": None, "possible_flavor_ids": []},
                         status=status.HTTP_200_OK)
+
 
 # normal ViewSet chosen, as Instances are not part of own database
 class InstanceViewSet(viewsets.ViewSet):
