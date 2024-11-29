@@ -1,20 +1,45 @@
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+
+from eduvmstore.config.access_levels import DEFAULT_ROLES
 from eduvmstore.db.models import Users
+from eduvmstore.db.operations.roles import get_role_by_name, create_role
+
 
 def create_user(user_data: dict) -> Users:
     """
-    Create a new User entry in the database using Django ORM.
+    Create a new User entry in the database using Django ORM. The role can either be specified by ID or name
+        according to the default roles in eduvmstore/config/access_levels.py. If the default role is not found,
+        this role is created.
 
-    :param dict user_data: Dictionary containing the User details
+    :param dict user_data: Dictionary containing the User details. This is either id and role_id or id and role_name.
+        The role name is matched to the default roles in eduvmstore/config/access_levels.py
     :return: The newly created User object
     :rtype: Users
     :raises ValidationError: If any required field is missing or invalid
     """
     if not user_data.get('id'):
         raise ValidationError("User ID cannot be empty")
+    if not user_data.get('role_id') and not user_data.get('role_name'):
+        raise ValidationError("Role ID and Role Name cannot be both empty")
+
+    # Only if no role ID is given match the role name to the default roles
     if not user_data.get('role_id'):
-        raise ValidationError("Role ID cannot be empty")
+        # match statement for extensibility with further roles, add them in eduvmstore/config/access_levels.py
+        match user_data.get('role_name'):
+            case 'Admin':
+                role_name = DEFAULT_ROLES['Admin']['name']
+                default_access_level = DEFAULT_ROLES['Admin']['access_level']
+            case _ :
+                role_name = DEFAULT_ROLES['User']['name']
+                default_access_level = DEFAULT_ROLES['User']['access_level']
+
+        role_id = get_role_by_name(role_name)
+
+        if role_id is None:
+            role_id = create_role({'name' : role_name, 'access_level': default_access_level})
+
+        user_data.role_id = role_id
 
     try:
         new_user = Users.objects.create(
