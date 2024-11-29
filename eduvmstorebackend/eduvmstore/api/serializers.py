@@ -93,22 +93,22 @@ class UserSerializer(serializers.ModelSerializer):
     role_id = serializers.PrimaryKeyRelatedField(queryset=Roles.objects.all(), write_only=True, required=False)
 
 
-class Meta:
-        model = Users
-        fields = [
-            'id',
-            'created_at',
-            'updated_at',
-            'role',
-        ]
-        read_only_fields = [
-            'id',
-            'created_at',
-            'updated_at',
-            'deleted_at',
-            'deleted',
-            'is_active'
-        ]
+    class Meta:
+            model = Users
+            fields = [
+                'id',
+                'created_at',
+                'updated_at',
+                'role',
+            ]
+            read_only_fields = [
+                'id',
+                'created_at',
+                'updated_at',
+                'deleted_at',
+                'deleted',
+                'is_active',
+            ]
 
     def create(self, validated_data):
         """
