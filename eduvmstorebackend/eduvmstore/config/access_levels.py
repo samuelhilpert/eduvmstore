@@ -10,7 +10,7 @@ REQUIRED_ACCESS_LEVELS = {
     'GET /app-templates/name/{name}/collisions': 1008,
     'GET /users': 6001,
     'GET /users/{id}': 1000,
-    'PATCH /users/{id}/role': 6101,
+    'PATCH /users/{id}/': 6101,
     'DELETE /users/{id}': 6102,
     'GET /images': 1001,
     'GET /images/{id}': 1002,
