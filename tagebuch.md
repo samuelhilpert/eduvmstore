@@ -240,6 +240,16 @@
 - **Dauer**: 2 Stunden
 - **Arbeit**: Darstellung Users auf Admin Seite und Abfrage der auswählbaren Rollen
 ---
+### Datum: 2024-11-27
+- **Entwickler**: Samuel
+- **Dauer**:  2 Stunden
+- **Arbeit**: Confirm Button und Logik zum Updaten 
+---
+### Datum: 2024-11-29
+- **Entwickler**: Samuel, Valentin
+- **Dauer**:  6 Stunden
+- **Arbeit**: Fix Middleware und Fix API Change User Role
+---
 ### Datum: 2024-11-DD
 - **Entwickler**: Name
 - **Dauer**:  Stunden
