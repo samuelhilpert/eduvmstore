@@ -100,6 +100,7 @@ class UserSerializer(serializers.ModelSerializer):
                 'created_at',
                 'updated_at',
                 'role',
+                'role_id',
             ]
             read_only_fields = [
                 'id',
