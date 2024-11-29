@@ -26,8 +26,8 @@ def create_user(user_data: dict) -> Users:
     # Only if no role ID is given match the role name to the default roles
     if not user_data.get('role_id'):
         # match statement for extensibility with further roles, add them in eduvmstore/config/access_levels.py
-        match user_data.get('role_name'):
-            case 'Admin':
+        match user_data.get('role_name').lower():
+            case 'admin':
                 role_name = DEFAULT_ROLES['Admin']['name']
                 default_access_level = DEFAULT_ROLES['Admin']['access_level']
             case _ :
