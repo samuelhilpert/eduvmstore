@@ -39,7 +39,7 @@ def create_user(user_data: dict) -> Users:
         except ObjectDoesNotExist:
             role_id = create_role({'name' : role_name, 'access_level': default_access_level})
 
-        user_data.role_id = role_id
+        user_data['role_id'] = role_id
 
     try:
         new_user = Users.objects.create(
