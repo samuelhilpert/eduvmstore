@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,8 +26,9 @@ SECRET_KEY = 'django-insecure-9z)3#^qm_pgcf23+h37%$74jo-#($kz#!_$5$6sa@+xk)x&3(c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["141.72.12.209","192.168.64.1","0.0.0.0", "localhost"]
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 
@@ -39,17 +41,26 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'eduvmstore',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
+
+# Enable Keystone authentication middleware for production
+# if os.getenv('ENABLE_KEYSTONE_AUTH', 'False') == 'True':
+#     MIDDLEWARE.append('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware')
+
 
 ROOT_URLCONF = 'config.urls'
 
@@ -107,13 +118,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # OpenStack
 
 OPENSTACK = {
-    'auth_url': 'http://openstack.example.com:5000/v3',
-    'project_name': 'eduvmstore',
-    'username': 'admin',
-    'password': 'nomoresecret',
+    'auth_url': '141.72.12.111/identity/',
+    'project_id': 'aa5e9341447b49349c8ee1bba9a26634',
+    'project_name': 'admin',
     'user_domain_name': 'default',
     'project_domain_name': 'default',
     'region_name': 'nova',
+    'verify_ssl': False,
 }
 
 

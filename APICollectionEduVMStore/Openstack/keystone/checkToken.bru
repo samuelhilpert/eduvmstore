@@ -1,0 +1,16 @@
+meta {
+  name: checkToken
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{keystone_url}}/v3/auth/tokens
+  body: json
+  auth: none
+}
+
+headers {
+  x-auth-token: {{token_id}}
+  x-subject-token: {{token_id}}
+}

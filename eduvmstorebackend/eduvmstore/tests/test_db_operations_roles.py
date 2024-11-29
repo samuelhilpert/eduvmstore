@@ -1,8 +1,9 @@
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.test import TestCase
 from eduvmstore.db.models import Roles
-from eduvmstore.db.operations.roles import create_role, update_role, get_role_by_id
+from eduvmstore.db.operations.roles import create_role, update_role, get_role_by_id, get_role_by_name
 import uuid
+
 
 class RoleOperationsTests(TestCase):
 
@@ -62,3 +63,19 @@ class RoleOperationsTests(TestCase):
     def test_does_not_retrieve_nonexistent_role(self):
         with self.assertRaises(ObjectDoesNotExist):
             get_role_by_id(str(uuid.uuid4()))
+
+    def test_retrieves_role_by_name_successfully(self):
+        name = "User"
+        access_level = 1000
+        Roles.objects.create(
+            id=str(uuid.uuid4()),
+            name=name,
+            access_level=access_level
+        )
+        retrieved_role = get_role_by_name(name)
+        self.assertEqual(retrieved_role.name, name)
+        self.assertEqual(retrieved_role.access_level, access_level)
+
+    def test_does_not_retrieve_nonexistent_role_by_name(self):
+        with self.assertRaises(ObjectDoesNotExist):
+            get_role_by_name("NonExistentRole")

@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: http://localhost:8000/api/app-templates/
+  url: {{base_url}}/api/app-templates/
   body: none
   auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
 }

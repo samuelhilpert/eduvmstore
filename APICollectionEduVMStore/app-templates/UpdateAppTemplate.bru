@@ -5,19 +5,22 @@ meta {
 }
 
 put {
-  url: http://localhost:8000/api/app-templates/{{new_app_template_id}}/
+  url: {{base_url}}/api/app-templates/{{new_app_template_id}}/
   body: json
   auth: none
 }
 
+headers {
+  X-Auth-Token: {{token_id}}
+}
+
 body:json {
   {
-  "name": "AI Development App",
-  "description": "my new description",
+  "name": "AI Development App 4",
+  "description": "my new description 4",
   "short_description": "AI Dev VM",
   "instantiation_notice": "install everything",
   "image_id": "f23e4567-e89b-12d3-a456-426614174001",
-  "creator_id": "4a7c8377-a3de-4350-b25b-38cb112a4d62",
   "version": "2.0",
   "public": true,
   "approved": true,

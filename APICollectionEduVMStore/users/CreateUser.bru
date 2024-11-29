@@ -5,9 +5,13 @@ meta {
 }
 
 post {
-  url: http://localhost:8000/api/users/
+  url: {{base_url}}/api/users/
   body: json
   auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
 }
 
 body:json {

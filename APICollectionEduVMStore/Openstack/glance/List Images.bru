@@ -1,0 +1,16 @@
+meta {
+  name: List Images
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{glance_url}}/v2.0/images
+  body: none
+  auth: none
+}
+
+headers {
+  x-subject-token: {{token_id}}
+  x-auth-token: {{token_id}}
+}

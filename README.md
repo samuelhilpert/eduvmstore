@@ -1,33 +1,45 @@
 # EduVMStore
 
-## Projektübersicht
+## Project Overview
 
-Dieses Projekt umfasst die Entwicklung eines **AppStores** zur Bereitstellung von Anwendungen auf einer OpenStack-Plattform. Das Ziel ist es, Dozenten die Möglichkeit zu geben, Anwendungen zu deployen, die von Studierenden im Rahmen von Lehrveranstaltungen genutzt werden können, ohne tiefere Kenntnisse in OpenStack zu benötigen. Der Fokus liegt auf automatisierter Konfiguration und einfacher Verwaltung.
+This project involves the development of an **AppStore** for providing applications on an OpenStack platform.
+The goal is to enable instructors to deploy applications that can be used by students
+in the context of courses without requiring deep knowledge of OpenStack. 
+The focus is on automated configuration and easy management.
 
-### Hauptfunktionen
-- **Automatisiertes Deployment**: Vereinfachter Bereitstellungsprozess mit automatisierten Schritten für die Konfiguration von VMs, Benutzerkonten, Netzwerkeinstellungen usw.
-- **Unterstützung verschiedener Anwendungen**: Der AppStore kann vorgefertigte Umgebungen bereitstellen
+### Main Features
+- **Automated Deployment**: Simplified deployment process with automated steps for configuring VMs,
+user accounts, network settings, etc.
+- **Support for Various Applications**: The AppStore can provide pre-configured environments
+for different applications.
 
-Dieses Projekt wird im Rahmen des Moduls "Projekt" an der DHBW Mannheim im Zeitraum von August 2024 bis Mai 2025 umgesetzt.
+This project is being implemented as part of the "Project" module at DHBW Mannheim
+from August 2024 to May 2025.
 
-## Projekt-DEV-Setup und Run
-### Datenbank lokal
-* ``python eduvmstorebackend/manage.py makemigrations``
-* ODER ``python3 eduvmstorebackend/manage.py makemigrations``
-* ``python3 eduvmstorebackend/manage.py migrate ``
-* ODER ``python eduvmstorebackend/manage.py migrate ``
-* `db.sqlite3` Datei doppelklicken
-* Im Pop-Up unten auf "Download missing Drivers" gehen und Installation abwarten und auf "OK" gehen
+## Project DEV Setup and Run
+### Local Database
+* `python eduvmstorebackend/manage.py makemigrations`
+* OR `python3 eduvmstorebackend/manage.py makemigrations`
+* `python3 eduvmstorebackend/manage.py migrate`
+* OR `python eduvmstorebackend/manage.py migrate`
+* Double-click the `db.sqlite3` file
+* In the pop-up, click on "Download missing Drivers", wait for the installation to complete, and click "OK"
 
-### Backend Server lokal starten:
-* ``python3 eduvmstorebackend/manage.py runserver localhost:8000
-``
-* Zugang über localhost:8000
+### Start Backend Server Locally (Development):
+* Optional: `export ENABLE_KEYSTONE_AUTH=False`
+(is set by default, but needed after using the production environment)
+* `python3 eduvmstorebackend/manage.py runserver localhost:8000`
+* Access via `localhost:8000`
 
-### API-Zugriff
-* Zugriff über ```localhost:8000/api/<endpoint>```
-* ``<endpoint>``: Z.b. ``<base-url>/app-templates/...``, ``<base-url>/users/...``
+### Start Backend Server Locally (Production behavior with keystone authentication):
+* `export ENABLE_KEYSTONE_AUTH=True`
+* `python3 eduvmstorebackend/manage.py runserver localhost:8000`
+* Access via `localhost:8000`
 
-### Tests ausführen
-* ``python eduvmstorebackend/manage.py test``
-* ODER ``python3 eduvmstorebackend/manage.py test``
+### API Access
+* Access via `localhost:8000/api/<endpoint>`
+* `<endpoint>`: e.g., `<base-url>/app-templates/...`, `<base-url>/users/...`
+
+### Run Tests
+* `python eduvmstorebackend/manage.py test`
+* OR `python3 eduvmstorebackend/manage.py test`
