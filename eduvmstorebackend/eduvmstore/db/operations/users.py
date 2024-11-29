@@ -34,9 +34,9 @@ def create_user(user_data: dict) -> Users:
                 role_name = DEFAULT_ROLES['User']['name']
                 default_access_level = DEFAULT_ROLES['User']['access_level']
 
-        role_id = get_role_by_name(role_name)
-
-        if role_id is None:
+        try:
+            role_id = get_role_by_name(role_name)
+        except ObjectDoesNotExist:
             role_id = create_role({'name' : role_name, 'access_level': default_access_level})
 
         user_data.role_id = role_id
