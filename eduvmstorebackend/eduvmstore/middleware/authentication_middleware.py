@@ -137,7 +137,7 @@ class KeystoneAuthenticationMiddleware:
             'app-template-check-name-collisions': 'GET /app-templates/name/{name}/collisions',
             'user-list': 'GET /users',
             'user-detail': 'GET /users/{id}',
-            'user-change-role': 'PATCH /users/{id}',
+            'user-change-role': 'PATCH /users/{id}/',
             'user-destroy': 'DELETE /users/{id}',
             'image-list': 'GET /images',
             'image-detail': 'GET /images/{id}',
