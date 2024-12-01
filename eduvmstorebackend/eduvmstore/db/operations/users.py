@@ -65,7 +65,7 @@ def get_user_by_id(id: str) -> Users:
     try:
         return Users.objects.select_related('role_id').get(id=id, deleted=False)
     except ObjectDoesNotExist:
-        return None # TODO: Purposefully return None instead of raising an exception
+        raise ObjectDoesNotExist(f"User with id {id} not found.")
 
 
 def list_users() -> list[Users]:

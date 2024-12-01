@@ -12,7 +12,7 @@ import uuid
 class AppTemplateOperationsTests(TestCase):
 
     def create_user_and_role(self):
-        role = Roles.objects.create(name="Admin", access_level=6000)
+        role = Roles.objects.create(name="Admin", access_level=7000)
         user = Users.objects.create(role_id=role)
         return user
 

@@ -1,9 +1,10 @@
 import logging
 import requests
-from django.utils.timezone import now
+
 from django.http import JsonResponse
 from django.urls import resolve
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 
 from eduvmstore.db.models import Users
 from eduvmstore.db.operations.roles import get_role_by_name, create_role
@@ -87,13 +88,15 @@ class KeystoneAuthenticationMiddleware:
         """
         user_id = keystone_user_info['id']
         print(keystone_user_info)
-        keystone_role = keystone_user_info['name']
+
+        # TODO Currently not working properly
+        # keystone_role = keystone_user_info['name']
+        keystone_role = 'Admin'
+
         print("keystone_role: ", keystone_role)
         try:
             user = get_user_by_id(user_id)
-            if user is None:
-                raise Users.DoesNotExist
-        except Users.DoesNotExist:
+        except ObjectDoesNotExist:
             user_dict = {
                 'id': user_id,
                 'role_name': keystone_role
