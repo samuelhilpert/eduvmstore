@@ -255,10 +255,10 @@
 - **Dauer**:  4 Stunden
 - **Arbeit**: Fix Änderungsvorschläge vom Pull Request, Fix Tests, Admin-Seite 
 ---
-### Datum: 2024-11-29
-- **Entwickler**: Samuel, Valentin
-- **Dauer**:  6 Stunden
-- **Arbeit**: Fix Middleware und Fix API Change User Role
+### Datum: 2024-12-DD
+- **Entwickler**: 
+- **Dauer**:   Stunden
+- **Arbeit**: 
 ---
 
 
