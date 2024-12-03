@@ -255,6 +255,11 @@
 - **Dauer**:  4 Stunden
 - **Arbeit**: Fix Änderungsvorschläge vom Pull Request, Fix Tests, Admin-Seite 
 ---
+### Datum: 2024-12-02
+- **Entwickler**: Samuel
+- **Dauer**:  1 Stunde
+- **Arbeit**: Admin Seite (Tabelle Confirm App Templates und Endpoint/Logik dafür)
+---
 ### Datum: 2024-12-DD
 - **Entwickler**: 
 - **Dauer**:   Stunden
