@@ -260,10 +260,14 @@
 - **Dauer**:  1 Stunde
 - **Arbeit**: Admin Seite (Tabelle Confirm App Templates und Endpoint/Logik dafür)
 ---
+### Datum: 2024-12-03
+- **Entwickler**: Samuel
+- **Dauer**:   2 Stunden
+- **Arbeit**: Admin Seite - Delete App Templates, Delete Users 
+---
 ### Datum: 2024-12-DD
 - **Entwickler**: 
 - **Dauer**:   Stunden
 - **Arbeit**: 
 ---
-
 
