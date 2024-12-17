@@ -265,9 +265,28 @@
 - **Dauer**:   2 Stunden
 - **Arbeit**: Admin Seite - Delete App Templates, Delete Users 
 ---
-### Datum: 2024-12-DD
+### Datum: 2024-12-05
+- **Entwickler**: Samuel
+- **Dauer**:   1 Stunde
+- **Arbeit**: Admin Seite - Create Role
+---
+### Datum: 2024-12-07
+- **Entwickler**: Samuel
+- **Dauer**:   3 Stunden
+- **Arbeit**: Admin/Tutorial - Design der FAQ/Admin Seite
+---
+### Datum: 2024-12-10
+- **Entwickler**: Samuel
+- **Dauer**:   1,5 Stunden
+- **Arbeit**: Überprüfung Eingabe Version und Requirements
+---
+### Datum: 2024-12-14
+- **Entwickler**: Samuel
+- **Dauer**:   3 Stunden
+- **Arbeit**: Überprüfung App Template Name verfügbar
+---
+### Datum: 2024-12-XX
 - **Entwickler**: 
-- **Dauer**:   Stunden
+- **Dauer**:    Stunden
 - **Arbeit**: 
 ---
-
