@@ -1,12 +1,6 @@
-from rest_framework import status, viewsets
-from rest_framework.response import Response
-from rest_framework.decorators import action
-# from rest_framework.views import APIView
-import requests
 
-from django.utils.timezone import now
 from django.db.models import Q
-from django.utils.timezone import now
+from django.core.exceptions import ObjectDoesNotExist
 
 from eduvmstore.services.glance_service import list_images
 from eduvmstore.api.serializers import AppTemplateSerializer, RoleSerializer, UserSerializer
@@ -156,7 +150,11 @@ class UserViewSet(viewsets.ModelViewSet):
         :return: HTTP response with a placeholder message
         :rtype: Response
         """
-        user = get_user_by_id(pk)
+        try:
+            user = get_user_by_id(pk)
+        except ObjectDoesNotExist:
+            return Response({"detail": f"User with id \"{pk}\" not found"},
+                            status=status.HTTP_404_NOT_FOUND)
         serializer = self.get_serializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
