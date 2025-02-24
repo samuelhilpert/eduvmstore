@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 
+import logging.config
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -126,6 +128,48 @@ OPENSTACK = {
     'region_name': 'nova',
     'verify_ssl': False,
 }
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[%(asctime)s] %(levelname)s %(name)s: %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+        'simple': {
+            'format': '%(levelname)s: %(message)s',
+        },
+    },
+    'handlers': {
+        'file_debug': {
+            'level': 'DEBUG', # including above levels
+            'class': 'logging.FileHandler',
+            'filename': '/log/eduvmstore_backend_debugging.log',
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'eduvmstore_logger': {
+            'handlers': ['file_debug', 'console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        # Root logger configuration
+        '': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+        },
+    },
+}
+logging.config.dictConfig(LOGGING)
+
 
 
 # Internationalization
