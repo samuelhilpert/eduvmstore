@@ -290,8 +290,28 @@
 - **Dauer**:   6 Stunden
 - **Arbeit**: Fehlersuche und Behebung zur Sicherstellung des Standes vom letzten Semester
 ---
-### Datum: 2024-12-XX
-- **Entwickler**: 
-- **Dauer**:    Stunden
-- **Arbeit**: 
+### Datum: 2025-02-17
+- **Entwickler**: Valentin, Samuel, Marian, Jared, Emy, Monika
+- **Dauer**:    6 Stunden
+- **Arbeit**: Kick-Off-Meeting Semester 6
+---
+### Datum: 2025-02-18
+- **Entwickler**: Valentin, Samuel, Marian, Jared, Emy, Monika
+- **Dauer**:    9 Stunden
+- **Arbeit**: erstes Reinkommen nach der Vorlesung
+---
+### Datum: 2025-02-19
+- **Entwickler**: Samuel
+- **Dauer**:    3 Stunden
+- **Arbeit**: Ideen für Skript erarbeiten
+---
+### Datum: 2025-02-20
+- **Entwickler**: Samuel, Jared
+- **Dauer**:    8 Stunden
+- **Arbeit**: Skript, PDF Erstellung
+---
+### Datum: 2025-02-24
+- **Entwickler**: Samuel
+- **Dauer**:    3 Stunden
+- **Arbeit**: PDF Erstellung und Weiterleitung 
 ---
