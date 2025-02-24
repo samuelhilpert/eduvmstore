@@ -285,6 +285,11 @@
 - **Dauer**:   3 Stunden
 - **Arbeit**: Überprüfung App Template Name verfügbar
 ---
+### Datum: 2025-02-23
+- **Entwickler**: Valentin
+- **Dauer**:   6 Stunden
+- **Arbeit**: Fehlersuche und Behebung zur Sicherstellung des Standes vom letzten Semester
+---
 ### Datum: 2024-12-XX
 - **Entwickler**: 
 - **Dauer**:    Stunden
