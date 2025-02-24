@@ -125,6 +125,11 @@ class KeystoneAuthenticationMiddleware:
         :return: Required access level for the route
         :rtype: int
         """
+        logger = logging.getLogger('eduvmstore_logger')
+        logger.debug('Request path: %s', request.path)
+        logger.debug('Request method: %s', request.method)
+
+
         resolver_match = resolve(request.path)
         method = request.method
         route_name = resolver_match.route
@@ -149,4 +154,6 @@ class KeystoneAuthenticationMiddleware:
         }
 
         endpoint = route_mapping.get(route_name, f"{method} {resolver_match.route}")
+        logger.debug("Resolved endpoint: %s", endpoint)
+        logger.debug("Required access level: %s", REQUIRED_ACCESS_LEVELS.get(endpoint, 1000))
         return REQUIRED_ACCESS_LEVELS.get(endpoint, 1000)  # Default to 1000 if not found
