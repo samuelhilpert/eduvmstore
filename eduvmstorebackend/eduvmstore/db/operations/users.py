@@ -9,10 +9,12 @@ from eduvmstore.db.operations.roles import get_role_by_name, create_role
 def create_user(user_data: dict) -> Users:
     """
     Create a new User entry in the database using Django ORM. The role can either be specified by ID or name
-        according to the default roles in eduvmstore/config/access_levels.py. If the default role is not found,
+        according to the default roles in eduvmstore/config/access_levels.py.
+        If the default role is not found,
         this role is created.
 
-    :param dict user_data: Dictionary containing the User details. This is either id and role_id or id and role_name.
+    :param dict user_data: Dictionary containing the User details. This is either id and role_id or id
+        and role_name.
         The role name is matched to the default roles in eduvmstore/config/access_levels.py
     :return: The newly created User object
     :rtype: Users
@@ -25,7 +27,8 @@ def create_user(user_data: dict) -> Users:
 
     # Only if no role ID is given match the role name to the default roles
     if not user_data.get('role_id'):
-        # match statement for extensibility with further roles, add them in eduvmstore/config/access_levels.py
+        # match statement for extensibility with further roles,
+        # add them in eduvmstore/config/access_levels.py
         match user_data.get('role_name').lower():
             case 'admin':
                 role_name = DEFAULT_ROLES['Admin']['name']

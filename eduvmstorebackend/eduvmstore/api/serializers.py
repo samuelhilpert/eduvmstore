@@ -90,7 +90,9 @@ class UserSerializer(serializers.ModelSerializer):
     """
     role = RoleSerializer(source='role_id', read_only=True)
 
-    role_id = serializers.PrimaryKeyRelatedField(queryset=Roles.objects.all(), write_only=True, required=False)
+    role_id = serializers.PrimaryKeyRelatedField(queryset=Roles.objects.all(),
+                                                 write_only=True,
+                                                 required=False)
 
 
     class Meta:
