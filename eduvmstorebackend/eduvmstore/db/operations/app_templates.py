@@ -3,11 +3,13 @@ from django.utils import timezone
 from django.db.models import Q
 
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from eduvmstore.db.models import AppTemplates
+from eduvmstore.db.models import AppTemplates, AppTemplateAccountAttributes
+
 
 def create_app_template(app_template_data: dict):
     """
     Create a new AppTemplate entry in the database using Django ORM.
+    The account attributes are also created.
 
     :param dict app_template_data: Dictionary containing the AppTemplate details
     :return: The newly created AppTemplate object
@@ -32,6 +34,7 @@ def create_app_template(app_template_data: dict):
         raise ValidationError("AppTemplate per_user_disk_gb cannot be None")
     if app_template_data.get('per_user_cores') is None:
         raise ValidationError("AppTemplate per_user_cores cannot be None")
+
 
     try:
         new_app_template = AppTemplates.objects.create(
@@ -65,6 +68,20 @@ def create_app_template(app_template_data: dict):
             per_user_disk_gb=app_template_data['per_user_disk_gb'],
             per_user_cores=app_template_data['per_user_cores']
         )
+
+        # Directly create app_template_account_attributes as they are strongly bound to AppTemplates
+        account_attributes = app_template_data.get('account_attributes', [])
+        if account_attributes:
+            attributes_to_create = [
+                AppTemplateAccountAttributes(app_template_id=new_app_template, name=account_attribute.name)
+                for account_attribute in account_attributes
+            ]
+            AppTemplateAccountAttributes.objects.bulk_create(attributes_to_create)
+
+            # # Re-fetch new_app_template with its related account attributes prefetched.
+            # new_app_template = AppTemplates.objects.prefetch_related('apptemplateaccountattributes_set').get(
+            #     pk=new_app_template.pk)
+
         return new_app_template
     except ValidationError as e:
         raise e

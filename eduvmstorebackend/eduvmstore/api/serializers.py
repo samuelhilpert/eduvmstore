@@ -1,5 +1,17 @@
 from rest_framework import serializers
-from eduvmstore.db.models import AppTemplates, Users, Roles
+from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateAccountAttributes
+
+class AppTemplateAccountAttributesSerializer(serializers.ModelSerializer):
+    """Serializer for the AppAccountAttributes model.
+
+    This serializer handles the conversion of AppTemplateAccountAttributes model
+    instances to and from JSON format, including validation and creation of new
+    instances.
+    """
+    class Meta:
+        model = AppTemplateAccountAttributes
+        fields = ['id', 'attribute_name', 'attribute_value']
+        read_only_fields = ['id']
 
 class AppTemplateSerializer(serializers.ModelSerializer):
     """Serializer for the AppTemplates model.
@@ -7,6 +19,8 @@ class AppTemplateSerializer(serializers.ModelSerializer):
     This serializer handles the conversion of AppTemplates model instances
     to and from JSON format, including validation and creation of new instances.
     """
+    account_attributes = AppTemplateAccountAttributesSerializer(many=True, read_only=False)
+
     class Meta:
         model = AppTemplates
         fields = [
@@ -21,6 +35,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'short_description',
             'instantiation_notice',
             'script',
+            'account_attributes',
             'version',
             'public',
             'approved',
@@ -50,7 +65,12 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         :return: Newly created AppTemplates instance
         :rtype: AppTemplates
         """
-        return AppTemplates.objects.create(**validated_data)
+        account_attributes_data = validated_data.pop('account_attributes')
+        app_template = AppTemplates.objects.create(**validated_data)
+        for account_attribute_data in account_attributes_data:
+            AppTemplateAccountAttributes.objects.create(app_template_id=app_template, **account_attribute_data)
+        return app_template
+        # return AppTemplates.objects.create(**validated_data)
 
 
 
