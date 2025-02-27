@@ -73,14 +73,10 @@ def create_app_template(app_template_data: dict):
         account_attributes = app_template_data.get('account_attributes', [])
         if account_attributes:
             attributes_to_create = [
-                AppTemplateAccountAttributes(app_template_id=new_app_template, name=account_attribute.name)
+                AppTemplateAccountAttributes(app_template_id=new_app_template, name=account_attribute["name"])
                 for account_attribute in account_attributes
             ]
             AppTemplateAccountAttributes.objects.bulk_create(attributes_to_create)
-
-            # # Re-fetch new_app_template with its related account attributes prefetched.
-            # new_app_template = AppTemplates.objects.prefetch_related('apptemplateaccountattributes_set').get(
-            #     pk=new_app_template.pk)
 
         return new_app_template
     except ValidationError as e:

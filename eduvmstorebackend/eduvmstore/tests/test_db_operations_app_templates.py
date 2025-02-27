@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.test import TestCase
-from eduvmstore.db.models import AppTemplates, Users, Roles
+from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateAccountAttributes
 from eduvmstore.db.operations.app_templates import (
     create_app_template, list_app_templates, get_app_template_by_id,
     search_app_templates, get_to_be_approved_app_templates,
@@ -23,6 +23,11 @@ class AppTemplateOperationsTests(TestCase):
             "description": "A test template",
             "short_description": "Test",
             "instantiation_notice": "Notice",
+            "script": "Script",
+            "account_attributes": [
+                {"name": "Username"},
+                {"name": "Password"}
+            ],
             "image_id": str(uuid.uuid4()),
             "creator_id": user,
             "fixed_ram_gb": 1.0,
@@ -65,6 +70,7 @@ class AppTemplateOperationsTests(TestCase):
             description="A test template",
             short_description="Test",
             instantiation_notice="Notice",
+            script="Script",
             image_id=str(uuid.uuid4()),
             creator_id=user,
             fixed_ram_gb=1.0,
@@ -86,6 +92,7 @@ class AppTemplateOperationsTests(TestCase):
             description="A test template",
             short_description="Test",
             instantiation_notice="Notice",
+            script="Script",
             image_id=str(uuid.uuid4()),
             creator_id=user,
             fixed_ram_gb=1.0,
@@ -106,6 +113,7 @@ class AppTemplateOperationsTests(TestCase):
             description="A searchable template",
             short_description="Search",
             instantiation_notice="Notice",
+            script="Script",
             image_id=str(uuid.uuid4()),
             creator_id=user,
             fixed_ram_gb=1.0,
@@ -127,6 +135,7 @@ class AppTemplateOperationsTests(TestCase):
             description="A test template",
             short_description="Test",
             instantiation_notice="Notice",
+            script="Script",
             image_id=str(uuid.uuid4()),
             creator_id=user,
             fixed_ram_gb=1.0,
@@ -150,6 +159,7 @@ class AppTemplateOperationsTests(TestCase):
             description="A test template",
             short_description="Test",
             instantiation_notice="Notice",
+            script="Script",
             image_id=str(uuid.uuid4()),
             creator_id=user,
             fixed_ram_gb=1.0,
@@ -170,6 +180,7 @@ class AppTemplateOperationsTests(TestCase):
             description="A test template",
             short_description="Test",
             instantiation_notice="Notice",
+            script="Script",
             image_id=str(uuid.uuid4()),
             creator_id=user,
             fixed_ram_gb=1.0,
@@ -193,6 +204,7 @@ class AppTemplateOperationsTests(TestCase):
             description="A test template",
             short_description="Test",
             instantiation_notice="Notice",
+            script="Script",
             image_id=str(uuid.uuid4()),
             creator_id=user,
             fixed_ram_gb=1.0,
@@ -214,6 +226,7 @@ class AppTemplateOperationsTests(TestCase):
             description="A test template",
             short_description="Test",
             instantiation_notice="Notice",
+            script="Script",
             image_id=str(uuid.uuid4()),
             creator_id=user,
             fixed_ram_gb=1.0,
@@ -223,7 +236,13 @@ class AppTemplateOperationsTests(TestCase):
             per_user_disk_gb=5.0,
             per_user_cores=0.5
         )
+        account_attribute = AppTemplateAccountAttributes.objects.create(
+            app_template_id=app_template,
+            name="Username"
+        )
         soft_delete_app_template(app_template.id)
         app_template.refresh_from_db()
         self.assertTrue(app_template.deleted)
         self.assertIsNotNone(app_template.deleted_at)
+        account_attribute.refresh_from_db()
+        self.assertIsNotNone(account_attribute)

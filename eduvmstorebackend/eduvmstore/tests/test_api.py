@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 from django.urls import reverse
-from eduvmstore.db.models import AppTemplates, Users, Roles
+from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateAccountAttributes
 from unittest.mock import patch
 import uuid
 
@@ -33,6 +33,11 @@ class AppTemplateViewSetTests(APITestCase):
             "description": "A test template",
             "short_description": "Test",
             "instantiation_notice": "Notice",
+            "script": "Script",
+            "account_attributes": [
+                {"name": "Username"},
+                {"name": "Password"}
+            ],
             "fixed_ram_gb": 1.0,
             "fixed_disk_gb": 10.0,
             "fixed_cores": 1.0,
@@ -57,6 +62,7 @@ class AppTemplateViewSetTests(APITestCase):
             description="A searchable template",
             short_description="Search",
             instantiation_notice="Notice",
+            script="Script",
             creator_id=user,
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
@@ -84,6 +90,7 @@ class AppTemplateViewSetTests(APITestCase):
             description="A collision template",
             short_description="Collision",
             instantiation_notice="Notice",
+            script="Script",
             creator_id=user,
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
@@ -109,6 +116,7 @@ class AppTemplateViewSetTests(APITestCase):
             description="A non-collision template",
             short_description="No Collision",
             instantiation_notice="Notice",
+            script="Script",
             creator_id=user,
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
@@ -134,6 +142,7 @@ class AppTemplateViewSetTests(APITestCase):
             description="A test template",
             short_description="Test",
             instantiation_notice="Notice",
+            script="Script",
             creator_id=user,
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
@@ -142,9 +151,17 @@ class AppTemplateViewSetTests(APITestCase):
             per_user_disk_gb=5.0,
             per_user_cores=0.5
         )
+        account_attribute = AppTemplateAccountAttributes.objects.create(
+            app_template_id=app_template,
+            name="Username"
+        )
+
         url = reverse('app-template-detail', args=[app_template.id])
         response = self.client.delete(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 204)
         app_template.refresh_from_db()
+
         self.assertTrue(app_template.deleted)
         self.assertIsNotNone(app_template.deleted_at)
+        account_attribute.refresh_from_db()
+        self.assertIsNotNone(account_attribute.name)
