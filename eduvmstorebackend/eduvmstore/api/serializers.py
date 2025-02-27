@@ -20,6 +20,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'description',
             'short_description',
             'instantiation_notice',
+            'script',
             'version',
             'public',
             'approved',

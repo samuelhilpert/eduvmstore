@@ -35,11 +35,14 @@ def create_app_template(app_template_data: dict):
 
     try:
         new_app_template = AppTemplates.objects.create(
+            # mandatory fields with [] and optional fields with .get()
+            # -->automatic exception raised for mandatory fields
             id=str(uuid.uuid4()),
             name=app_template_data['name'],
             description=app_template_data['description'],
             short_description=app_template_data.get('short_description'),
             instantiation_notice=app_template_data.get('instantiation_notice'),
+            script=app_template_data.get('script'),
             image_id=app_template_data['image_id'],
             creator_id=app_template_data['creator_id'],
 
