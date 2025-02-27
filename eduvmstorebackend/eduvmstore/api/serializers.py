@@ -69,7 +69,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         app_template = AppTemplates.objects.create(**validated_data)
         for account_attribute_data in account_attributes_data:
             AppTemplateAccountAttributes.objects.create(
-                app_template=app_template,
+                app_template_id=app_template,
                 **account_attribute_data)
         return app_template
         # return AppTemplates.objects.create(**validated_data)
