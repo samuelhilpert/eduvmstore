@@ -10,7 +10,7 @@ class AppTemplateAccountAttributesSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = AppTemplateAccountAttributes
-        fields = ['id', 'name', 'app_template_id']
+        fields = ['id', 'name']
         read_only_fields = ['id']
 
 class AppTemplateSerializer(serializers.ModelSerializer):
@@ -69,7 +69,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         app_template = AppTemplates.objects.create(**validated_data)
         for account_attribute_data in account_attributes_data:
             AppTemplateAccountAttributes.objects.create(
-                app_template_id=app_template,
+                app_template=app_template,
                 **account_attribute_data)
         return app_template
         # return AppTemplates.objects.create(**validated_data)
