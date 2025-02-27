@@ -101,7 +101,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         instance.image_id = validated_data.get('image_id', instance.image_id)
         instance.version = validated_data.get('version', instance.version)
         instance.public = validated_data.get('public', instance.public)
-        instance.approved = validated_data.get('approved', instance.approved)
+        instance.approved = False
         instance.fixed_ram_gb = validated_data.get('fixed_ram_gb', instance.fixed_ram_gb)
         instance.fixed_disk_gb = validated_data.get('fixed_disk_gb', instance.fixed_disk_gb)
         instance.fixed_cores = validated_data.get('fixed_cores', instance.fixed_cores)
