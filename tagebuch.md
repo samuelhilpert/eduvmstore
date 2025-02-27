@@ -315,3 +315,19 @@
 - **Dauer**:    3 Stunden
 - **Arbeit**: PDF Erstellung und Weiterleitung 
 ---
+### Datum: 2025-02-25
+- **Entwickler**: Samuel
+- **Dauer**:    5 Stunden
+- **Arbeit**: Einrichtung Entwicklungsumgebung, Script Durchführung
+---
+### Datum: 2025-02-27
+- **Entwickler**: Samuel
+- **Dauer**:    3 Stunden
+- **Arbeit**: Scipt Weiterentwicklung, kleine Fixes
+---
+### Datum: 2025-02-27
+- **Entwickler**: Samuel, Jared, Marian, Emy, Valentin
+- **Dauer**:    5 Stunden
+- **Arbeit**: Meeting: Durchführung Script, Planung 
+---
+
