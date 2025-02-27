@@ -68,7 +68,9 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         account_attributes_data = validated_data.pop('account_attributes')
         app_template = AppTemplates.objects.create(**validated_data)
         for account_attribute_data in account_attributes_data:
-            AppTemplateAccountAttributes.objects.create(app_template_id=app_template, **account_attribute_data)
+            AppTemplateAccountAttributes.objects.create(
+                app_template_id=app_template,
+                name=account_attribute_data.name)
         return app_template
         # return AppTemplates.objects.create(**validated_data)
 
