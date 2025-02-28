@@ -43,3 +43,20 @@ from August 2024 to May 2025.
 ### Run Tests
 * `python eduvmstorebackend/manage.py test`
 * OR `python3 eduvmstorebackend/manage.py test`
+
+### Use Cloud-Init-Script for faster Setup
+* On `https://stack.dhbw.cloud/` create new instance
+* At Source choose Image as Boot Source, Ubuntu 22.04 as Image and no new Volume
+* Choose your Flavor of choice
+* For Network choose provider_912
+* The Security Group should allow ingress TCP connections on port 8000 and 22
+* Choose your SSH Keypair of choice to access the VM through ssh
+* At Configuration upload the Cloud-Init-Script backendscript.yaml
+* Launch the Instance
+* Access the Instance using `ssh ubuntu@<instance-ip> -i <path-to-keyfile>`
+* Execute `/initilization_script`
+* To manage the Backend-Service you can use:
+* `sudo systemctl enable eduvmstorebackend`
+* `sudo systemctl start eduvmstorebackend`
+* `sudo systemctl stop eduvmstorebackend`
+* `sudo systemctl restart eduvmstorebackend`
