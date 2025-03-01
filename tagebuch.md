@@ -326,8 +326,17 @@
 - **Arbeit**: Scipt Weiterentwicklung, kleine Fixes
 ---
 ### Datum: 2025-02-27
+- **Entwickler**: Valentin
+- **Dauer**:    5 Stunden
+- **Arbeit**: Datenbankmodellerweiterung um Skript und account_attributes
+---
+### Datum: 2025-02-27
 - **Entwickler**: Samuel, Jared, Marian, Emy, Valentin
 - **Dauer**:    5 Stunden
 - **Arbeit**: Meeting: Durchführung Script, Planung 
 ---
-
+### Datum: 2025-02-27
+- **Entwickler**: x
+- **Dauer**:    5 Stunden
+- **Arbeit**: x
+---
