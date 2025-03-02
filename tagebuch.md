@@ -335,6 +335,11 @@
 - **Dauer**:    5 Stunden
 - **Arbeit**: Meeting: Durchführung Script, Planung 
 ---
+### Datum: 2025-03-01
+- **Entwickler**: Samuel
+- **Dauer**:    8 Stunden
+- **Arbeit**: Script Generierung mit User Daten 
+---
 ### Datum: 2025-02-27
 - **Entwickler**: x
 - **Dauer**:    5 Stunden
