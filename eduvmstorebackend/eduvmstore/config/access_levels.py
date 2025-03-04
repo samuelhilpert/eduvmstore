@@ -12,7 +12,7 @@ REQUIRED_ACCESS_LEVELS = {
     ('user-list', 'POST'): 6101,
     ('user-detail', 'PUT'): 6201,
     ('user-detail', 'DELETE') : 6202,
-    ('user-change-role', 'PATCH'): 6301,
+    ('user-detail', 'PATCH'): 6301,
 
     ('role-list', 'GET'): 1,
     ('role-detail', 'GET'): 2,

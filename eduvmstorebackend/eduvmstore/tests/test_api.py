@@ -22,7 +22,7 @@ class AppTemplateViewSetTests(APITestCase):
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_creates_app_template_via_api_successfully(self, mock_validate_token):
-        mock_validate_token.return_value = {'id': str(uuid.uuid4())}
+        mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
         user = self.create_user_and_role()
         self.client.force_authenticate(user=user)
         url = reverse('app-template-list')
@@ -52,7 +52,7 @@ class AppTemplateViewSetTests(APITestCase):
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_updates_app_template_via_api_successfully(self, mock_validate_token):
-        mock_validate_token.return_value = {'id': str(uuid.uuid4())}
+        mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
         user = self.create_user_and_role()
         self.client.force_authenticate(user=user)
         app_template = AppTemplates.objects.create(
@@ -106,7 +106,7 @@ class AppTemplateViewSetTests(APITestCase):
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_filters_app_templates_by_search(self, mock_validate_token):
-        mock_validate_token.return_value = {'id': str(uuid.uuid4())}
+        mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
         user = self.create_user_and_role()
         self.client.force_authenticate(user=user)
         name = "Searchable Template"
@@ -134,7 +134,7 @@ class AppTemplateViewSetTests(APITestCase):
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_checks_name_collisions(self, mock_validate_token):
-        mock_validate_token.return_value = {'id': str(uuid.uuid4())}
+        mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
         user = self.create_user_and_role()
         self.client.force_authenticate(user=user)
         name = "Collision Template"
@@ -161,7 +161,7 @@ class AppTemplateViewSetTests(APITestCase):
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_checks_name_collisions_no_collision(self, mock_validate_token):
-        mock_validate_token.return_value = {'id': str(uuid.uuid4())}
+        mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
         user = self.create_user_and_role()
         self.client.force_authenticate(user=user)
         AppTemplates.objects.create(
@@ -187,7 +187,7 @@ class AppTemplateViewSetTests(APITestCase):
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_soft_deletes_app_template_via_api_successfully(self, mock_validate_token):
-        mock_validate_token.return_value = {'id': str(uuid.uuid4())}
+        mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
         user = self.create_user_and_role()
         self.client.force_authenticate(user=user)
         app_template = AppTemplates.objects.create(

@@ -22,8 +22,6 @@ def create_user(user_data: dict) -> Users:
     """
     if not user_data.get('id'):
         raise ValidationError("User ID cannot be empty")
-    if not user_data.get('role_id') and not user_data.get('role_name'):
-        raise ValidationError("Role ID and Role Name cannot be both empty")
 
     # Only if no role ID is given match the role name to the default roles
     if not user_data.get('role_id'):
