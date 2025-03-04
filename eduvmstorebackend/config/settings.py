@@ -144,13 +144,13 @@ LOGGING = {
     },
     'handlers': {
         'file_debug': {
-            'level': 'DEBUG', # including above levels
+            'level': 'INFO', # including above levels
             'class': 'logging.FileHandler',
             'filename': 'log/eduvmstore_backend_debugging.log',
             'formatter': 'verbose',
         },
         'console': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },

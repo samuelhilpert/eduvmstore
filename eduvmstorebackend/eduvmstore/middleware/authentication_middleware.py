@@ -9,9 +9,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from eduvmstore.db.models import Users
 from eduvmstore.db.operations.roles import get_role_by_name, create_role
 from eduvmstore.db.operations.users import get_user_by_id, create_user
-from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS, DEFAULT_ROLES
+from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS, DEFAULT_ROLES, DEFAULT_ACCESS_LEVEL
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('eduvmstore_logger')
 
 class KeystoneAuthenticationMiddleware:
     """
@@ -123,35 +123,19 @@ class KeystoneAuthenticationMiddleware:
         :return: Required access level for the route
         :rtype: int
         """
-        logger = logging.getLogger('eduvmstore_logger')
-        logger.debug('Request path: %s', request.path)
-        logger.debug('Request method: %s', request.method)
+
+        logger.debug('Request path: "%s"', request.path)
+        logger.debug('Request method: "%s"', request.method)
 
 
-        resolver_match = resolve(request.path)
+        url_name = resolve(request.path).url_name
+
+        logger.debug('Resolver URL name: "%s"', url_name)
+
         method = request.method
-        route_name = resolver_match.route
+        logger.debug('Request method: "%s"', method)
 
-        # Map generated routes of the default router to expected routes
-        route_mapping = {
-            'app-template-list': 'GET /app-templates',
-            'app-template-detail': 'GET /app-templates/{id}',
-            'app-template-create': 'POST /app-templates',
-            'app-template-update': 'PUT /app-templates/{id}',
-            'app-template-partial-update': 'PATCH /app-templates/{id}',
-            'app-template-destroy': 'DELETE /app-templates/{id}',
-            'app-template-check-name-collisions': 'GET /app-templates/name/{name}/collisions',
-            'user-list': 'GET /users',
-            'user-detail': 'GET /users/{id}',
-            'user-change-role': 'PATCH /users/{id}/',
-            'user-destroy': 'DELETE /users/{id}',
-            'image-list': 'GET /images',
-            'image-detail': 'GET /images/{id}',
-            'flavor-selection': 'POST /flavors/selection',
-            'instance-creation': 'POST /instances/launch',
-        }
 
-        endpoint = route_mapping.get(route_name, f"{method} {resolver_match.route}")
-        logger.debug("Resolved endpoint: %s", endpoint)
-        logger.debug("Required access level: %s", REQUIRED_ACCESS_LEVELS.get(endpoint, 1000))
-        return REQUIRED_ACCESS_LEVELS.get(endpoint, 1000)  # Default to 1000 if not found
+        logger.debug("Required access level: '%s'",
+                     REQUIRED_ACCESS_LEVELS.get((url_name, method), DEFAULT_ACCESS_LEVEL))
+        return REQUIRED_ACCESS_LEVELS.get((url_name, method), DEFAULT_ACCESS_LEVEL)
