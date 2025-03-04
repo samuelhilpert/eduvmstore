@@ -146,7 +146,7 @@ LOGGING = {
         'file_debug': {
             'level': 'DEBUG', # including above levels
             'class': 'logging.FileHandler',
-            'filename': '/log/eduvmstore_backend_debugging.log',
+            'filename': 'log/eduvmstore_backend_debugging.log',
             'formatter': 'verbose',
         },
         'console': {
