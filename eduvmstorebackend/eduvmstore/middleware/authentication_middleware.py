@@ -124,18 +124,6 @@ class KeystoneAuthenticationMiddleware:
         :rtype: int
         """
 
-        logger.debug('Request path: "%s"', request.path)
-        logger.debug('Request method: "%s"', request.method)
-
-
         url_name = resolve(request.path).url_name
-
-        logger.debug('Resolver URL name: "%s"', url_name)
-
         method = request.method
-        logger.debug('Request method: "%s"', method)
-
-
-        logger.debug("Required access level: '%s'",
-                     REQUIRED_ACCESS_LEVELS.get((url_name, method), DEFAULT_ACCESS_LEVEL))
         return REQUIRED_ACCESS_LEVELS.get((url_name, method), DEFAULT_ACCESS_LEVEL)

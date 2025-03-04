@@ -144,7 +144,7 @@ LOGGING = {
     },
     'handlers': {
         'file_debug': {
-            'level': 'INFO', # including above levels
+            'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': 'log/eduvmstore_backend_debugging.log',
             'formatter': 'verbose',
