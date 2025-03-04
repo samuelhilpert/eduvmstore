@@ -1,5 +1,17 @@
 from rest_framework import serializers
-from eduvmstore.db.models import AppTemplates, Users, Roles
+from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateAccountAttributes
+
+class AppTemplateAccountAttributesSerializer(serializers.ModelSerializer):
+    """Serializer for the AppAccountAttributes model.
+
+    This serializer handles the conversion of AppTemplateAccountAttributes model
+    instances to and from JSON format, including validation and creation of new
+    instances.
+    """
+    class Meta:
+        model = AppTemplateAccountAttributes
+        fields = ['id', 'name']
+        read_only_fields = ['id']
 
 class AppTemplateSerializer(serializers.ModelSerializer):
     """Serializer for the AppTemplates model.
@@ -7,6 +19,8 @@ class AppTemplateSerializer(serializers.ModelSerializer):
     This serializer handles the conversion of AppTemplates model instances
     to and from JSON format, including validation and creation of new instances.
     """
+    account_attributes = AppTemplateAccountAttributesSerializer(many=True, read_only=False)
+
     class Meta:
         model = AppTemplates
         fields = [
@@ -20,6 +34,8 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'description',
             'short_description',
             'instantiation_notice',
+            'script',
+            'account_attributes',
             'version',
             'public',
             'approved',
@@ -49,8 +65,51 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         :return: Newly created AppTemplates instance
         :rtype: AppTemplates
         """
-        return AppTemplates.objects.create(**validated_data)
+        account_attributes_data = validated_data.pop('account_attributes')
+        app_template = AppTemplates.objects.create(**validated_data)
+        for account_attribute_data in account_attributes_data:
+            AppTemplateAccountAttributes.objects.create(
+                app_template_id=app_template,
+                **account_attribute_data)
+        return app_template
+        # return AppTemplates.objects.create(**validated_data)
+    def update(self, instance, validated_data):
+        """
+        Custom update method to handle additional operations
+        before saving an AppTemplates instance to the database.
 
+        :param AppTemplates instance: The instance to update
+        :param dict validated_data: Data validated through the serializer
+        :return: Updated AppTemplates instance
+        :rtype: AppTemplates
+        """
+
+        account_attributes_data = validated_data.pop('account_attributes')
+        if account_attributes_data:
+            # Update account attributes by deleting all and creating only the new ones
+            AppTemplateAccountAttributes.objects.filter(app_template_id=instance).delete()
+            for account_attribute_data in account_attributes_data:
+                AppTemplateAccountAttributes.objects.create(
+                    app_template_id=instance,
+                    **account_attribute_data)
+
+        instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
+        instance.short_description = validated_data.get('short_description', instance.short_description)
+        instance.instantiation_notice = validated_data.get('instantiation_notice', instance.instantiation_notice)
+        instance.script = validated_data.get('script', instance.script)
+        instance.image_id = validated_data.get('image_id', instance.image_id)
+        instance.version = validated_data.get('version', instance.version)
+        instance.public = validated_data.get('public', instance.public)
+        instance.approved = False
+        instance.fixed_ram_gb = validated_data.get('fixed_ram_gb', instance.fixed_ram_gb)
+        instance.fixed_disk_gb = validated_data.get('fixed_disk_gb', instance.fixed_disk_gb)
+        instance.fixed_cores = validated_data.get('fixed_cores', instance.fixed_cores)
+        instance.per_user_ram_gb = validated_data.get('per_user_ram_gb', instance.per_user_ram_gb)
+        instance.per_user_disk_gb = validated_data.get('per_user_disk_gb', instance.per_user_disk_gb)
+        instance.per_user_cores = validated_data.get('per_user_cores', instance.per_user_cores)
+        instance.save()
+        return instance
 
 
 class RoleSerializer(serializers.ModelSerializer):
@@ -90,7 +149,9 @@ class UserSerializer(serializers.ModelSerializer):
     """
     role = RoleSerializer(source='role_id', read_only=True)
 
-    role_id = serializers.PrimaryKeyRelatedField(queryset=Roles.objects.all(), write_only=True, required=False)
+    role_id = serializers.PrimaryKeyRelatedField(queryset=Roles.objects.all(),
+                                                 write_only=True,
+                                                 required=False)
 
 
     class Meta:

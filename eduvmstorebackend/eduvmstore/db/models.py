@@ -12,6 +12,7 @@ class AppTemplates(models.Model):
     description = models.TextField()
     short_description = models.CharField(max_length=255)
     instantiation_notice = models.TextField(blank=True, null=True)
+    script = models.TextField(blank=True, null=True)
 
     # CRUD info
     creator_id = models.ForeignKey('Users', on_delete=models.DO_NOTHING, db_index=True)
@@ -33,6 +34,18 @@ class AppTemplates(models.Model):
     per_user_disk_gb = models.FloatField()
     per_user_cores = models.FloatField()
 
+    def __str__(self):
+        return self.name
+
+class AppTemplateAccountAttributes(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    app_template_id = (
+        models.ForeignKey(AppTemplates, on_delete=models.CASCADE, related_name='account_attributes'))
+    name = models.CharField(max_length=255)
+
+    # No CRUD Info as AppTemplateAccountAttributes is strongly bound to AppTemplates
+    # Due to the strong bound, there is no dedicated db-operation file to access
+    # account attributes alone
     def __str__(self):
         return self.name
 
@@ -59,3 +72,4 @@ class Roles(models.Model):
 
     def __str__(self):
         return self.name
+

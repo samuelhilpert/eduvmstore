@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 from django.urls import reverse
-from eduvmstore.db.models import AppTemplates, Users, Roles
+from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateAccountAttributes
 from unittest.mock import patch
 import uuid
 
@@ -33,6 +33,11 @@ class AppTemplateViewSetTests(APITestCase):
             "description": "A test template",
             "short_description": "Test",
             "instantiation_notice": "Notice",
+            "script": "Script",
+            "account_attributes": [
+                {"name": "Username"},
+                {"name": "Password"}
+            ],
             "fixed_ram_gb": 1.0,
             "fixed_disk_gb": 10.0,
             "fixed_cores": 1.0,
@@ -43,6 +48,60 @@ class AppTemplateViewSetTests(APITestCase):
         response = self.client.post(url, data, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data['name'], name)
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_updates_app_template_via_api_successfully(self, mock_validate_token):
+        mock_validate_token.return_value = {'id': str(uuid.uuid4())}
+        user = self.create_user_and_role()
+        self.client.force_authenticate(user=user)
+        app_template = AppTemplates.objects.create(
+            image_id=uuid.uuid4(),
+            name="API Update Template",
+            description="A test template",
+            short_description="Test",
+            instantiation_notice="Notice",
+            script="Script",
+            creator_id=user,
+            fixed_ram_gb=1.0,
+            fixed_disk_gb=10.0,
+            fixed_cores=1.0,
+            per_user_ram_gb=0.5,
+            per_user_disk_gb=5.0,
+            per_user_cores=0.5
+        )
+        # AppTemplateAccountAttributes.objects.create(
+        #     app_template_id=app_template,
+        #     name="Username"
+        # )
+
+        url = reverse('app-template-detail', args=[app_template.id])
+        name = "API Updated Template"
+        updated_account_attributes_name = "Updated Username"
+        data = {
+            "name": name,
+            "description": "An updated template",
+            "short_description": "Updated",
+            "instantiation_notice": "Updated Notice",
+            "script": "Updated Script",
+            "account_attributes": [
+                {"name": updated_account_attributes_name},
+                {"name": "Updated Password"}
+            ],
+            "image_id": app_template.image_id,
+            "approved": True,
+            "fixed_ram_gb": 2.0,
+            "fixed_disk_gb": 20.0,
+            "fixed_cores": 2.0,
+            "per_user_ram_gb": 1.0,
+            "per_user_disk_gb": 10.0,
+            "per_user_cores": 1.0
+        }
+        response = self.client.put(url, data, format='json', **self.get_auth_headers())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['name'], name)
+        self.assertEqual(response.data["account_attributes"][0]["name"], updated_account_attributes_name)
+        self.assertEqual(response.data["approved"], False)
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
@@ -57,6 +116,7 @@ class AppTemplateViewSetTests(APITestCase):
             description="A searchable template",
             short_description="Search",
             instantiation_notice="Notice",
+            script="Script",
             creator_id=user,
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
@@ -84,6 +144,7 @@ class AppTemplateViewSetTests(APITestCase):
             description="A collision template",
             short_description="Collision",
             instantiation_notice="Notice",
+            script="Script",
             creator_id=user,
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
@@ -109,6 +170,7 @@ class AppTemplateViewSetTests(APITestCase):
             description="A non-collision template",
             short_description="No Collision",
             instantiation_notice="Notice",
+            script="Script",
             creator_id=user,
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
@@ -134,6 +196,7 @@ class AppTemplateViewSetTests(APITestCase):
             description="A test template",
             short_description="Test",
             instantiation_notice="Notice",
+            script="Script",
             creator_id=user,
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
@@ -142,9 +205,17 @@ class AppTemplateViewSetTests(APITestCase):
             per_user_disk_gb=5.0,
             per_user_cores=0.5
         )
+        account_attribute = AppTemplateAccountAttributes.objects.create(
+            app_template_id=app_template,
+            name="Username"
+        )
+
         url = reverse('app-template-detail', args=[app_template.id])
         response = self.client.delete(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 204)
         app_template.refresh_from_db()
+
         self.assertTrue(app_template.deleted)
         self.assertIsNotNone(app_template.deleted_at)
+        account_attribute.refresh_from_db()
+        self.assertIsNotNone(account_attribute.name)
