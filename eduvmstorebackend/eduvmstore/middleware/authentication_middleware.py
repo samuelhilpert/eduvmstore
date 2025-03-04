@@ -87,10 +87,7 @@ class KeystoneAuthenticationMiddleware:
         :rtype: Users
         """
         user_id = keystone_user_info['id']
-
-        # TODO Currently not working properly
-        # keystone_role = keystone_user_info['name']
-        keystone_role = 'Admin'
+        keystone_role = keystone_user_info['name']
 
         try:
             user = get_user_by_id(user_id)
