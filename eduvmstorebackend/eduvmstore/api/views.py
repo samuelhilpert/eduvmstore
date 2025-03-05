@@ -16,7 +16,7 @@ from eduvmstore.db.operations.app_templates import (create_app_template,
                                                     approve_app_template,
                                                     check_app_template_name_collisions,
                                                     soft_delete_app_template)
-from eduvmstore.db.operations.users import get_user_by_id
+from eduvmstore.db.operations.users import get_user_by_id, soft_delete_user
 
 from eduvmstore.services.app_template_service import get_image_id_from_app_template, get_default_network_id
 from eduvmstore.services.nova_service import create_instance
@@ -192,6 +192,17 @@ class UserViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(id=user)
 
         return queryset
+
+    def perform_destroy(self, instance):
+        """
+        Soft delete a User by marking them as deleted.
+
+        :param Users instance: The User instance to delete
+        :return: HTTP response with no content
+        :rtype: Response
+        """
+        soft_delete_user(self.get_object().id)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RoleViewSet(viewsets.ModelViewSet):
