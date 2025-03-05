@@ -70,8 +70,8 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
                         | queryset.filter(public=True))
         else:
             # Normal Users can only see public and approved AppTemplates plus own AppTemplates
-            queryset = (queryset.objects.filter(creator_id=user)
-                        | queryset.objects.filter(public=True, approved=True))
+            queryset = (queryset.filter(creator_id=user)
+                        | queryset.filter(public=True, approved=True))
 
         # Get query parameter
         search = self.request.query_params.get('search', None)
