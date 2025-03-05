@@ -7,7 +7,7 @@ import uuid
 class AppTemplateViewSetTests(APITestCase):
 
     def create_user_and_role(self):
-        role = Roles.objects.create(name="Admin", access_level=6000)
+        role = Roles.objects.create(name="Admin", access_level=7000)
         user = Users.objects.create(role_id=role)
         return user
 
@@ -62,6 +62,8 @@ class AppTemplateViewSetTests(APITestCase):
             short_description="Test",
             instantiation_notice="Notice",
             script="Script",
+            public=True,
+            approved=False,
             creator_id=user,
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
@@ -118,6 +120,8 @@ class AppTemplateViewSetTests(APITestCase):
             instantiation_notice="Notice",
             script="Script",
             creator_id=user,
+            public=True,
+            approved=False,
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
@@ -126,6 +130,7 @@ class AppTemplateViewSetTests(APITestCase):
             per_user_cores=0.5
         )
         url = reverse('app-template-list') + '?search=Searchable'
+        self.client.force_authenticate(user=user)
         response = self.client.get(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
@@ -197,6 +202,8 @@ class AppTemplateViewSetTests(APITestCase):
             short_description="Test",
             instantiation_notice="Notice",
             script="Script",
+            public=True,
+            approved=False,
             creator_id=user,
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
