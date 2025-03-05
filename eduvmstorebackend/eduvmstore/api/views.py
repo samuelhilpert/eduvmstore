@@ -1,7 +1,9 @@
 
+import logging
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 
+from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS
 from eduvmstore.services.glance_service import list_images
 from eduvmstore.api.serializers import AppTemplateSerializer, RoleSerializer, UserSerializer
 from eduvmstore.db.models import AppTemplates, Roles, Users
@@ -33,7 +35,6 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     :param queryset: Queryset of AppTemplates instances, filtered to exclude deleted ones
     :param serializer_class: Serializer class for AppTemplates model
     """
-    queryset = AppTemplates.objects.filter(deleted=False)
     serializer_class = AppTemplateSerializer
 
     def perform_create(self, serializer):
@@ -51,11 +52,26 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         """
         Custom retrieval of the queryset of AppTemplates,
         optionally filtered by search, public, and approved status.
+        The scope of retrieved AppTemplates depends on the access level of the user.
 
         :return: Filtered queryset of AppTemplates
         :rtype: QuerySet
         """
+        user = self.request.myuser
+        user_access_level = user.role_id.access_level
+
+        # Only consider AppTemplates that are not deleted
         queryset = AppTemplates.objects.filter(deleted=False)
+
+        if user_access_level >= REQUIRED_ACCESS_LEVELS[('app-template-approved', 'PATCH')]:
+            # Users with sufficient access level can see their own AppTemplates
+            # and all public (including not approved AppTemplates
+            queryset = (queryset.filter(creator_id=user)
+                        | queryset.filter(public=True))
+        else:
+            # Normal Users can only see public and approved AppTemplates plus own AppTemplates
+            queryset = (queryset.objects.filter(creator_id=user)
+                        | queryset.objects.filter(public=True, approved=True))
 
         # Get query parameter
         search = self.request.query_params.get('search', None)
@@ -138,7 +154,6 @@ class UserViewSet(viewsets.ModelViewSet):
     :param queryset: Queryset of Users instances, filtered to exclude deleted ones
     :param serializer_class: Serializer class for Users model
     """
-    queryset = Users.objects.filter(deleted=False)
     serializer_class = UserSerializer
 
     def retrieve(self, request, pk=None):
@@ -157,6 +172,26 @@ class UserViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_404_NOT_FOUND)
         serializer = self.get_serializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def get_queryset(self):
+        """
+        Custom retrieval of the queryset of Users.
+        The scope of retrieved Users depends on the access level of the user.
+
+        :return: queryset of Users
+        :rtype: QuerySet
+        """
+        user = self.request.myuser
+        user_access_level = user.role_id.access_level
+
+        # Only consider Users that are not deleted
+        queryset = Users.objects.filter(deleted=False)
+
+        if user_access_level < REQUIRED_ACCESS_LEVELS[('user-list', 'GET')]:
+            # Users with insufficient access level can only see themselves
+            queryset = (queryset.filter(id=user))
+
+        return queryset
 
 
 class RoleViewSet(viewsets.ModelViewSet):
