@@ -341,6 +341,11 @@
 - **Arbeit**: Script Generierung mit User Daten 
 ---
 ### Datum: 2025-02-27
+- **Entwickler**: Valentin
+- **Dauer**:    5 Stunden
+- **Arbeit**: API Access Level fix and delte user fix
+---
+### Datum: 2025-02-27
 - **Entwickler**: x
 - **Dauer**:    5 Stunden
 - **Arbeit**: x
