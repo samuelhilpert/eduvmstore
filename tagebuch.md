@@ -340,10 +340,15 @@
 - **Dauer**:    8 Stunden
 - **Arbeit**: Script Generierung mit User Daten 
 ---
-### Datum: 2025-02-27
+### Datum: 2025-03-05
 - **Entwickler**: Valentin
 - **Dauer**:    5 Stunden
 - **Arbeit**: API Access Level fix and delte user fix
+---
+### Datum: 2025-03-06
+- **Entwickler**: Valentin
+- **Dauer**:    0.5 Stunden
+- **Arbeit**: Fixed Soft User Deletion
 ---
 ### Datum: 2025-02-27
 - **Entwickler**: x
