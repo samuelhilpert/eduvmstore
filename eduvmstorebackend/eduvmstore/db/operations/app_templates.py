@@ -3,13 +3,13 @@ from django.utils import timezone
 from django.db.models import Q
 
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from eduvmstore.db.models import AppTemplates, AppTemplateAccountAttributes
+from eduvmstore.db.models import AppTemplates, AppTemplateInstantiationAttributes
 
 
 def create_app_template(app_template_data: dict):
     """
     Create a new AppTemplate entry in the database using Django ORM.
-    The account attributes are also created.
+    The instantiation attributes are also created.
 
     :param dict app_template_data: Dictionary containing the AppTemplate details
     :return: The newly created AppTemplate object
@@ -69,14 +69,14 @@ def create_app_template(app_template_data: dict):
             per_user_cores=app_template_data['per_user_cores']
         )
 
-        # Directly create app_template_account_attributes as they are strongly bound to AppTemplates
-        account_attributes = app_template_data.get('account_attributes', [])
-        if account_attributes:
+        # Directly create app_template_instantiation_attributes as they are strongly bound to AppTemplates
+        instantiation_attributes = app_template_data.get('instantiation_attributes', [])
+        if instantiation_attributes:
             attributes_to_create = [
-                AppTemplateAccountAttributes(app_template_id=new_app_template, name=account_attribute["name"])
-                for account_attribute in account_attributes
+                AppTemplateInstantiationAttributes(app_template_id=new_app_template, name=instantiation_attribute["name"])
+                for instantiation_attribute in instantiation_attributes
             ]
-            AppTemplateAccountAttributes.objects.bulk_create(attributes_to_create)
+            AppTemplateInstantiationAttributes.objects.bulk_create(attributes_to_create)
 
         return new_app_template
     except ValidationError as e:
