@@ -7,6 +7,8 @@ The goal is to enable instructors to deploy applications that can be used by stu
 in the context of courses without requiring deep knowledge of OpenStack. 
 The focus is on automated configuration and easy management.
 
+The frontend repo can be found here: https://github.com/samuelhilpert/eduvmstore-ui
+
 ### Main Features
 - **Automated Deployment**: Simplified deployment process with automated steps for configuring VMs,
 user accounts, network settings, etc.
