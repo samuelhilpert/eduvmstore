@@ -4,7 +4,7 @@ from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateInstanti
 class AppTemplateInstantiationAttributesSerializer(serializers.ModelSerializer):
     """Serializer for the AppInstantiationAttributes model.
 
-    This serializer handles the conversion of AppTemplateAccountAttributes model
+    This serializer handles the conversion of AppTemplateInstantiationAttributes model
     instances to and from JSON format, including validation and creation of new
     instances.
     """
