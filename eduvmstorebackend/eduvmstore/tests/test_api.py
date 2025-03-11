@@ -1,5 +1,7 @@
 from rest_framework.test import APITestCase
 from django.urls import reverse
+
+from eduvmstore.config.access_levels import DEFAULT_ROLES
 from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateAccountAttributes
 from unittest.mock import patch
 import uuid
@@ -7,7 +9,8 @@ import uuid
 class AppTemplateViewSetTests(APITestCase):
 
     def create_user_and_role(self):
-        role = Roles.objects.create(name="Admin", access_level=7000)
+        role = Roles.objects.create(name=DEFAULT_ROLES.get("EduVMStoreAdmin").get("name"),
+                                    access_level=DEFAULT_ROLES.get("EduVMStoreAdmin").get("access_level"))
         user = Users.objects.create(role_id=role)
         return user
 

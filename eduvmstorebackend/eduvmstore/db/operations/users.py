@@ -27,13 +27,13 @@ def create_user(user_data: dict) -> Users:
     if not user_data.get('role_id'):
         # match statement for extensibility with further roles,
         # add them in eduvmstore/config/access_levels.py
-        match user_data.get('role_name').lower():
+        match user_data.get('keystone_role_name').lower():
             case 'admin':
-                role_name = DEFAULT_ROLES['Admin']['name']
-                default_access_level = DEFAULT_ROLES['Admin']['access_level']
+                role_name = DEFAULT_ROLES['EduVMStoreAdmin']['name']
+                default_access_level = DEFAULT_ROLES['EduVMStoreAdmin']['access_level']
             case _ :
-                role_name = DEFAULT_ROLES['User']['name']
-                default_access_level = DEFAULT_ROLES['User']['access_level']
+                role_name = DEFAULT_ROLES['EduVMStoreUser']['name']
+                default_access_level = DEFAULT_ROLES['EduVMStoreUser']['access_level']
 
         try:
             role_id = get_role_by_name(role_name)
