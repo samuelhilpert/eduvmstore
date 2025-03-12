@@ -122,6 +122,5 @@ class KeystoneAuthenticationMiddleware:
         """
 
         url_name = resolve(request.path).url_name
-        logger.debug('url_name: %s', url_name)
         method = request.method
         return REQUIRED_ACCESS_LEVELS.get((url_name, method), DEFAULT_ACCESS_LEVEL)
