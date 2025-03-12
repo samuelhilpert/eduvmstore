@@ -7,7 +7,7 @@ from eduvmstore.db.operations.app_templates import (
     create_app_template, list_app_templates, get_app_template_by_id,
     search_app_templates, get_to_be_approved_app_templates,
     check_app_template_name_collisions, update_app_template,
-    approve_app_template, soft_delete_app_template
+    approve_app_template, soft_delete_app_template, reject_app_template
 )
 import uuid
 
@@ -220,6 +220,29 @@ class AppTemplateOperationsTests(TestCase):
         )
         approved_template = approve_app_template(app_template.id)
         self.assertTrue(approved_template.approved)
+
+    def test_rejects_app_template_successfully(self):
+        user = self.create_user_and_role()
+        app_template = AppTemplates.objects.create(
+            id=str(uuid.uuid4()),
+            name="Approve Template",
+            description="A test template",
+            short_description="Test",
+            instantiation_notice="Notice",
+            script="Script",
+            image_id=str(uuid.uuid4()),
+            creator_id=user,
+            fixed_ram_gb=1.0,
+            fixed_disk_gb=10.0,
+            fixed_cores=1.0,
+            per_user_ram_gb=0.5,
+            per_user_disk_gb=5.0,
+            per_user_cores=0.5,
+            approved=False
+        )
+        rejected_app_template = reject_app_template(app_template.id)
+        self.assertFalse(rejected_app_template.approved)
+        self.assertFalse(rejected_app_template.public)
 
     def test_soft_deletes_app_template_successfully(self):
         user = self.create_user_and_role()
