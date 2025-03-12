@@ -9,7 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from eduvmstore.db.models import Users
 from eduvmstore.db.operations.roles import get_role_by_name, create_role
 from eduvmstore.db.operations.users import get_user_by_id, create_user
-from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS, DEFAULT_ROLES, DEFAULT_ACCESS_LEVEL
+from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS, DEFAULT_ACCESS_LEVEL
 
 logger = logging.getLogger('eduvmstore_logger')
 
@@ -94,7 +94,7 @@ class KeystoneAuthenticationMiddleware:
         except ObjectDoesNotExist:
             user_dict = {
                 'id': user_id,
-                'role_name': keystone_role
+                'keystone_role_name': keystone_role
             }
             user =  create_user(user_dict)
         return user

@@ -1,15 +1,15 @@
 from rest_framework import serializers
-from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateAccountAttributes
+from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateInstantiationAttributes
 
-class AppTemplateAccountAttributesSerializer(serializers.ModelSerializer):
-    """Serializer for the AppAccountAttributes model.
+class AppTemplateInstantiationAttributesSerializer(serializers.ModelSerializer):
+    """Serializer for the AppInstantiationAttributes model.
 
-    This serializer handles the conversion of AppTemplateAccountAttributes model
+    This serializer handles the conversion of AppTemplateInstantiationAttributes model
     instances to and from JSON format, including validation and creation of new
     instances.
     """
     class Meta:
-        model = AppTemplateAccountAttributes
+        model = AppTemplateInstantiationAttributes
         fields = ['id', 'name']
         read_only_fields = ['id']
 
@@ -19,7 +19,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
     This serializer handles the conversion of AppTemplates model instances
     to and from JSON format, including validation and creation of new instances.
     """
-    account_attributes = AppTemplateAccountAttributesSerializer(many=True, read_only=False)
+    instantiation_attributes = AppTemplateInstantiationAttributesSerializer(many=True, read_only=False)
 
     class Meta:
         model = AppTemplates
@@ -35,7 +35,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'short_description',
             'instantiation_notice',
             'script',
-            'account_attributes',
+            'instantiation_attributes',
             'version',
             'public',
             'approved',
@@ -65,12 +65,12 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         :return: Newly created AppTemplates instance
         :rtype: AppTemplates
         """
-        account_attributes_data = validated_data.pop('account_attributes')
+        instantiation_attributes_data = validated_data.pop('instantiation_attributes')
         app_template = AppTemplates.objects.create(**validated_data)
-        for account_attribute_data in account_attributes_data:
-            AppTemplateAccountAttributes.objects.create(
+        for instantiation_attribute_data in instantiation_attributes_data:
+            AppTemplateInstantiationAttributes.objects.create(
                 app_template_id=app_template,
-                **account_attribute_data)
+                **instantiation_attribute_data)
         return app_template
         # return AppTemplates.objects.create(**validated_data)
     def update(self, instance, validated_data):
@@ -84,14 +84,14 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         :rtype: AppTemplates
         """
 
-        account_attributes_data = validated_data.pop('account_attributes')
-        if account_attributes_data:
-            # Update account attributes by deleting all and creating only the new ones
-            AppTemplateAccountAttributes.objects.filter(app_template_id=instance).delete()
-            for account_attribute_data in account_attributes_data:
-                AppTemplateAccountAttributes.objects.create(
+        instantiation_attributes_data = validated_data.pop('instantiation_attributes')
+        if instantiation_attributes_data:
+            # Update instantiation attributes by deleting all and creating only the new ones
+            AppTemplateInstantiationAttributes.objects.filter(app_template_id=instance).delete()
+            for instantiation_attribute_data in instantiation_attributes_data:
+                AppTemplateInstantiationAttributes.objects.create(
                     app_template_id=instance,
-                    **account_attribute_data)
+                    **instantiation_attribute_data)
 
         instance.name = validated_data.get('name', instance.name)
         instance.description = validated_data.get('description', instance.description)

@@ -25,12 +25,12 @@ DEFAULT_ACCESS_LEVEL = 8000
 
 
 DEFAULT_ROLES = {
-    'User': {
-        'name': 'User',
+    'EduVMStoreUser': {
+        'name': 'EduVMStoreUser',
         'access_level': 2000
     },
-    'Admin': {
-        'name': 'Admin',
+    'EduVMStoreAdmin': {
+        'name': 'EduVMStoreAdmin',
         'access_level': 7000
     }
 }

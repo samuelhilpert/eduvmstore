@@ -1,6 +1,8 @@
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.test import TestCase
-from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateAccountAttributes
+
+from eduvmstore.config.access_levels import DEFAULT_ROLES
+from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateInstantiationAttributes
 from eduvmstore.db.operations.app_templates import (
     create_app_template, list_app_templates, get_app_template_by_id,
     search_app_templates, get_to_be_approved_app_templates,
@@ -12,7 +14,8 @@ import uuid
 class AppTemplateOperationsTests(TestCase):
 
     def create_user_and_role(self):
-        role = Roles.objects.create(name="Admin", access_level=7000)
+        role = Roles.objects.create(name=DEFAULT_ROLES.get("EduVMStoreAdmin").get("name"),
+                                    access_level=DEFAULT_ROLES.get("EduVMStoreAdmin").get("access_level"))
         user = Users.objects.create(role_id=role)
         return user
 
@@ -24,7 +27,7 @@ class AppTemplateOperationsTests(TestCase):
             "short_description": "Test",
             "instantiation_notice": "Notice",
             "script": "Script",
-            "account_attributes": [
+            "instantiation_attributes": [
                 {"name": "Username"},
                 {"name": "Password"}
             ],
@@ -236,7 +239,7 @@ class AppTemplateOperationsTests(TestCase):
             per_user_disk_gb=5.0,
             per_user_cores=0.5
         )
-        account_attribute = AppTemplateAccountAttributes.objects.create(
+        instantiation_attribute = AppTemplateInstantiationAttributes.objects.create(
             app_template_id=app_template,
             name="Username"
         )
@@ -244,5 +247,5 @@ class AppTemplateOperationsTests(TestCase):
         app_template.refresh_from_db()
         self.assertTrue(app_template.deleted)
         self.assertIsNotNone(app_template.deleted_at)
-        account_attribute.refresh_from_db()
-        self.assertIsNotNone(account_attribute)
+        instantiation_attribute.refresh_from_db()
+        self.assertIsNotNone(instantiation_attribute)
