@@ -32,7 +32,6 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     This ViewSet provides default CRUD operations for the AppTemplates model,
     including custom actions for approving templates and checking name collisions.
 
-    :param queryset: Queryset of AppTemplates instances, filtered to exclude deleted ones
     :param serializer_class: Serializer class for AppTemplates model
     """
     serializer_class = AppTemplateSerializer
@@ -63,7 +62,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         # Only consider AppTemplates that are not deleted
         queryset = AppTemplates.objects.filter(deleted=False)
 
-        if user_access_level >= REQUIRED_ACCESS_LEVELS[('app-template-approve', 'PATCH')]:
+        if user_access_level >= REQUIRED_ACCESS_LEVELS[('app-template-list-all', 'GET')]:
             # Users with sufficient access level can see their own AppTemplates
             # and all public (including not approved AppTemplates
             queryset = (queryset.filter(creator_id=user)
@@ -100,7 +99,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     # action decorator for custom endpoint
     # detail = True means it is for a specific AppTemplate
     @action(detail=True, methods=['patch'])
-    def approved(self, request, pk=None):
+    def approve(self, request, pk=None):
         """
         Custom endpoint to approve an AppTemplate.
 
@@ -170,7 +169,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
     This ViewSet provides default CRUD operations for the Users model.
 
-    :param queryset: Queryset of Users instances, filtered to exclude deleted ones
     :param serializer_class: Serializer class for Users model
     """
     serializer_class = UserSerializer

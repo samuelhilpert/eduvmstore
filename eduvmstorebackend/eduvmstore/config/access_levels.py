@@ -5,8 +5,9 @@ REQUIRED_ACCESS_LEVELS = {
     ('app-template-list', 'POST'): 1101,
     ('app-template-detail', 'PUT'): 1201,
     ('app-template-detail', 'DELETE'): 1202,
-    ('app-template-reject', 'PATCH'): 3101,
-    ('app-template-approve', 'PATCH'): 3102,
+    ("app-template-list-all", "GET"): 3101, #No Endpoint, access to see all AppTemplates
+    ('app-template-reject', 'PATCH'): 3102,
+    ('app-template-approve', 'PATCH'): 3103,
 
     ('user-list', 'GET'): 6001,
     ('user-detail', 'GET'): 1002,
