@@ -15,7 +15,7 @@ from eduvmstore.db.operations.app_templates import (create_app_template,
                                                     list_app_templates,
                                                     approve_app_template,
                                                     check_app_template_name_collisions,
-                                                    soft_delete_app_template)
+                                                    soft_delete_app_template, reject_app_template)
 from eduvmstore.db.operations.users import get_user_by_id, soft_delete_user
 
 from eduvmstore.services.app_template_service import get_image_id_from_app_template, get_default_network_id
@@ -63,7 +63,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         # Only consider AppTemplates that are not deleted
         queryset = AppTemplates.objects.filter(deleted=False)
 
-        if user_access_level >= REQUIRED_ACCESS_LEVELS[('app-template-approved', 'PATCH')]:
+        if user_access_level >= REQUIRED_ACCESS_LEVELS[('app-template-approve', 'PATCH')]:
             # Users with sufficient access level can see their own AppTemplates
             # and all public (including not approved AppTemplates
             queryset = (queryset.filter(creator_id=user)
@@ -113,6 +113,25 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         app_template = approve_app_template(app_template_id)
         return Response(
             {"id": app_template.id, "approved": app_template.approved},
+            status=status.HTTP_200_OK)
+
+    # action decorator for custom endpoint
+    # detail = True means it is for a specific AppTemplate
+    @action(detail=True, methods=['patch'])
+    def reject(self, request, pk=None):
+        """
+        Custom endpoint to reject an AppTemplate. Sets public and approved to
+        false making the AppTemplate only visible for the creator.
+
+        :param Request request: The HTTP request object
+        :param str pk: Primary key of the AppTemplate to approve
+        :return: HTTP response with the approval status
+        :rtype: Response
+        """
+        app_template_id = self.get_object().id
+        app_template = reject_app_template(app_template_id)
+        return Response(
+            {"id": app_template.id, "public": app_template.public, "approved": app_template.approved},
             status=status.HTTP_200_OK)
 
     # action decorator for custom endpoint

@@ -183,6 +183,24 @@ def approve_app_template(id: str) -> AppTemplates:
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist("AppTemplate not found.")
 
+def reject_app_template(id: str) -> AppTemplates:
+    """
+    Update the public and approved status of an AppTemplate to false.
+
+    :param str id: The UUID of the AppTemplate to reject
+    :return: The updated AppTemplate object
+    :rtype: AppTemplates
+    :raises ObjectDoesNotExist: If the AppTemplate is not found
+    """
+    try:
+        app_template = AppTemplates.objects.get(id=id, deleted=False)
+        app_template.approved = False
+        app_template.public = False
+        app_template.save()
+        return app_template
+    except ObjectDoesNotExist:
+        raise ObjectDoesNotExist("AppTemplate %s not found.", id)
+
 
 def soft_delete_app_template(id: str) -> None:
     """
