@@ -36,7 +36,6 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'instantiation_notice',
             'script',
             'instantiation_attributes',
-            'version',
             'public',
             'approved',
 
@@ -99,7 +98,6 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         instance.instantiation_notice = validated_data.get('instantiation_notice', instance.instantiation_notice)
         instance.script = validated_data.get('script', instance.script)
         instance.image_id = validated_data.get('image_id', instance.image_id)
-        instance.version = validated_data.get('version', instance.version)
         instance.public = validated_data.get('public', instance.public)
         instance.approved = False
         instance.fixed_ram_gb = validated_data.get('fixed_ram_gb', instance.fixed_ram_gb)

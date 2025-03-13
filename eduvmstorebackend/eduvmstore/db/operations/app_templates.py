@@ -55,8 +55,7 @@ def create_app_template(app_template_data: dict):
             deleted_at=None,
             deleted=False,
 
-            # Version and visibility
-            version=app_template_data.get('version', '1.0'),
+            # Visibility
             public=app_template_data.get('public', False),
             approved=app_template_data.get('approved', False),
 
@@ -116,8 +115,7 @@ def search_app_templates(query: str) -> list[AppTemplates]:
         Q(id__icontains=query) |
         Q(description__icontains=query) |
         Q(short_description__icontains=query) |
-        Q(instantiation_notice__icontains=query) |
-        Q(version__icontains=query),
+        Q(instantiation_notice__icontains=query),
         # Q(creator__name__icontains=query), # image name is also missing need to check first if this works??
         deleted=False
     )

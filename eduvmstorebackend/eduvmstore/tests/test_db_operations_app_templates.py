@@ -21,19 +21,22 @@ class AppTemplateOperationsTests(TestCase):
 
     def test_creates_app_template_successfully(self):
         user = self.create_user_and_role()
+        instantiation_attributes = [
+                {"name": "Username"},
+                {"name": "Password"}
+            ]
+        name = "Test Template"
+        fixed_ram_gb = 1.56
         app_template_data = {
-            "name": "Test Template",
+            "name": name,
             "description": "A test template",
             "short_description": "Test",
             "instantiation_notice": "Notice",
             "script": "Script",
-            "instantiation_attributes": [
-                {"name": "Username"},
-                {"name": "Password"}
-            ],
+            "instantiation_attributes": instantiation_attributes,
             "image_id": str(uuid.uuid4()),
             "creator_id": user,
-            "fixed_ram_gb": 1.0,
+            "fixed_ram_gb": fixed_ram_gb,
             "fixed_disk_gb": 10.0,
             "fixed_cores": 1.0,
             "per_user_ram_gb": 0.5,
@@ -41,9 +44,9 @@ class AppTemplateOperationsTests(TestCase):
             "per_user_cores": 0.5
         }
         app_template = create_app_template(app_template_data)
-        self.assertEqual(app_template.name, "Test Template")
+        self.assertEqual(app_template.name, name)
         self.assertFalse(app_template.deleted)
-        self.assertEqual(app_template.version, "1.0")
+        self.assertEqual(app_template.fixed_ram_gb, fixed_ram_gb)
 
     def test_does_not_create_app_template_with_invalid_data(self):
         user = self.create_user_and_role()
@@ -54,7 +57,6 @@ class AppTemplateOperationsTests(TestCase):
             "instantiation_notice": "Notice",
             "image_id": str(uuid.uuid4()),
             "creator_id": user,
-            "version": "1.0",
             "fixed_ram_gb": 1.0,
             "fixed_disk_gb": 10.0,
             "fixed_cores": None,
@@ -197,7 +199,7 @@ class AppTemplateOperationsTests(TestCase):
         updated_template = update_app_template(app_template.id, updated_data)
         self.assertEqual(updated_template.name, "Updated Template")
         self.assertEqual(updated_template.description, "Updated description")
-        self.assertEqual(updated_template.version, "1.0") # Check other fields are not updated
+        self.assertEqual(updated_template.script, "Script") # Check other fields are not updated
 
     def test_approves_app_template_successfully(self):
         user = self.create_user_and_role()
