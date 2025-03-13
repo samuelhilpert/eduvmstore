@@ -10,7 +10,11 @@ get {
   auth: none
 }
 
-query {
+params:query {
   public: True
   approved: False
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
 }
