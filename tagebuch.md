@@ -350,6 +350,36 @@
 - **Dauer**:    0.5 Stunden
 - **Arbeit**: Fixed Soft User Deletion
 ---
+### Datum: 2025-03-07
+- **Entwickler**: Samuel
+- **Dauer**:    15 Stunden
+- **Arbeit**: Script ohne User, Präsentation, Datei in Text, Description, User in MetaData, Details mit AccountStructure und Script, Fixen Userübertragung
+---
+### Datum: 2025-03-13
+- **Entwickler**: Samuel
+- **Dauer**:    2 Stunden
+- **Arbeit**: PDF schöner machen
+---
+### Datum: 2025-03-13
+- **Entwickler**: Samuel  
+- **Dauer**:    1 Stunden
+- **Arbeit**: Admin Role Level dynamisch von DB
+---
+### Datum: 2025-03-13
+- **Entwickler**: Samuel
+- **Dauer**:    0.5 Stunden
+- **Arbeit**: Reject Button und Funktion
+---
+### Datum: 2025-03-12
+- **Entwickler**: Samuel
+- **Dauer**:    2 Stunden
+- **Arbeit**: Keypair bei Instanzerzeugung mitgeben
+---
+### Datum: 2025-03-12
+- **Entwickler**: Samuel
+- **Dauer**:    3 Stunden
+- **Arbeit**: SSH Keys im Script erzeugen und rausziehen
+---
 ### Datum: 2025-02-27
 - **Entwickler**: x
 - **Dauer**:    5 Stunden
