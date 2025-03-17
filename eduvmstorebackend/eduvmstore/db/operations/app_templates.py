@@ -39,7 +39,7 @@ def create_app_template(app_template_data: dict):
     try:
         new_app_template = AppTemplates.objects.create(
             # mandatory fields with [] and optional fields with .get()
-            # -->automatic exception raised for mandatory fields
+            # --> automatic exception raised for mandatory fields
             id=str(uuid.uuid4()),
             name=app_template_data['name'],
             description=app_template_data['description'],
@@ -73,7 +73,8 @@ def create_app_template(app_template_data: dict):
         instantiation_attributes = app_template_data.get('instantiation_attributes', [])
         if instantiation_attributes:
             attributes_to_create = [
-                AppTemplateInstantiationAttributes(app_template_id=new_app_template, name=instantiation_attribute["name"])
+                AppTemplateInstantiationAttributes(app_template_id=new_app_template,
+                                                   name=instantiation_attribute["name"])
                 for instantiation_attribute in instantiation_attributes
             ]
             AppTemplateInstantiationAttributes.objects.bulk_create(attributes_to_create)
@@ -118,7 +119,6 @@ def search_app_templates(query: str) -> list[AppTemplates]:
         Q(short_description__icontains=query) |
         Q(instantiation_notice__icontains=query) |
         Q(version__icontains=query),
-        # Q(creator__name__icontains=query), # image name is also missing need to check first if this works??
         deleted=False
     )
 

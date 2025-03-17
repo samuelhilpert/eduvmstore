@@ -40,13 +40,12 @@ def update_role(id: str, update_role_data: dict) -> Roles:
     :raises ValidationError: If any field is invalid
     """
     try:
-        role = Roles.objects.get(id=id)  # Fetch role by ID
+        role = Roles.objects.get(id=id)
 
-        # Update the fields provided in the dictionary
         for field, value in update_role_data.items():
-            setattr(role, field, value)  # Dynamically set attributes
+            setattr(role, field, value)
 
-        role.save()  # Save changes
+        role.save()
         return role
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist("Role not found")

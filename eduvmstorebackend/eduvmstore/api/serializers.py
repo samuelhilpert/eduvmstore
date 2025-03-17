@@ -96,7 +96,8 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         instance.name = validated_data.get('name', instance.name)
         instance.description = validated_data.get('description', instance.description)
         instance.short_description = validated_data.get('short_description', instance.short_description)
-        instance.instantiation_notice = validated_data.get('instantiation_notice', instance.instantiation_notice)
+        instance.instantiation_notice = validated_data.get('instantiation_notice',
+                                                           instance.instantiation_notice)
         instance.script = validated_data.get('script', instance.script)
         instance.image_id = validated_data.get('image_id', instance.image_id)
         instance.version = validated_data.get('version', instance.version)
