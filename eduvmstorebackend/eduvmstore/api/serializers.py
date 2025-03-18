@@ -1,6 +1,10 @@
+import logging
+from urllib import request
+
 from rest_framework import serializers
 from eduvmstore.db.models import AppTemplates, Users, Favorites, Roles, AppTemplateInstantiationAttributes
 
+logger = logging.getLogger("eduvmstore_logger")
 class AppTemplateInstantiationAttributesSerializer(serializers.ModelSerializer):
     """Serializer for the AppInstantiationAttributes model.
 
@@ -131,7 +135,15 @@ class FavoritesSerializer(serializers.ModelSerializer):
         :return: Newly created Favorite instance
         :rtype: Favorite
         """
-        return Favorites.objects.create(**validated_data)
+        user_id = validated_data.get('user_id')
+        app_template_id = validated_data.get('app_template_id')
+        favorite, created = Favorites.objects.get_or_create(
+            user_id=user_id,
+            app_template_id=app_template_id,
+            defaults=validated_data
+        )
+        return favorite
+        #return Favorites.objects.create(**validated_data)
 
 
 class RoleSerializer(serializers.ModelSerializer):

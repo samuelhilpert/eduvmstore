@@ -27,7 +27,7 @@ from eduvmstore.services.nova_service import create_instance
 
 # from eduvmstore.db.operations.app_templates import create_app_template, list_app_templates
 
-
+logger = logging.getLogger('eduvmstore_logger')
 class AppTemplateViewSet(viewsets.ModelViewSet):
     """
     ViewSet for handling AppTemplate model operations.
@@ -205,16 +205,14 @@ class FavoritesViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['DELETE'], url_path='delete_by_app_template')
     def delete_by_app_template(self, request):
-        logger = logging.getLogger('eduvmstore_logger')
-        logger.debug("Test in destroy method")
         app_template_id = request.data.get('app_template_id')
-        user_id = request.myuser.id
-
+        user_id = request.myuser
         try:
             favorite = Favorites.objects.get(app_template_id=app_template_id, user_id=user_id)
             favorite.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Favorites.DoesNotExist:
+            logger.info(f"Favorite for AppTemplate {app_template_id} not found")
             return Response({"detail": "Favorite not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
