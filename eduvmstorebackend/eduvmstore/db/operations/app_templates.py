@@ -116,8 +116,7 @@ def search_app_templates(query: str) -> list[AppTemplates]:
         Q(id__icontains=query) |
         Q(description__icontains=query) |
         Q(short_description__icontains=query) |
-        Q(instantiation_notice__icontains=query) |
-        Q(version__icontains=query),
+        Q(instantiation_notice__icontains=query),
         deleted=False
     )
 
