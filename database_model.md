@@ -10,7 +10,6 @@ AppTemplate:
 - updated_at: DATETIME, nullable
 - deleted_at: DATETIME, nullable
 - deleted: TINYINT(1), default 0
-- version: VARCHAR(10), default '1.0'
 - public: TINYINT(1), not nullable
 - approved: TINYINT(1), default 0
 - fixed_ram_gb: DECIMAL(5,2)

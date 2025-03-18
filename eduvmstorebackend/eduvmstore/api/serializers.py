@@ -36,7 +36,6 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'instantiation_notice',
             'script',
             'instantiation_attributes',
-            'version',
             'public',
             'approved',
 
