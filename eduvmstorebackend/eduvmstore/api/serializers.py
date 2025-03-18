@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateInstantiationAttributes
+from eduvmstore.db.models import AppTemplates, Users, Favorites, Roles, AppTemplateInstantiationAttributes
 
 class AppTemplateInstantiationAttributesSerializer(serializers.ModelSerializer):
     """Serializer for the AppInstantiationAttributes model.
@@ -111,6 +111,28 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class FavoritesSerializer(serializers.ModelSerializer):
+    """Serializer for the Favorite model.
+
+    This serializer handles the conversion of Favorite model instances
+    to and from JSON format, including validation and creation of new instances.
+    """
+    class Meta:
+        model = Favorites
+        fields = ['id', 'user_id', 'app_template_id']
+        read_only_fields = ['id', 'user_id']
+
+    def create(self, validated_data) -> Favorites:
+        """
+        Create method to handle additional operations
+        before saving a Favorite instance to the database.
+
+        :param dict validated_data: Data validated through the serializer
+        :return: Newly created Favorite instance
+        :rtype: Favorite
+        """
+        return Favorites.objects.create(**validated_data)
+
 
 class RoleSerializer(serializers.ModelSerializer):
     """Serializer for the Roles model.
@@ -140,7 +162,6 @@ class RoleSerializer(serializers.ModelSerializer):
         """
         return Roles.objects.create(**validated_data)
 
-
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for the Users model.
 
@@ -152,7 +173,6 @@ class UserSerializer(serializers.ModelSerializer):
     role_id = serializers.PrimaryKeyRelatedField(queryset=Roles.objects.all(),
                                                  write_only=True,
                                                  required=False)
-
 
     class Meta:
             model = Users

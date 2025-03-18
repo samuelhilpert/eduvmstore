@@ -51,7 +51,7 @@ class KeystoneAuthenticationMiddleware:
         user = self.get_or_create_user(keystone_user_info)
         if not self.check_user_access(request, user):
             logger.error('Access denied for user: %s', user.id)
-            return JsonResponse({'error': 'Access denied'}, status=403)
+            return JsonResponse({'error': f'Access level of user {user.id} not sufficient'}, status=403)
 
         request.myuser = user
         response = self.get_response(request)

@@ -1,12 +1,15 @@
 
 import logging
+from urllib import request
+
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 
 from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS
 from eduvmstore.services.glance_service import list_images
-from eduvmstore.api.serializers import AppTemplateSerializer, RoleSerializer, UserSerializer
-from eduvmstore.db.models import AppTemplates, Roles, Users
+from eduvmstore.api.serializers import AppTemplateSerializer, RoleSerializer, UserSerializer, \
+    FavoritesSerializer
+from eduvmstore.db.models import AppTemplates, Favorites, Roles, Users
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -117,13 +120,12 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     # action decorator for custom endpoint
     # detail = True means it is for a specific AppTemplate
     @action(detail=True, methods=['patch'])
-    def reject(self, request, pk=None):
+    def reject(self, request):
         """
         Custom endpoint to reject an AppTemplate. Sets public and approved to
         false making the AppTemplate only visible for the creator.
 
         :param Request request: The HTTP request object
-        :param str pk: Primary key of the AppTemplate to approve
         :return: HTTP response with the approval status
         :rtype: Response
         """
@@ -151,6 +153,20 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         response_object = {"name": name, "collisions": collisions}
         return Response(response_object, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['GET'], url_path='favorites')
+    def favorites(self, request):
+        """
+        Marks or unmarks an AppTemplate as a favorite for the current user.
+        """
+        user = request.myuser
+        favorites_app_template_ids = Favorites.objects.filter(user_id=user).values_list('app_template_id', flat=True)
+
+        # Filter for the list of app_template_ids
+        app_templates = AppTemplates.objects.filter(id__in=favorites_app_template_ids)
+
+        serializer = AppTemplateSerializer(app_templates, many=True)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
     def perform_destroy(self, instance):
         """
         Soft delete an AppTemplate by setting its deleted flag and timestamp.
@@ -161,6 +177,45 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         """
         soft_delete_app_template(self.get_object().id)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class FavoritesViewSet(viewsets.ModelViewSet):
+    serializer_class = FavoritesSerializer
+
+    def get_queryset(self) ->Favorites:
+        """
+        retrieve the queryset of Favorites. Each User can only access own favorites
+
+        :return: queryset of Favorites
+        :rtype: Favorites
+        """
+
+        user = self.request.myuser
+        queryset = Favorites.objects.filter(user_id=user)
+        return queryset
+
+    def perform_create(self, serializer):
+        """
+        Adds AppTemplate to Favorites of current User
+
+        :param FavoritesSerializer serializer: Serializer for the Favorites model
+        :return: None
+        :rtype: None
+        """
+        serializer.save(user_id=self.request.myuser)
+
+    @action(detail=False, methods=['DELETE'], url_path='delete_by_app_template')
+    def delete_by_app_template(self, request):
+        logger = logging.getLogger('eduvmstore_logger')
+        logger.debug("Test in destroy method")
+        app_template_id = request.data.get('app_template_id')
+        user_id = request.myuser.id
+
+        try:
+            favorite = Favorites.objects.get(app_template_id=app_template_id, user_id=user_id)
+            favorite.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Favorites.DoesNotExist:
+            return Response({"detail": "Favorite not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -173,22 +228,22 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     serializer_class = UserSerializer
 
-    def retrieve(self, request, pk=None):
-        """
-        Retrieve details of a specific user with role information.
-
-        :param Request request: The HTTP request object
-        :param str pk: The unique identifier of the user (primary key)
-        :return: HTTP response with a placeholder message
-        :rtype: Response
-        """
-        try:
-            user = get_user_by_id(pk)
-        except ObjectDoesNotExist:
-            return Response({"detail": f"User with id \"{pk}\" not found"},
-                            status=status.HTTP_404_NOT_FOUND)
-        serializer = self.get_serializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    # def retrieve(self, request, pk=None):
+    #     """
+    #     Retrieve details of a specific user with role information.
+    #
+    #     :param Request request: The HTTP request object
+    #     :param str pk: The unique identifier of the user (primary key)
+    #     :return: HTTP response with a placeholder message
+    #     :rtype: Response
+    #     """
+    #     try:
+    #         user = get_user_by_id(pk)
+    #     except ObjectDoesNotExist:
+    #         return Response({"detail": f"User with id \"{pk}\" not found"},
+    #                         status=status.HTTP_404_NOT_FOUND)
+    #     serializer = self.get_serializer(user)
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_queryset(self):
         """

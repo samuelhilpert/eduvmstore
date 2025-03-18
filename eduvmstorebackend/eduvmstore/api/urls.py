@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import AppTemplateViewSet, ImageViewSet, UserViewSet, RoleViewSet, FlavorViewSet, InstanceViewSet
+from .views import AppTemplateViewSet, ImageViewSet, UserViewSet, RoleViewSet, FlavorViewSet, InstanceViewSet, \
+    FavoritesViewSet
 from rest_framework.routers import DefaultRouter
 
 
@@ -7,6 +8,7 @@ router = DefaultRouter()
 router.register(r'app-templates', AppTemplateViewSet, basename='app-template')
 router.register(r'users', UserViewSet, basename='user')
 router.register(r'roles', RoleViewSet, basename='role')
+router.register(r'favorites', FavoritesViewSet, basename='favorite')
 router.register(r'images', ImageViewSet, basename='image')
 router.register(r'flavors', FlavorViewSet, basename='flavor')
 router.register(r'instances', InstanceViewSet, basename='instance')
