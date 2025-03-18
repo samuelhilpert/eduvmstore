@@ -93,22 +93,10 @@ class AppTemplateSerializer(serializers.ModelSerializer):
                     app_template_id=instance,
                     **instantiation_attribute_data)
 
-        instance.name = validated_data.get('name', instance.name)
-        instance.description = validated_data.get('description', instance.description)
-        instance.short_description = validated_data.get('short_description', instance.short_description)
-        instance.instantiation_notice = validated_data.get('instantiation_notice',
-                                                           instance.instantiation_notice)
-        instance.script = validated_data.get('script', instance.script)
-        instance.image_id = validated_data.get('image_id', instance.image_id)
-        instance.version = validated_data.get('version', instance.version)
-        instance.public = validated_data.get('public', instance.public)
+        for field, value in validated_data.items():
+            setattr(instance, field, value)
         instance.approved = False
-        instance.fixed_ram_gb = validated_data.get('fixed_ram_gb', instance.fixed_ram_gb)
-        instance.fixed_disk_gb = validated_data.get('fixed_disk_gb', instance.fixed_disk_gb)
-        instance.fixed_cores = validated_data.get('fixed_cores', instance.fixed_cores)
-        instance.per_user_ram_gb = validated_data.get('per_user_ram_gb', instance.per_user_ram_gb)
-        instance.per_user_disk_gb = validated_data.get('per_user_disk_gb', instance.per_user_disk_gb)
-        instance.per_user_cores = validated_data.get('per_user_cores', instance.per_user_cores)
+
         instance.save()
         return instance
 
