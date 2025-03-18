@@ -5,7 +5,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from typing_extensions import override
 
 from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS
-from eduvmstore.services.glance_service import list_images
 from eduvmstore.api.serializers import AppTemplateSerializer, RoleSerializer, UserSerializer
 from eduvmstore.db.models import AppTemplates, Roles, Users
 from rest_framework import status, viewsets
@@ -18,9 +17,6 @@ from eduvmstore.db.operations.app_templates import (create_app_template,
                                                     check_app_template_name_collisions,
                                                     soft_delete_app_template, reject_app_template)
 from eduvmstore.db.operations.users import get_user_by_id, soft_delete_user
-
-from eduvmstore.services.app_template_service import get_image_id_from_app_template, get_default_network_id
-from eduvmstore.services.nova_service import create_instance
 
 
 # from eduvmstore.db.operations.app_templates import create_app_template, list_app_templates
@@ -233,51 +229,3 @@ class RoleViewSet(viewsets.ModelViewSet):
     """
     queryset = Roles.objects.all()
     serializer_class = RoleSerializer
-
-
-# normal ViewSet chosen, as Instances are not part of own database
-class InstanceViewSet(viewsets.ViewSet):
-    """ViewSet for handling instance operations.
-
-    This ViewSet provides access to OpenStack Instances.
-
-    :param perform_create: Method to create an instance
-    """
-
-    @action(detail=False, methods=['post'], url_path='launch')
-    def perform_create(self, request):
-        """
-        Create an instance (placeholder implementation).
-
-        :param Request request: The HTTP request object
-        :return: HTTP response with instance ID and accounts
-        :rtype: Response
-        """
-        print('Entered perform_create')
-        token = request.headers.get('X-Auth-Token')
-        if not token:
-            return Response({"error": "Authorization token missing"},
-                            status=status.HTTP_401_UNAUTHORIZED)
-
-        name = request.data.get('name')
-        network_id = request.data.get('network_id')
-        app_template_id = request.data.get('app_template_id')
-        flavor_id = request.data.get('flavor_id')
-        accounts = request.data.get('accounts')
-
-        print('name:', name)
-
-        if not all([name, network_id, app_template_id, flavor_id]):
-            return Response({"error": "Missing required parameters"},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            image_id = get_image_id_from_app_template(app_template_id)
-            print('image_id:', image_id)
-            # TODO: network_id currently handed over from frontend should be requested from openstack
-            # network_id = get_default_network_id(token)
-            instance = create_instance(name, image_id, flavor_id, network_id, token)
-            return Response({"id": instance.id, "name": instance.name}, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            return Response({"error": str(e)},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)

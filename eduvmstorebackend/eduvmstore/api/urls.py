@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AppTemplateViewSet, UserViewSet, RoleViewSet, InstanceViewSet
+from .views import AppTemplateViewSet, UserViewSet, RoleViewSet
 from rest_framework.routers import DefaultRouter
 
 
@@ -7,16 +7,12 @@ router = DefaultRouter()
 router.register(r'app-templates', AppTemplateViewSet, basename='app-template')
 router.register(r'users', UserViewSet, basename='user')
 router.register(r'roles', RoleViewSet, basename='role')
-router.register(r'instances', InstanceViewSet, basename='instance')
 
 urlpatterns = [
     *router.urls,
     path('app-templates/name/<str:name>/collisions/',
          AppTemplateViewSet.as_view({'get': 'check_name_collisions'}),
          name='check-name-collisions'),
-    path('instances/launch/',
-         InstanceViewSet.as_view({'post': 'perform_create'}),
-         name='instance-creation'),
 ]
 
 # urlpatterns = [
