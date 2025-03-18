@@ -84,7 +84,6 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
                 Q(description__icontains=search) |
                 Q(short_description__icontains=search) |
                 Q(instantiation_notice__icontains=search) |
-                Q(version__icontains=search) |
                 Q(id__icontains=search)
             )
 
