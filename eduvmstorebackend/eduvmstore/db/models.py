@@ -42,9 +42,21 @@ class AppTemplateInstantiationAttributes(models.Model):
         models.ForeignKey(AppTemplates, on_delete=models.CASCADE, related_name='instantiation_attributes'))
     name = models.CharField(max_length=255)
 
-    # No CRUD Info as AppTemplateInstantiationAttributes is strongly bound to AppTemplates
+    # No CRUD Info as AppTemplateInstantiationAttributes are strongly bound to AppTemplates
     # Due to the strong bound, there is no dedicated db-operation file to access
     # instantiation attributes alone
+    def __str__(self):
+        return self.name
+
+class AppTemplateAccountAttributes(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    app_template_id = (
+        models.ForeignKey(AppTemplates, on_delete=models.CASCADE, related_name='account_attributes'))
+    name = models.CharField(max_length=255)
+
+    # No CRUD Info as AppTemplateAccountAttributes are strongly bound to AppTemplates
+    # Due to the strong bound, there is no dedicated db-operation file to access
+    # account attributes alone
     def __str__(self):
         return self.name
 

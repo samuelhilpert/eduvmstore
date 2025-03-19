@@ -15,9 +15,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from eduvmstore.db.operations.app_templates import (create_app_template,
-                                                    list_app_templates,
-                                                    approve_app_template,
+from eduvmstore.db.operations.app_templates import (approve_app_template,
                                                     check_app_template_name_collisions,
                                                     soft_delete_app_template, reject_app_template)
 from eduvmstore.db.operations.users import get_user_by_id, soft_delete_user

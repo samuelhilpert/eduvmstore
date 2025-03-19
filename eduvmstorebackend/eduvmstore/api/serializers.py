@@ -3,6 +3,8 @@ from urllib import request
 
 from rest_framework import serializers
 from eduvmstore.db.models import AppTemplates, Users, Favorites, Roles, AppTemplateInstantiationAttributes
+from eduvmstore.db.models import (AppTemplates, Users, Roles, AppTemplateInstantiationAttributes,
+                                  AppTemplateAccountAttributes)
 
 logger = logging.getLogger("eduvmstore_logger")
 class AppTemplateInstantiationAttributesSerializer(serializers.ModelSerializer):
@@ -17,6 +19,18 @@ class AppTemplateInstantiationAttributesSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
         read_only_fields = ['id']
 
+class AppTemplateAccountAttributesSerializer(serializers.ModelSerializer):
+    """Serializer for the AppAccountAttributes model.
+
+    This serializer handles the conversion of AppTemplateAccountAttributes model
+    instances to and from JSON format, including validation and creation of new
+    instances.
+    """
+    class Meta:
+        model = AppTemplateAccountAttributes
+        fields = ['id', 'name']
+        read_only_fields = ['id']
+
 class AppTemplateSerializer(serializers.ModelSerializer):
     """Serializer for the AppTemplates model.
 
@@ -24,6 +38,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
     to and from JSON format, including validation and creation of new instances.
     """
     instantiation_attributes = AppTemplateInstantiationAttributesSerializer(many=True, read_only=False)
+    account_attributes = AppTemplateAccountAttributesSerializer(many=True, read_only=False)
 
     class Meta:
         model = AppTemplates
@@ -40,6 +55,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'instantiation_notice',
             'script',
             'instantiation_attributes',
+            'account_attributes',
             'public',
             'approved',
 
@@ -69,14 +85,23 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         :rtype: AppTemplates
         """
         instantiation_attributes_data = validated_data.pop('instantiation_attributes')
+        account_attributes_data = validated_data.pop('account_attributes')
         app_template = AppTemplates.objects.create(**validated_data)
+        self.create_instantiation_attributes(app_template, instantiation_attributes_data)
+        self.create_account_attributes(app_template, account_attributes_data)
+        return app_template
+
+    def create_instantiation_attributes(self, app_template, instantiation_attributes_data):
         for instantiation_attribute_data in instantiation_attributes_data:
             AppTemplateInstantiationAttributes.objects.create(
                 app_template_id=app_template,
                 **instantiation_attribute_data)
-        return app_template
-        # return AppTemplates.objects.create(**validated_data)
 
+    def create_account_attributes(self, app_template, account_attributes_data):
+        for account_attribute_data in account_attributes_data:
+            AppTemplateAccountAttributes.objects.create(
+                app_template_id=app_template,
+                **account_attribute_data)
     def update(self, instance, validated_data) -> AppTemplates:
         """
         Custom update method to handle additional operations
@@ -89,13 +114,15 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         """
 
         instantiation_attributes_data = validated_data.pop('instantiation_attributes')
+        account_attributes_data = validated_data.pop('account_attributes')
         if instantiation_attributes_data:
             # Update instantiation attributes by deleting all and creating only the new ones
             AppTemplateInstantiationAttributes.objects.filter(app_template_id=instance).delete()
-            for instantiation_attribute_data in instantiation_attributes_data:
-                AppTemplateInstantiationAttributes.objects.create(
-                    app_template_id=instance,
-                    **instantiation_attribute_data)
+            self.create_instantiation_attributes(instance, instantiation_attributes_data)
+        if account_attributes_data:
+            # Update account attributes by deleting all and creating only the new ones
+            AppTemplateAccountAttributes.objects.filter(app_template_id=instance).delete()
+            self.create_account_attributes(instance, account_attributes_data)
 
         model_fields = {field.name for field in instance._meta.fields}
         for field, value in validated_data.items():

@@ -16,19 +16,3 @@ urlpatterns = [
          AppTemplateViewSet.as_view({'get': 'check_name_collisions'}),
          name='check-name-collisions'),
 ]
-
-# urlpatterns = [
-#     path('', include(router.urls)),
-#     path('images/',
-#          ImageViewSet.as_view({'get': 'list'}),
-#          name='image-list'),
-#     path('images/<str:id>/',
-#          ImageViewSet.as_view({'get': 'retrieve'}),
-#          name='image-detail'),
-#     path('flavors/selection/',
-#          FlavorViewSet.as_view({'post': 'select_flavor'}),
-#          name='flavor-selection'),
-#     path('instances/launch/',
-#          InstanceViewSet.as_view({'post': 'perform_create'}),
-#          name='instance-creation'),
-# ]
