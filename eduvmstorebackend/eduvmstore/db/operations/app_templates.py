@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from eduvmstore.db.models import AppTemplates, AppTemplateInstantiationAttributes
 
 
-def create_app_template(app_template_data: dict):
+def create_app_template(app_template_data: dict) -> AppTemplates:
     """
     Create a new AppTemplate entry in the database using Django ORM.
     The instantiation attributes are also created.

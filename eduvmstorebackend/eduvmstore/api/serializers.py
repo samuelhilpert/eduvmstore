@@ -55,7 +55,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'deleted'
         ]
 
-    def create(self, validated_data):
+    def create(self, validated_data) -> AppTemplates:
         """
         Custom create method to handle additional operations
         before saving an AppTemplates instance to the database.
@@ -72,7 +72,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
                 **instantiation_attribute_data)
         return app_template
         # return AppTemplates.objects.create(**validated_data)
-    def update(self, instance, validated_data):
+    def update(self, instance, validated_data) -> AppTemplates:
         """
         Custom update method to handle additional operations
         before saving an AppTemplates instance to the database.
@@ -92,6 +92,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
                     app_template_id=instance,
                     **instantiation_attribute_data)
 
+        model_fields = {field.name for field in instance._meta.fields}
         for field, value in validated_data.items():
             setattr(instance, field, value)
         instance.approved = False
@@ -117,7 +118,7 @@ class RoleSerializer(serializers.ModelSerializer):
             'id'
         ]
 
-    def create(self, validated_data):
+    def create(self, validated_data) -> Roles:
         """
         Custom create method to handle additional operations
         before saving a Roles instance to the database.
@@ -160,7 +161,7 @@ class UserSerializer(serializers.ModelSerializer):
                 'is_active',
             ]
 
-    def create(self, validated_data):
+    def create(self, validated_data) -> Users:
         """
         Custom create method to handle additional operations
         before saving a Users instance to the database.

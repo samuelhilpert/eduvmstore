@@ -1,6 +1,6 @@
 
 import logging
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 from typing_extensions import override
 
@@ -34,7 +34,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     serializer_class = AppTemplateSerializer
 
     @override
-    def perform_create(self, serializer):
+    def perform_create(self, serializer) -> None:
         """
         Custom handle creation of an AppTemplates instance with initial field values.
 
@@ -46,7 +46,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         # creator_id: Ensures that the creator_id is set to the ID of the authenticated user
 
     @override
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[AppTemplates]:
         """
         Custom retrieval of the queryset of AppTemplates,
         optionally filtered by search, public, and approved status.
@@ -95,7 +95,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         return queryset
 
     @action(detail=True, methods=['patch'])
-    def approve(self, request, pk=None):
+    def approve(self, request, pk=None) -> Response:
         """
         Custom endpoint to approve an AppTemplate.
 
@@ -111,7 +111,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['patch'])
-    def reject(self, request, pk=None):
+    def reject(self, request, pk=None) -> Response:
         """
         Custom endpoint to reject an AppTemplate. Sets public and approved to
         false making the AppTemplate only visible for the creator.
@@ -129,7 +129,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='name/(?P<name>[^/.]+)\\/collisions',
             name='check-name-collisions')
-    def check_name_collisions(self, request, name=None):
+    def check_name_collisions(self, request, name=None) -> Response:
         """
         Custom endpoint to check for name collisions in AppTemplates.
 
@@ -144,7 +144,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         return Response(response_object, status=status.HTTP_200_OK)
 
     @override
-    def perform_destroy(self, instance):
+    def perform_destroy(self, instance) -> Response:
         """
         Soft delete an AppTemplate by setting its deleted flag and timestamp.
 
@@ -166,7 +166,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     serializer_class = UserSerializer
 
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, pk=None) -> Response:
         """
         Retrieve details of a specific user with role information.
 
@@ -184,7 +184,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @override
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Users]:
         """
         Custom retrieval of the queryset of Users.
         The scope of retrieved Users depends on the access level of the user.
@@ -205,7 +205,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return queryset
 
     @override
-    def perform_destroy(self, instance):
+    def perform_destroy(self, instance) -> Response:
         """
         Soft delete a User by marking them as deleted.
 

@@ -32,6 +32,12 @@ ALLOWED_HOSTS = ["141.72.12.209","192.168.64.1","0.0.0.0","localhost"]
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+# OpenStack configuration
+
+OPENSTACK = {
+    'auth_url': '141.72.12.111/identity/',
+}
+
 # Application definition
 
 INSTALLED_APPS = [
