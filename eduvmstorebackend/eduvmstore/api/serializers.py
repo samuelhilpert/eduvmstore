@@ -95,7 +95,8 @@ class AppTemplateSerializer(serializers.ModelSerializer):
 
         model_fields = {field.name for field in instance._meta.fields}
         for field, value in validated_data.items():
-            setattr(instance, field, value)
+            if field in model_fields:
+                setattr(instance, field, value)
         instance.approved = False
 
         instance.save()
