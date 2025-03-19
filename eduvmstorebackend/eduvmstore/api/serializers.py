@@ -72,6 +72,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
                 **instantiation_attribute_data)
         return app_template
         # return AppTemplates.objects.create(**validated_data)
+
     def update(self, instance, validated_data) -> AppTemplates:
         """
         Custom update method to handle additional operations

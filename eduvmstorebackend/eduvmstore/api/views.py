@@ -36,7 +36,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     @override
     def perform_create(self, serializer) -> None:
         """
-        Custom handle creation of an AppTemplates instance with initial field values.
+        Create an AppTemplates instance with initial field values.
 
         :param AppTemplateSerializer serializer: Serializer for the AppTemplates model
         :return: None
@@ -48,7 +48,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     @override
     def get_queryset(self) -> QuerySet[AppTemplates]:
         """
-        Custom retrieval of the queryset of AppTemplates,
+        Retrieve the queryset of AppTemplates,
         optionally filtered by search, public, and approved status.
         The scope of retrieved AppTemplates depends on the access level of the user.
 
@@ -97,7 +97,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['patch'])
     def approve(self, request, pk=None) -> Response:
         """
-        Custom endpoint to approve an AppTemplate.
+        Approve an AppTemplate to make it public and accessible for others.
 
         :param Request request: The HTTP request object
         :param str pk: Primary key of the AppTemplate to approve
@@ -113,7 +113,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['patch'])
     def reject(self, request, pk=None) -> Response:
         """
-        Custom endpoint to reject an AppTemplate. Sets public and approved to
+        Reject an AppTemplate. Sets public and approved to
         false making the AppTemplate only visible for the creator.
 
         :param Request request: The HTTP request object
@@ -131,7 +131,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
             name='check-name-collisions')
     def check_name_collisions(self, request, name=None) -> Response:
         """
-        Custom endpoint to check for name collisions in AppTemplates.
+        Check for name collisions in AppTemplates.
 
         :param Request request: The HTTP request object
         :param str name: Name to check for collisions
@@ -186,7 +186,7 @@ class UserViewSet(viewsets.ModelViewSet):
     @override
     def get_queryset(self) -> QuerySet[Users]:
         """
-        Custom retrieval of the queryset of Users.
+        Retrieve queryset of Users.
         The scope of retrieved Users depends on the access level of the user.
 
         :return: queryset of Users
