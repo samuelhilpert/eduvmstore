@@ -7,7 +7,6 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from eduvmstore.db.models import Users
-from eduvmstore.db.operations.roles import get_role_by_name, create_role
 from eduvmstore.db.operations.users import get_user_by_id, create_user
 from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS, DEFAULT_ACCESS_LEVEL
 
