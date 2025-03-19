@@ -84,3 +84,18 @@ class Roles(models.Model):
     def __str__(self):
         return self.name
 
+class Favorites(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user_id = models.ForeignKey(Users, on_delete=models.CASCADE)
+    app_template_id = models.ForeignKey(AppTemplates, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user_id', 'app_template_id'],
+                                    name='unique_user_app_template',
+                                    violation_error_message='User already has this app template in favorites'
+                                    )
+        ]
+
+    def __str__(self):
+        return str(self.user_id)

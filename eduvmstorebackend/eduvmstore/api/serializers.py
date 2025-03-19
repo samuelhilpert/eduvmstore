@@ -1,7 +1,12 @@
+import logging
+from urllib import request
+
 from rest_framework import serializers
+from eduvmstore.db.models import AppTemplates, Users, Favorites, Roles, AppTemplateInstantiationAttributes
 from eduvmstore.db.models import (AppTemplates, Users, Roles, AppTemplateInstantiationAttributes,
                                   AppTemplateAccountAttributes)
 
+logger = logging.getLogger("eduvmstore_logger")
 class AppTemplateInstantiationAttributesSerializer(serializers.ModelSerializer):
     """Serializer for the AppInstantiationAttributes model.
 
@@ -97,6 +102,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             AppTemplateAccountAttributes.objects.create(
                 app_template_id=app_template,
                 **account_attribute_data)
+
     def update(self, instance, validated_data) -> AppTemplates:
         """
         Custom update method to handle additional operations
@@ -128,6 +134,36 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class FavoritesSerializer(serializers.ModelSerializer):
+    """Serializer for the Favorite model.
+
+    This serializer handles the conversion of Favorite model instances
+    to and from JSON format, including validation and creation of new instances.
+    """
+    class Meta:
+        model = Favorites
+        fields = ['id', 'user_id', 'app_template_id']
+        read_only_fields = ['id', 'user_id']
+
+    def create(self, validated_data) -> Favorites:
+        """
+        Create method to handle additional operations
+        before saving a Favorite instance to the database.
+
+        :param dict validated_data: Data validated through the serializer
+        :return: Newly created Favorite instance
+        :rtype: Favorite
+        """
+        user_id = validated_data.get('user_id')
+        app_template_id = validated_data.get('app_template_id')
+        favorite, created = Favorites.objects.get_or_create(
+            user_id=user_id,
+            app_template_id=app_template_id,
+            defaults=validated_data
+        )
+        return favorite
+        #return Favorites.objects.create(**validated_data)
+
 
 class RoleSerializer(serializers.ModelSerializer):
     """Serializer for the Roles model.
@@ -157,7 +193,6 @@ class RoleSerializer(serializers.ModelSerializer):
         """
         return Roles.objects.create(**validated_data)
 
-
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for the Users model.
 
@@ -169,7 +204,6 @@ class UserSerializer(serializers.ModelSerializer):
     role_id = serializers.PrimaryKeyRelatedField(queryset=Roles.objects.all(),
                                                  write_only=True,
                                                  required=False)
-
 
     class Meta:
             model = Users

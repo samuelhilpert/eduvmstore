@@ -1,0 +1,15 @@
+meta {
+  name: ListFavoriteAppTemplates
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/app-templates/favorites
+  body: none
+  auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
+}

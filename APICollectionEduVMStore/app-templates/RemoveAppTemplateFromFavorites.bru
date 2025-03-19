@@ -1,0 +1,21 @@
+meta {
+  name: RemoveAppTemplateFromFavorites
+  type: http
+  seq: 14
+}
+
+delete {
+  url: {{base_url}}/api/favorites/delete_by_app_template
+  body: json
+  auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
+}
+
+body:json {
+  {
+    "app_template_id": "{{new_app_template_id}}"
+  }
+}
