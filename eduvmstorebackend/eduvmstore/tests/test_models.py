@@ -31,7 +31,7 @@ class AppTemplatesModelTests(TestCase):
         )
         self.assertEqual(app_template.name, "Test Template")
         self.assertFalse(app_template.deleted)
-        self.assertEqual(app_template.version, "1.0")
+        self.assertEqual(app_template.per_user_ram_gb, 0.5)
 
     def test_does_not_create_app_template_with_duplicate_name(self):
         user = self.create_user_and_role()

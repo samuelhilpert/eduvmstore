@@ -21,8 +21,7 @@ class AppTemplates(models.Model):
     deleted_at = models.DateTimeField(null=True)
     deleted = models.BooleanField(default=False)
 
-    # version and visibility
-    version = models.CharField(max_length=50, default="1.0")
+    # visibility
     public = models.BooleanField(default=False)
     approved = models.BooleanField(default=False)
 
