@@ -4,7 +4,8 @@ from django.db.models import Q, QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 from typing_extensions import override
 
-from eduvmstore.api.serializers import AppTemplateSerializer, FavoritesSerializer, UserSerializer, RoleSerializer
+from eduvmstore.api.serializers import (AppTemplateSerializer, FavoritesSerializer,
+                                        UserSerializer, RoleSerializer)
 from eduvmstore.db.models import AppTemplates, Favorites, Users, Roles
 from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS
 from rest_framework import status, viewsets
@@ -139,18 +140,23 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         return Response(response_object, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['GET'], url_path='favorites')
-    def favorites(self, request):
+    def favorites(self, request) -> Response:
         """
-        Marks or unmarks an AppTemplate as a favorite for the current user.
+        Lists all AppTemplate which are favorites of the current user.
+
+        :param Request request: The HTTP request object
+        :return: HTTP response with the list of favorite AppTemplates
+        :rtype: Response
         """
         user = request.myuser
-        favorites_app_template_ids = Favorites.objects.filter(user_id=user).values_list('app_template_id', flat=True)
+        favorites_app_template_ids = (Favorites.objects.filter(user_id=user)
+                                      .values_list('app_template_id', flat=True))
 
         # Filter for the list of app_template_ids
         app_templates = AppTemplates.objects.filter(id__in=favorites_app_template_ids)
 
         serializer = AppTemplateSerializer(app_templates, many=True)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
     @override
@@ -168,7 +174,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
 class FavoritesViewSet(viewsets.ModelViewSet):
     serializer_class = FavoritesSerializer
 
-    def get_queryset(self) ->Favorites:
+    def get_queryset(self) ->QuerySet[Favorites]:
         """
         retrieve the queryset of Favorites. Each User can only access own favorites
 
@@ -180,7 +186,7 @@ class FavoritesViewSet(viewsets.ModelViewSet):
         queryset = Favorites.objects.filter(user_id=user)
         return queryset
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer) ->None:
         """
         Adds AppTemplate to Favorites of current User
 
@@ -191,7 +197,7 @@ class FavoritesViewSet(viewsets.ModelViewSet):
         serializer.save(user_id=self.request.myuser)
 
     @action(detail=False, methods=['DELETE'], url_path='delete_by_app_template')
-    def delete_by_app_template(self, request):
+    def delete_by_app_template(self, request) ->Response:
         app_template_id = request.data.get('app_template_id')
         user_id = request.myuser
         try:

@@ -303,7 +303,7 @@ class FavoritesViewSetTests(APITestCase):
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_lists_favorites_for_user(self, mock_validate_token):
-        mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
+        mock_validate_token.return_value = {'id': self.user.id, 'name': 'Admin'}
         app_template = AppTemplates.objects.create(
             image_id=uuid.uuid4(),
             name="Favorite Template",
@@ -324,6 +324,6 @@ class FavoritesViewSetTests(APITestCase):
         Favorites.objects.create(app_template_id=app_template, user_id=self.user)
         url = reverse('app-template-favorites')
         response = self.client.get(url, format='json', **self.get_auth_headers())
-        #self.assertEqual(response.status_code, 200)
-        #self.assertEqual(len(response.data), 1)
-        #self.assertEqual(response.data[0]['name'], app_template.name)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], app_template.name)
