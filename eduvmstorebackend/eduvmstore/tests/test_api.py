@@ -234,45 +234,7 @@ class FavoritesViewSetTests(APITestCase):
         user = Users.objects.create(role_id=role)
         return user
 
-    def get_auth_headers(self, token="valid_token"):
-        return {'HTTP_X_AUTH_TOKEN': token}
-
-    def setUp(self):
-        self.user = self.create_user_and_role()
-        self.client.force_authenticate(user=self.user)
-
-    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
-           '.validate_token_with_keystone')
-    def test_adds_app_template_to_favorites(self, mock_validate_token):
-         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
-         app_template = AppTemplates.objects.create(
-             image_id=uuid.uuid4(),
-             name="Favorite Template",
-             description="A favorite template",
-             short_description="Favorite",
-             instantiation_notice="Notice",
-             script="Script",
-             creator_id=self.user,
-             public=True,
-             approved=False,
-             fixed_ram_gb=1.0,
-             fixed_disk_gb=10.0,
-             fixed_cores=1.0,
-             per_user_ram_gb=0.5,
-             per_user_disk_gb=5.0,
-             per_user_cores=0.5
-         )
-
-         url = reverse('favorite-list')
-         data = {"app_template_id": app_template.id}
-         response = self.client.post(url, data, format='json', **self.get_auth_headers())
-         self.assertEqual(response.status_code, 201)
-         self.assertTrue(1, Favorites.objects.all().count())
-
-    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
-           '.validate_token_with_keystone')
-    def test_removes_app_template_from_favorites(self, mock_validate_token):
-        mock_validate_token.return_value = {'id': self.user.id, 'name': 'Admin'}
+    def create_app_template(self):
         app_template = AppTemplates.objects.create(
             id=uuid.uuid4(),
             image_id=uuid.uuid4(),
@@ -291,39 +253,47 @@ class FavoritesViewSetTests(APITestCase):
             per_user_disk_gb=5.0,
             per_user_cores=0.5
         )
-        Favorites.objects.create(id=uuid.uuid4(), app_template_id=app_template, user_id=self.user)
+        return app_template
+
+    def get_auth_headers(self, token="valid_token"):
+        return {'HTTP_X_AUTH_TOKEN': token}
+
+    def setUp(self):
+        self.user = self.create_user_and_role()
+        self.client.force_authenticate(user=self.user)
+        self.app_template = self.create_app_template()
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_adds_app_template_to_favorites(self, mock_validate_token):
+         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
+         url = reverse('favorite-list')
+         data = {"app_template_id": self.app_template.id}
+         response = self.client.post(url, data, format='json', **self.get_auth_headers())
+         self.assertEqual(response.status_code, 201)
+         self.assertTrue(1, Favorites.objects.all().count())
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_removes_app_template_from_favorites(self, mock_validate_token):
+        mock_validate_token.return_value = {'id': self.user.id, 'name': 'Admin'}
+
+        Favorites.objects.create(id=uuid.uuid4(), app_template_id=self.app_template, user_id=self.user)
 
         url = reverse('favorite-delete-by-app-template')
-        data = {"app_template_id": app_template.id}
+        data = {"app_template_id": self.app_template.id}
         response = self.client.delete(url, data, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Favorites.objects.filter(
-            app_template_id=app_template.id, user_id=self.user.id).exists())
+            app_template_id=self.app_template.id, user_id=self.user.id).exists())
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_lists_favorites_for_user(self, mock_validate_token):
         mock_validate_token.return_value = {'id': self.user.id, 'name': 'Admin'}
-        app_template = AppTemplates.objects.create(
-            image_id=uuid.uuid4(),
-            name="Favorite Template",
-            description="A favorite template",
-            short_description="Favorite",
-            instantiation_notice="Notice",
-            script="Script",
-            creator_id=self.user,
-            public=True,
-            approved=False,
-            fixed_ram_gb=1.0,
-            fixed_disk_gb=10.0,
-            fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
-        )
-        Favorites.objects.create(app_template_id=app_template, user_id=self.user)
+        Favorites.objects.create(app_template_id=self.app_template, user_id=self.user)
         url = reverse('app-template-favorites')
         response = self.client.get(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['name'], app_template.name)
+        self.assertEqual(response.data[0]['name'], self.app_template.name)
