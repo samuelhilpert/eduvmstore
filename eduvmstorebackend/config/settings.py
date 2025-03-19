@@ -28,9 +28,15 @@ SECRET_KEY = 'django-insecure-9z)3#^qm_pgcf23+h37%$74jo-#($kz#!_$5$6sa@+xk)x&3(c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["141.72.12.209","192.168.64.1","0.0.0.0", "localhost"]
+ALLOWED_HOSTS = ["141.72.12.209","192.168.64.1","0.0.0.0","localhost"]
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+# OpenStack configuration
+
+OPENSTACK = {
+    'auth_url': '141.72.12.111/identity/',
+}
 
 # Application definition
 
@@ -58,10 +64,6 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
-
-# Enable Keystone authentication middleware for production
-# if os.getenv('ENABLE_KEYSTONE_AUTH', 'False') == 'True':
-#     MIDDLEWARE.append('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware')
 
 
 ROOT_URLCONF = 'config.urls'
@@ -115,19 +117,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-
-# OpenStack
-
-OPENSTACK = {
-    'auth_url': '141.72.12.111/identity/',
-    'project_id': 'aa5e9341447b49349c8ee1bba9a26634',
-    'project_name': 'admin',
-    'user_domain_name': 'default',
-    'project_domain_name': 'default',
-    'region_name': 'nova',
-    'verify_ssl': False,
-}
 
 
 LOGGING = {

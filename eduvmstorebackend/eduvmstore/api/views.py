@@ -1,10 +1,10 @@
 
 import logging
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.core.exceptions import ObjectDoesNotExist
+from typing_extensions import override
 
 from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS
-from eduvmstore.services.glance_service import list_images
 from eduvmstore.api.serializers import AppTemplateSerializer, RoleSerializer, UserSerializer
 from eduvmstore.db.models import AppTemplates, Roles, Users
 from rest_framework import status, viewsets
@@ -17,9 +17,6 @@ from eduvmstore.db.operations.app_templates import (create_app_template,
                                                     check_app_template_name_collisions,
                                                     soft_delete_app_template, reject_app_template)
 from eduvmstore.db.operations.users import get_user_by_id, soft_delete_user
-
-from eduvmstore.services.app_template_service import get_image_id_from_app_template, get_default_network_id
-from eduvmstore.services.nova_service import create_instance
 
 
 # from eduvmstore.db.operations.app_templates import create_app_template, list_app_templates
@@ -36,9 +33,10 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     """
     serializer_class = AppTemplateSerializer
 
-    def perform_create(self, serializer):
+    @override
+    def perform_create(self, serializer) -> None:
         """
-        Custom handle creation of an AppTemplates instance with initial field values.
+        Create an AppTemplates instance with initial field values.
 
         :param AppTemplateSerializer serializer: Serializer for the AppTemplates model
         :return: None
@@ -47,9 +45,10 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         serializer.save(creator_id=self.request.myuser, approved=False)
         # creator_id: Ensures that the creator_id is set to the ID of the authenticated user
 
-    def get_queryset(self):
+    @override
+    def get_queryset(self) -> QuerySet[AppTemplates]:
         """
-        Custom retrieval of the queryset of AppTemplates,
+        Retrieve the queryset of AppTemplates,
         optionally filtered by search, public, and approved status.
         The scope of retrieved AppTemplates depends on the access level of the user.
 
@@ -95,12 +94,10 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-    # action decorator for custom endpoint
-    # detail = True means it is for a specific AppTemplate
     @action(detail=True, methods=['patch'])
-    def approve(self, request, pk=None):
+    def approve(self, request, pk=None) -> Response:
         """
-        Custom endpoint to approve an AppTemplate.
+        Approve an AppTemplate to make it public and accessible for others.
 
         :param Request request: The HTTP request object
         :param str pk: Primary key of the AppTemplate to approve
@@ -113,12 +110,10 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
             {"id": app_template.id, "approved": app_template.approved},
             status=status.HTTP_200_OK)
 
-    # action decorator for custom endpoint
-    # detail = True means it is for a specific AppTemplate
     @action(detail=True, methods=['patch'])
-    def reject(self, request, pk=None):
+    def reject(self, request, pk=None) -> Response:
         """
-        Custom endpoint to reject an AppTemplate. Sets public and approved to
+        Reject an AppTemplate. Sets public and approved to
         false making the AppTemplate only visible for the creator.
 
         :param Request request: The HTTP request object
@@ -132,13 +127,11 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
             {"id": app_template.id, "public": app_template.public, "approved": app_template.approved},
             status=status.HTTP_200_OK)
 
-    # action decorator for custom endpoint
-    # detail = False means it is for all AppTemplate
     @action(detail=False, methods=['get'], url_path='name/(?P<name>[^/.]+)\\/collisions',
             name='check-name-collisions')
-    def check_name_collisions(self, request, name=None):
+    def check_name_collisions(self, request, name=None) -> Response:
         """
-        Custom endpoint to check for name collisions in AppTemplates.
+        Check for name collisions in AppTemplates.
 
         :param Request request: The HTTP request object
         :param str name: Name to check for collisions
@@ -150,7 +143,8 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         response_object = {"name": name, "collisions": collisions}
         return Response(response_object, status=status.HTTP_200_OK)
 
-    def perform_destroy(self, instance):
+    @override
+    def perform_destroy(self, instance) -> Response:
         """
         Soft delete an AppTemplate by setting its deleted flag and timestamp.
 
@@ -172,7 +166,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     serializer_class = UserSerializer
 
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, pk=None) -> Response:
         """
         Retrieve details of a specific user with role information.
 
@@ -189,9 +183,10 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def get_queryset(self):
+    @override
+    def get_queryset(self) -> QuerySet[Users]:
         """
-        Custom retrieval of the queryset of Users.
+        Retrieve queryset of Users.
         The scope of retrieved Users depends on the access level of the user.
 
         :return: queryset of Users
@@ -209,7 +204,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-    def perform_destroy(self, instance):
+    @override
+    def perform_destroy(self, instance) -> Response:
         """
         Soft delete a User by marking them as deleted.
 
@@ -232,135 +228,3 @@ class RoleViewSet(viewsets.ModelViewSet):
     """
     queryset = Roles.objects.all()
     serializer_class = RoleSerializer
-
-
-# normal ViewSet chosen, as Images are not part of own database
-class ImageViewSet(viewsets.ViewSet):
-    """
-    ViewSet for handling image operations.
-
-    This ViewSet provides OpenStack access to glance images.
-
-    :param list: Method to list all images
-    :param retrieve: Method to retrieve details of a specific image
-    """
-
-    def list(self, request):
-        """
-        List all images (placeholder implementation).
-
-        :param Request request: The HTTP request object
-        :return: HTTP response with a placeholder message
-        :rtype: Response
-        """
-        token = request.headers.get('X-Auth-Token')
-        if not token:
-            return Response({"error": "Authorization token missing"},
-                            status=status.HTTP_401_UNAUTHORIZED)
-
-        try:
-            images = list_images(token)
-            return Response(images,
-                            status=status.HTTP_201_CREATED)
-        except Exception as e:
-            return Response({"error": str(e)},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    # Django passes id automatically as pk
-    def retrieve(self, request, pk):
-        """
-         Retrieve details of a specific image (placeholder implementation).
-
-         :param Request request: The HTTP request object
-         :param str pk: The unique identifier of the image (primary key)
-         :return: HTTP response with a placeholder message
-         :rtype: Response
-         """
-        print("id: ", pk)
-        # Placeholder logic to return details of a specific image
-        return Response({"message": "Not yet implemented"}, status=status.HTTP_200_OK)
-
-
-# normal ViewSet chosen, as Flavors are not part of own database
-class FlavorViewSet(viewsets.ViewSet):
-    """
-    ViewSet for handling flavor operations.
-
-    This ViewSet gives a selection from the current flavors in OpenStack.
-
-    :param select_flavor: Method to return possible and best matching flavors
-    """
-    # action decorator for custom endpoint
-    # detail = False means it is for all AppTemplate
-    @action(detail=False, methods=['post'], url_path='selection')
-    def select_flavor(self, request):
-        """
-        Return possible and best matching flavors (placeholder implementation).
-
-        :param Request request: The HTTP request object
-        :return: HTTP response with best and possible flavor IDs
-        :rtype: Response
-        """
-
-        # Retrieve All possible flavors from OpenStack
-
-        # Filter Flavors not matching any of the required parameters of the app template and openstack
-        # get app template minimal requirements
-        # Query Nova Service for available user ressource (instance count, RAM, CPU, Disk)
-        # check for each flavor if it is larger than the requirements
-
-
-        # Placeholder logic to return possible and best matching flavors
-        return Response({"best_flavor_id": None, "possible_flavor_ids": []},
-                        status=status.HTTP_200_OK)
-
-
-# normal ViewSet chosen, as Instances are not part of own database
-class InstanceViewSet(viewsets.ViewSet):
-    """ViewSet for handling instance operations.
-
-    This ViewSet provides access to OpenStack Instances.
-
-    :param perform_create: Method to create an instance
-    """
-    # action decorator for custom endpoint
-    # detail = False means it is for all AppTemplate
-
-    @action(detail=False, methods=['post'], url_path='launch')
-    def perform_create(self, request):
-        """
-        Create an instance (placeholder implementation).
-
-        :param Request request: The HTTP request object
-        :return: HTTP response with instance ID and accounts
-        :rtype: Response
-        """
-        print('Entered perform_create')
-        token = request.headers.get('X-Auth-Token')
-        if not token:
-            return Response({"error": "Authorization token missing"},
-                            status=status.HTTP_401_UNAUTHORIZED)
-
-        name = request.data.get('name')
-        network_id = request.data.get('network_id')
-        app_template_id = request.data.get('app_template_id')
-        flavor_id = request.data.get('flavor_id')
-        accounts = request.data.get('accounts')
-
-        print('name:', name)
-
-        if not all([name, network_id, app_template_id, flavor_id]):
-            return Response({"error": "Missing required parameters"},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            image_id = get_image_id_from_app_template(app_template_id)
-            print('image_id:', image_id)
-            # TODO: network_id currently handed over from frontend should be requested from openstack
-            # network_id = get_default_network_id(token)
-            instance = create_instance(name, image_id, flavor_id, network_id, token)
-            return Response({"id": instance.id, "name": instance.name}, status=status.HTTP_201_CREATED)
-            # return Response({"message": "not yet implemented"}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": str(e)},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)

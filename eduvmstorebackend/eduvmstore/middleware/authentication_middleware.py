@@ -22,7 +22,7 @@ class KeystoneAuthenticationMiddleware:
 
     :param function get_response: Callable that processes the request after middleware execution
     """
-    def __init__(self, get_response):
+    def __init__(self, get_response) -> None:
         """
         Initialize the middleware with a get_response callable.
 
@@ -30,7 +30,7 @@ class KeystoneAuthenticationMiddleware:
         """
         self.get_response = get_response
 
-    def __call__(self, request):
+    def __call__(self, request) -> JsonResponse:
         """
         Process the request to validate the authentication token and user access.
 
@@ -57,7 +57,7 @@ class KeystoneAuthenticationMiddleware:
         response = self.get_response(request)
         return response
 
-    def validate_token_with_keystone(self, token):
+    def validate_token_with_keystone(self, token) -> dict or None:
         """
         Validate the OpenStack authentication token with Keystone.
 
@@ -78,7 +78,7 @@ class KeystoneAuthenticationMiddleware:
             logger.error('Keystone token validation request failed: %s', e)
             return None
 
-    def get_or_create_user(self, keystone_user_info):
+    def get_or_create_user(self, keystone_user_info) -> Users:
         """
         Retrieve or create a user based on Keystone user information.
 
@@ -100,7 +100,7 @@ class KeystoneAuthenticationMiddleware:
         return user
 
 
-    def check_user_access(self, request, user):
+    def check_user_access(self, request, user) -> bool:
         """
         Check if the user has sufficient access level for the requested route.
 
@@ -112,7 +112,7 @@ class KeystoneAuthenticationMiddleware:
         required_access_level = self.get_required_access_level(request)
         return user.role_id.access_level >= required_access_level
 
-    def get_required_access_level(self, request):
+    def get_required_access_level(self, request) -> int:
         """
         Determine the required access level for a specific request route.
 
