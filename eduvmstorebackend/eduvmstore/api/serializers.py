@@ -102,6 +102,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             AppTemplateAccountAttributes.objects.create(
                 app_template_id=app_template,
                 **account_attribute_data)
+
     def update(self, instance, validated_data) -> AppTemplates:
         """
         Custom update method to handle additional operations

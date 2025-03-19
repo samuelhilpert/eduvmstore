@@ -1,16 +1,12 @@
 
 import logging
-from urllib import request
-
 from django.db.models import Q, QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 from typing_extensions import override
 
+from eduvmstore.api.serializers import AppTemplateSerializer, FavoritesSerializer, UserSerializer, RoleSerializer
+from eduvmstore.db.models import AppTemplates, Favorites, Users, Roles
 from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS
-from eduvmstore.services.glance_service import list_images
-from eduvmstore.api.serializers import AppTemplateSerializer, RoleSerializer, UserSerializer, \
-    FavoritesSerializer
-from eduvmstore.db.models import AppTemplates, Favorites, Roles, Users
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -18,10 +14,8 @@ from rest_framework.response import Response
 from eduvmstore.db.operations.app_templates import (approve_app_template,
                                                     check_app_template_name_collisions,
                                                     soft_delete_app_template, reject_app_template)
-from eduvmstore.db.operations.users import get_user_by_id, soft_delete_user
+from eduvmstore.db.operations.users import soft_delete_user
 
-
-# from eduvmstore.db.operations.app_templates import create_app_template, list_app_templates
 
 logger = logging.getLogger('eduvmstore_logger')
 class AppTemplateViewSet(viewsets.ModelViewSet):
@@ -113,7 +107,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['patch'])
-    def reject(self, request) -> Response:
+    def reject(self, request, pk=None) -> Response:
         """
         Reject an AppTemplate. Sets public and approved to
         false making the AppTemplate only visible for the creator.
@@ -218,23 +212,6 @@ class UserViewSet(viewsets.ModelViewSet):
     :param serializer_class: Serializer class for Users model
     """
     serializer_class = UserSerializer
-
-    # def retrieve(self, request, pk=None):
-    #     """
-    #     Retrieve details of a specific user with role information.
-    #
-    #     :param Request request: The HTTP request object
-    #     :param str pk: The unique identifier of the user (primary key)
-    #     :return: HTTP response with a placeholder message
-    #     :rtype: Response
-    #     """
-    #     try:
-    #         user = get_user_by_id(pk)
-    #     except ObjectDoesNotExist:
-    #         return Response({"detail": f"User with id \"{pk}\" not found"},
-    #                         status=status.HTTP_404_NOT_FOUND)
-    #     serializer = self.get_serializer(user)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
 
     @override
     def get_queryset(self) -> QuerySet[Users]:
