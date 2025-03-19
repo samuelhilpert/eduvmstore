@@ -67,36 +67,6 @@ def get_user_by_id(id: str) -> Users:
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist(f"User with id {id} not found.")
 
-
-def list_users() -> list[Users]:
-    """
-    Retrieve all User records from the database.
-
-    :return: A list of User objects
-    :rtype: list[Users]
-    """
-    return Users.objects.filter(deleted=False)
-
-def update_user_role(id: str, role_id: str) -> Users:
-    """
-    Update the role of a specific User by ID.
-
-    :param str id: The UUID of the User
-    :param str role_id: The UUID of the new Role
-    :return: The updated User object
-    :rtype: Users
-    :raises ObjectDoesNotExist: If the User or Role is not found
-    """
-    try:
-        user = Users.objects.get(id=id, deleted=False)
-        user.role_id = role_id
-        user.updated_at = timezone.now()
-        user.save()
-        return user
-    except ObjectDoesNotExist:
-        raise ObjectDoesNotExist(f"User or Role not found.")
-
-
 def soft_delete_user(id: str) -> None:
     """
     Soft delete a User by marking them as deleted.

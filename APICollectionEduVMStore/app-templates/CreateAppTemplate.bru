@@ -22,6 +22,10 @@ body:json {
   "instantiation_notice": "AI VM will be ready soon",
   "script": "runcmd:\n  - cat /etc/users.txt > /etc/testtesttest\n  - |\n    while IFS=':' read -r username password; do\n    if ! id \"$username\" &>/dev/null; then\n    useradd -m -s \"/bin/bash\" \"$username\"\n    echo \"$username:$password\" | chpasswd\n    fi\n    done < /etc/users.txt",
   "instantiation_attributes": [
+      { "name": "JavaVersion" },
+      { "name": "SpringbootVersion" }
+    ],
+  "account_attributes": [
       { "name": "Username" },
       { "name": "Password" }
     ],

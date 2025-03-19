@@ -2,7 +2,8 @@ from rest_framework.test import APITestCase
 from django.urls import reverse
 
 from eduvmstore.config.access_levels import DEFAULT_ROLES
-from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateInstantiationAttributes
+from eduvmstore.db.models import (AppTemplates, Users, Roles, AppTemplateInstantiationAttributes,
+                                  AppTemplateAccountAttributes)
 from unittest.mock import patch
 import uuid
 
@@ -38,6 +39,10 @@ class AppTemplateViewSetTests(APITestCase):
             "instantiation_notice": "Notice",
             "script": "Script",
             "instantiation_attributes": [
+                {"name": "JavaVersion"},
+                {"name": "InstallSpringboot"}
+            ],
+            "account_attributes": [
                 {"name": "Username"},
                 {"name": "Password"}
             ],
@@ -78,7 +83,7 @@ class AppTemplateViewSetTests(APITestCase):
 
         url = reverse('app-template-detail', args=[app_template.id])
         name = "API Updated Template"
-        updated_instantiation_attributes_name = "Updated Username"
+        updated_instantiation_attributes_name = "Updated JavaVersion Field"
         data = {
             "name": name,
             "description": "An updated template",
@@ -87,7 +92,11 @@ class AppTemplateViewSetTests(APITestCase):
             "script": "Updated Script",
             "instantiation_attributes": [
                 {"name": updated_instantiation_attributes_name},
-                {"name": "Updated Password"}
+                {"name": "SpringbootVersion"}
+            ],
+            "account_attributes": [
+                {"name": "Username"},
+                {"name": "Password"}
             ],
             "image_id": app_template.image_id,
             "approved": True,
@@ -214,7 +223,7 @@ class AppTemplateViewSetTests(APITestCase):
         )
         instantiation_attribute = AppTemplateInstantiationAttributes.objects.create(
             app_template_id=app_template,
-            name="Username"
+            name="JavaVersion"
         )
 
         url = reverse('app-template-detail', args=[app_template.id])
