@@ -16,9 +16,11 @@ class RoleOperationsTests(TestCase):
         )
 
     def test_creates_role_successfully(self):
+        name = "Admin"
+        access_level = 6000
         role_data = {
-            "name": "NewRole",
-            "access_level": 5000
+            "name": name,
+            "access_level": access_level
         }
         role = create_role(role_data)
         self.assertEqual(role.name, "NewRole")
