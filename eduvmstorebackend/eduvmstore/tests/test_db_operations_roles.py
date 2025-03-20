@@ -16,15 +16,15 @@ class RoleOperationsTests(TestCase):
         )
 
     def test_creates_role_successfully(self):
-        name = "Admin"
+        name = "Test Role"
         access_level = 6000
         role_data = {
             "name": name,
             "access_level": access_level
         }
         role = create_role(role_data)
-        self.assertEqual(role.name, "NewRole")
-        self.assertEqual(role.access_level, 5000)
+        self.assertEqual(role.name, name)
+        self.assertEqual(role.access_level, access_level)
 
     def test_does_not_create_role_with_invalid_data(self):
         role_data = {
