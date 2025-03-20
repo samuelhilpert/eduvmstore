@@ -19,19 +19,39 @@ class AppTemplateViewSetTests(APITestCase):
         user = Users.objects.create(role_id=role)
         return user
 
+    def create_app_template(self):
+        return AppTemplates.objects.create(
+            image_id=uuid.uuid4(),
+            name="API Test Template",
+            description="A test template",
+            short_description="Test",
+            instantiation_notice="Notice",
+            script="Script",
+            creator_id=self.user,
+            public=True,
+            approved=False,
+            fixed_ram_gb=1.0,
+            fixed_disk_gb=10.0,
+            fixed_cores=1.0,
+            per_user_ram_gb=0.5,
+            per_user_disk_gb=5.0,
+            per_user_cores=0.5
+        )
+
     def get_auth_headers(self, token="valid_token"):
         return {'HTTP_X_AUTH_TOKEN': token}
 
     def setUp(self):
         self.user = self.create_user_and_role()
         self.client.force_authenticate(user=self.user)
+        self.app_template = self.create_app_template()
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_creates_app_template_via_api_successfully(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
         url = reverse('app-template-list')
-        name = "API Test Template"
+        name = "Test Create Template"
         data = {
             "image_id": str(uuid.uuid4()),
             "name": name,
@@ -62,25 +82,7 @@ class AppTemplateViewSetTests(APITestCase):
            '.validate_token_with_keystone')
     def test_updates_app_template_via_api_successfully(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
-        app_template = AppTemplates.objects.create(
-            image_id=uuid.uuid4(),
-            name="API Update Template",
-            description="A test template",
-            short_description="Test",
-            instantiation_notice="Notice",
-            script="Script",
-            public=True,
-            approved=False,
-            creator_id=self.user,
-            fixed_ram_gb=1.0,
-            fixed_disk_gb=10.0,
-            fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
-        )
-
-        url = reverse('app-template-detail', args=[app_template.id])
+        url = reverse('app-template-detail', args=[self.app_template.id])
         name = "API Updated Template"
         updated_instantiation_attributes_name = "Updated JavaVersion Field"
         data = {
@@ -97,7 +99,7 @@ class AppTemplateViewSetTests(APITestCase):
                 {"name": "Username"},
                 {"name": "Password"}
             ],
-            "image_id": app_template.image_id,
+            "image_id": self.app_template.image_id,
             "approved": True,
             "fixed_ram_gb": 2.0,
             "fixed_disk_gb": 20.0,
@@ -117,51 +119,17 @@ class AppTemplateViewSetTests(APITestCase):
            '.validate_token_with_keystone')
     def test_filters_app_templates_by_search(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
-        name = "Searchable Template"
-        AppTemplates.objects.create(
-            image_id=uuid.uuid4(),
-            name=name,
-            description="A searchable template",
-            short_description="Search",
-            instantiation_notice="Notice",
-            script="Script",
-            creator_id=self.user,
-            public=True,
-            approved=False,
-            fixed_ram_gb=1.0,
-            fixed_disk_gb=10.0,
-            fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
-        )
-        url = reverse('app-template-list') + '?search=Searchable'
+        url = reverse('app-template-list') + '?search=API'
         response = self.client.get(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['name'], name)
+        self.assertEqual(response.data[0]['name'], self.app_template.name)
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_checks_name_collisions(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
-        name = "Collision Template"
-        AppTemplates.objects.create(
-            image_id=uuid.uuid4(),
-            name=name,
-            description="A collision template",
-            short_description="Collision",
-            instantiation_notice="Notice",
-            script="Script",
-            creator_id=self.user,
-            fixed_ram_gb=1.0,
-            fixed_disk_gb=10.0,
-            fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
-        )
-        url = reverse('app-template-check-name-collisions', kwargs={'name': name})
+        url = reverse('app-template-check-name-collisions', kwargs={'name': self.app_template.name})
         response = self.client.get(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.data['collisions'])
@@ -170,22 +138,7 @@ class AppTemplateViewSetTests(APITestCase):
            '.validate_token_with_keystone')
     def test_checks_name_collisions_no_collision(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
-        AppTemplates.objects.create(
-            image_id=uuid.uuid4(),
-            name="No Collision Template",
-            description="A non-collision template",
-            short_description="No Collision",
-            instantiation_notice="Notice",
-            script="Script",
-            creator_id=self.user,
-            fixed_ram_gb=1.0,
-            fixed_disk_gb=10.0,
-            fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
-        )
-        url = reverse('app-template-check-name-collisions', kwargs={'name': 'Collision Template'})
+        url = reverse('app-template-check-name-collisions', kwargs={'name': 'No Collision Template'})
         response = self.client.get(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.data['collisions'])
@@ -194,35 +147,18 @@ class AppTemplateViewSetTests(APITestCase):
            '.validate_token_with_keystone')
     def test_soft_deletes_app_template_via_api_successfully(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
-        app_template = AppTemplates.objects.create(
-            image_id=uuid.uuid4(),
-            name="API Delete Template",
-            description="A test template",
-            short_description="Test",
-            instantiation_notice="Notice",
-            script="Script",
-            public=True,
-            approved=False,
-            creator_id=self.user,
-            fixed_ram_gb=1.0,
-            fixed_disk_gb=10.0,
-            fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
-        )
         instantiation_attribute = AppTemplateInstantiationAttributes.objects.create(
-            app_template_id=app_template,
+            app_template_id=self.app_template,
             name="JavaVersion"
         )
 
-        url = reverse('app-template-detail', args=[app_template.id])
+        url = reverse('app-template-detail', args=[self.app_template.id])
         response = self.client.delete(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 204)
-        app_template.refresh_from_db()
+        self.app_template.refresh_from_db()
 
-        self.assertTrue(app_template.deleted)
-        self.assertIsNotNone(app_template.deleted_at)
+        self.assertTrue(self.app_template.deleted)
+        self.assertIsNotNone(self.app_template.deleted_at)
         instantiation_attribute.refresh_from_db()
         self.assertIsNotNone(instantiation_attribute.name)
 
