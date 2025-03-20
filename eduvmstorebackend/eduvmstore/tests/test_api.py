@@ -50,9 +50,8 @@ class AppTemplateViewSetTests(APITestCase):
            '.validate_token_with_keystone')
     def test_creates_app_template_via_api_successfully(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
-        self.app_template.delete()
         url = reverse('app-template-list')
-        name = "API Test Template"
+        name = "Test Create Template"
         data = {
             "image_id": str(uuid.uuid4()),
             "name": name,
