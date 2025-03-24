@@ -14,8 +14,7 @@ from rest_framework.response import Response
 
 from eduvmstore.db.operations.app_templates import (approve_app_template,
                                                     check_app_template_name_collisions,
-                                                    soft_delete_app_template, reject_app_template)
-from eduvmstore.db.operations.users import soft_delete_user
+                                                    reject_app_template)
 
 
 logger = logging.getLogger('eduvmstore_logger')
@@ -159,18 +158,6 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-    @override
-    def perform_destroy(self, instance) -> Response:
-        """
-        Soft delete an AppTemplate by setting its deleted flag and timestamp.
-
-        :param AppTemplates instance: The AppTemplates instance to delete
-        :return: HTTP response with no content
-        :rtype: Response
-        """
-        soft_delete_app_template(self.get_object().id)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
 class FavoritesViewSet(viewsets.ModelViewSet):
     serializer_class = FavoritesSerializer
 
@@ -239,19 +226,6 @@ class UserViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(id=user)
 
         return queryset
-
-    @override
-    def perform_destroy(self, instance) -> Response:
-        """
-        Soft delete a User by marking them as deleted.
-
-        :param Users instance: The User instance to delete
-        :return: HTTP response with no content
-        :rtype: Response
-        """
-        soft_delete_user(self.get_object().id)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 class RoleViewSet(viewsets.ModelViewSet):
     """

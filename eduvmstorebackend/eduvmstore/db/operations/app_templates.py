@@ -52,7 +52,7 @@ def reject_app_template(id: str) -> AppTemplates:
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist("AppTemplate %s not found.", id)
 
-
+# Currently unused, potential enhancement for the future
 def soft_delete_app_template(id: str) -> None:
     """
     Soft delete an AppTemplate record by setting the 'deleted' flag and 'deleted_at' timestamp.

@@ -143,24 +143,25 @@ class AppTemplateViewSetTests(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.data['collisions'])
 
+    # As soft delete is currently not used the assert statements are commented out
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_soft_deletes_app_template_via_api_successfully(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
-        instantiation_attribute = AppTemplateInstantiationAttributes.objects.create(
-            app_template_id=self.app_template,
-            name="JavaVersion"
-        )
+        #instantiation_attribute = AppTemplateInstantiationAttributes.objects.create(
+        #    app_template_id=self.app_template,
+        #    name="JavaVersion"
+        #)
 
         url = reverse('app-template-detail', args=[self.app_template.id])
         response = self.client.delete(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 204)
-        self.app_template.refresh_from_db()
+        #self.app_template.refresh_from_db()
 
-        self.assertTrue(self.app_template.deleted)
-        self.assertIsNotNone(self.app_template.deleted_at)
-        instantiation_attribute.refresh_from_db()
-        self.assertIsNotNone(instantiation_attribute.name)
+        #self.assertTrue(self.app_template.deleted)
+        #self.assertIsNotNone(self.app_template.deleted_at)
+        #instantiation_attribute.refresh_from_db()
+        #self.assertIsNotNone(instantiation_attribute.name)
 
 class FavoritesViewSetTests(APITestCase):
 
