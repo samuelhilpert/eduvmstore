@@ -385,6 +385,11 @@
 - **Dauer**:    1.25 Stunden
 - **Arbeit**: Ideenfindung/Planung Umsetzung mehrere Instanzen starten
 ---
+### Datum: 2025-03-22 - 2025-03-24
+- **Entwickler**: Valentin
+- **Dauer**:    6 Stunden
+- **Arbeit**: Frontendverständnis und Suchleiste für AppTemplates im Frontend
+---
 ### Datum: 2025-02-27
 - **Entwickler**: x
 - **Dauer**:    5 Stunden
