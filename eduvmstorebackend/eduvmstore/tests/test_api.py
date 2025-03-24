@@ -148,10 +148,10 @@ class AppTemplateViewSetTests(APITestCase):
            '.validate_token_with_keystone')
     def test_soft_deletes_app_template_via_api_successfully(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
-        instantiation_attribute = AppTemplateInstantiationAttributes.objects.create(
-            app_template_id=self.app_template,
-            name="JavaVersion"
-        )
+        #instantiation_attribute = AppTemplateInstantiationAttributes.objects.create(
+        #    app_template_id=self.app_template,
+        #    name="JavaVersion"
+        #)
 
         url = reverse('app-template-detail', args=[self.app_template.id])
         response = self.client.delete(url, format='json', **self.get_auth_headers())
