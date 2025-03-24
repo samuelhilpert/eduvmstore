@@ -67,6 +67,7 @@ def get_user_by_id(id: str) -> Users:
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist(f"User with id {id} not found.")
 
+# Currently unused, potential enhancement for the future
 def soft_delete_user(id: str) -> None:
     """
     Soft delete a User by marking them as deleted.

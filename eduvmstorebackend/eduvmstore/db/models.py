@@ -18,6 +18,7 @@ class AppTemplates(models.Model):
     creator_id = models.ForeignKey('Users', on_delete=models.DO_NOTHING, db_index=True)
     created_at = models.DateTimeField(default=now, editable=False)
     updated_at = models.DateTimeField(default=now)
+    # soft delete currenly unused, potential enhancement for the future
     deleted_at = models.DateTimeField(null=True)
     deleted = models.BooleanField(default=False)
 
