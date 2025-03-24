@@ -355,6 +355,16 @@
 - **Dauer**:    15 Stunden
 - **Arbeit**: Script ohne User, Präsentation, Datei in Text, Description, User in MetaData, Details mit AccountStructure und Script, Fixen Userübertragung
 ---
+### Datum: 2025-03-12
+- **Entwickler**: Valentin
+- **Dauer**:    0.5 Stunden
+- **Arbeit**: Umbenennung und Löschung von openstack service artefakten im Backend
+---
+### Datum: 2025-03-13
+- **Entwickler**: Valentin
+- **Dauer**:    1.5 Stunden
+- **Arbeit**: Reject AppTemplatesEndpunkt
+---
 ### Datum: 2025-03-13
 - **Entwickler**: Samuel
 - **Dauer**:    2 Stunden
@@ -384,6 +394,21 @@
 - **Entwickler**: Samuel
 - **Dauer**:    1.25 Stunden
 - **Arbeit**: Ideenfindung/Planung Umsetzung mehrere Instanzen starten
+---
+### Datum: 2025-03-16
+- **Entwickler**: Valentin
+- **Dauer**:    0.5 Stunden
+- **Arbeit**: Versionierung löschen
+---
+### Datum: 2025-03-16 - 2025-03-18
+- **Entwickler**: Valentin
+- **Dauer**:    5 Stunden
+- **Arbeit**: Favoritenfunktionalität
+---
+### Datum: 2025-03-19
+- **Entwickler**: Valentin
+- **Dauer**:    0.5 Stunden
+- **Arbeit**: Trennung instantiation attributes und account attributes
 ---
 ### Datum: 2025-03-22 - 2025-03-24
 - **Entwickler**: Valentin
