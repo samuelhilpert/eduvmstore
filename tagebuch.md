@@ -415,6 +415,26 @@
 - **Dauer**:    6 Stunden
 - **Arbeit**: Frontendverständnis und Suchleiste für AppTemplates im Frontend
 ---
+### Datum: 2025-03-25
+- **Entwickler**: Valentin
+- **Dauer**:    0.25 Stunden
+- **Arbeit**: own app_templates during creation automatically added to favorites
+---
+### Datum: 2025-03-25
+- **Entwickler**: Valentin
+- **Dauer**:    1 Stunde
+- **Arbeit**: Added field volume_size_gb to automatically attach a new volume of that size to the instances
+---
+### Datum: 2025-03-25
+- **Entwickler**: Valentin
+- **Dauer**:    1 Stunde
+- **Arbeit**: Ensured that the update (PUT) endpoint works as expected
+---
+### Datum: 2025-03-25
+- **Entwickler**: Valentin, Jared, Samuel und Marian
+- **Dauer**:    3 Stunden
+- **Arbeit**: Diskutieren und Umsetzen der Versionierungsstrategie (Kein Löschen von approved AT und Kopie bei approven mit neuem Namen aus Version)
+---
 ### Datum: 2025-02-27
 - **Entwickler**: x
 - **Dauer**:    5 Stunden
