@@ -25,13 +25,15 @@ class AppTemplateOperationsTests(TestCase):
             script="Script",
             image_id=str(uuid.uuid4()),
             creator_id=user,
+            public=True,
+            approved=False,
+            volume_size_gb=100,
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
             per_user_ram_gb=0.5,
             per_user_disk_gb=5.0,
             per_user_cores=0.5,
-            approved=False
         )
 
     def setUp(self):

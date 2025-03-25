@@ -59,6 +59,8 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'public',
             'approved',
 
+            'volume_size_gb',
+
             'fixed_ram_gb',
             'fixed_disk_gb',
             'fixed_cores',
