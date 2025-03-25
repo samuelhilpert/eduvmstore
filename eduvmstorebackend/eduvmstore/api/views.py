@@ -33,13 +33,16 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer) -> None:
         """
         Create an AppTemplates instance with initial field values.
+        The creator id is the openstack user id of the authenticated user. The
+        AppTemplate is automatically added to favorites.
 
         :param AppTemplateSerializer serializer: Serializer for the AppTemplates model
         :return: None
         :rtype: None
         """
         serializer.save(creator_id=self.request.myuser, approved=False)
-        # creator_id: Ensures that the creator_id is set to the ID of the authenticated user
+        # Create a favorite item of the newly created AppTemplate
+        Favorites.objects.create(app_template_id=serializer.instance, user_id=self.request.myuser)
 
     @override
     def get_queryset(self) -> QuerySet[AppTemplates]:

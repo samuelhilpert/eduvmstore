@@ -49,7 +49,7 @@ class AppTemplateViewSetTests(APITestCase):
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_creates_app_template_via_api_successfully(self, mock_validate_token):
-        mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
+        mock_validate_token.return_value = {'id': self.user.id, 'name': 'Admin'}
         url = reverse('app-template-list')
         name = "Test Create Template"
         data = {
@@ -77,6 +77,9 @@ class AppTemplateViewSetTests(APITestCase):
         response = self.client.post(url, data, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data['name'], name)
+        app_template_id = response.data['id']
+        #Check that favorite item for self.user and the app_template is created
+        self.assertIsNotNone(Favorites.objects.filter(app_template_id=app_template_id, user_id=self.user))
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
