@@ -75,7 +75,8 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'creator_id',
             'updated_at',
             'deleted_at',
-            'deleted'
+            'deleted',
+            'version'
         ]
 
     # Validation method for the name field (automatically triggered by Django Rest Framework)
@@ -155,13 +156,12 @@ class AppTemplateSerializer(serializers.ModelSerializer):
 
         model_fields = {field.name: field for field in instance._meta.fields}
         for field_name, field in model_fields.items():
-            if field_name in validated_data:
+            if field_name in self.Meta.read_only_fields:
+                continue
+            elif field_name in validated_data:
                 setattr(instance, field_name, validated_data[field_name])
-            elif field_name not in self.Meta.read_only_fields:
-                if field.has_default():
-                    setattr(instance, field_name, field.default)
-                else:
-                    setattr(instance, field_name, None)
+            elif field.has_default():
+                setattr(instance, field_name, field.default)
 
         instance.updated_at = now()
         instance.approved = False
