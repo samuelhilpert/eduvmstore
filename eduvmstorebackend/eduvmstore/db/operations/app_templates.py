@@ -19,7 +19,9 @@ def check_app_template_name_collisions(name: str) -> bool:
 
 def approve_app_template(id: str) -> AppTemplates:
     """
-    Update the approved status of an AppTemplate to true.
+    Approve an AppTemplate by creating a copy with the 'approved' flag set to True.
+    The copied AppTemplate name is suffixed with '-V' and the version number to
+    ensure unique names.
 
     :param str id: The UUID of the AppTemplate to approve
     :return: The updated AppTemplate object
@@ -27,10 +29,24 @@ def approve_app_template(id: str) -> AppTemplates:
     :raises ObjectDoesNotExist: If the AppTemplate is not found
     """
     try:
-        app_template = AppTemplates.objects.get(id=id, deleted=False)
-        app_template.approved = True
-        app_template.save()
-        return app_template
+        original_app_template = AppTemplates.objects.get(id=id, deleted=False)
+
+        # Create a copy by setting pk to None
+        # https://docs.djangoproject.com/en/2.2/topics/db/queries/#copying-model-instances
+        public_app_template = AppTemplates.objects.get(id=original_app_template.id, deleted=False)
+        public_app_template.pk = None
+        public_app_template.name = original_app_template.name + "-V" +str(original_app_template.version)
+        public_app_template.approved = True  # Approve the copy
+        public_app_template.save()
+
+
+        # No need for public visibility on original app_template
+        # -> no request for approval
+        original_app_template.public = False
+        original_app_template.version += 1
+        original_app_template.save()
+
+        return public_app_template
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist("AppTemplate not found.")
 

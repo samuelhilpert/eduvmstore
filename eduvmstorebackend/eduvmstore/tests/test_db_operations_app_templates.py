@@ -46,7 +46,15 @@ class AppTemplateOperationsTests(TestCase):
 
     def test_approves_app_template_successfully(self):
         approved_template = approve_app_template(self.app_template.id)
+
+        self.assertEqual(AppTemplates.objects.count(),2)
         self.assertTrue(approved_template.approved)
+        self.app_template.refresh_from_db()
+        self.assertFalse(self.app_template.public)
+        self.assertEqual(approved_template.version, 1)
+        self.assertEqual(self.app_template.version, 2)
+        expected_name = self.app_template.name + "-V1"
+        self.assertEqual(approved_template.name, expected_name)
 
     def test_rejects_app_template_successfully(self):
         rejected_app_template = reject_app_template(self.app_template.id)

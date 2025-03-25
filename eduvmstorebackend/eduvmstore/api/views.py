@@ -103,11 +103,18 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         :return: HTTP response with the approval status
         :rtype: Response
         """
-        app_template_id = self.get_object().id
-        app_template = approve_app_template(app_template_id)
+        original_app_template_id = self.get_object().id
+        public_app_template = approve_app_template(original_app_template_id)
         return Response(
-            {"id": app_template.id, "approved": app_template.approved},
-            status=status.HTTP_200_OK)
+            {
+                "original_app_template": {
+                    "id": original_app_template_id
+                    },
+                "public_app_template": {
+                    "id": public_app_template.id,
+                    "approved": public_app_template.approved
+                }
+            }, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['patch'])
     def reject(self, request, pk=None) -> Response:

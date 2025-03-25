@@ -21,6 +21,7 @@ class AppTemplates(models.Model):
     # soft delete currenly unused, potential enhancement for the future
     deleted_at = models.DateTimeField(null=True)
     deleted = models.BooleanField(default=False)
+    version = models.IntegerField(default=1) # versioning for approval naming
 
     # visibility
     public = models.BooleanField(default=False)
