@@ -30,6 +30,7 @@ class AppTemplateViewSetTests(APITestCase):
             creator_id=self.user,
             public=True,
             approved=False,
+            volume_size_gb=100,
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
@@ -52,6 +53,8 @@ class AppTemplateViewSetTests(APITestCase):
         mock_validate_token.return_value = {'id': self.user.id, 'name': 'Admin'}
         url = reverse('app-template-list')
         name = "Test Create Template"
+        volume_size_gb = 100
+        # Leave out public as it is not required
         data = {
             "image_id": str(uuid.uuid4()),
             "name": name,
@@ -67,16 +70,21 @@ class AppTemplateViewSetTests(APITestCase):
                 {"name": "Username"},
                 {"name": "Password"}
             ],
+            "volume_size_gb": volume_size_gb,
             "fixed_ram_gb": 1.0,
             "fixed_disk_gb": 10.0,
             "fixed_cores": 1.0,
             "per_user_ram_gb": 0.5,
             "per_user_disk_gb": 5.0,
-            "per_user_cores": 0.5
+            "per_user_cores": 0.5,
+            "approved": True # Try to create app_template as public illegaly (should end in False)
         }
         response = self.client.post(url, data, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data['name'], name)
+        self.assertFalse(response.data['public'])
+        self.assertFalse(response.data['approved'])
+        self.assertEqual(response.data['volume_size_gb'], volume_size_gb)
         app_template_id = response.data['id']
         #Check that favorite item for self.user and the app_template is created
         self.assertIsNotNone(Favorites.objects.filter(app_template_id=app_template_id, user_id=self.user))
