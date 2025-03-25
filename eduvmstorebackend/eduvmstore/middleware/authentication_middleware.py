@@ -9,6 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from eduvmstore.db.models import Users
 from eduvmstore.db.operations.users import get_user_by_id, create_user
 from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS, DEFAULT_ACCESS_LEVEL
+from eduvmstore.utils.access_control import check_request_access
 
 logger = logging.getLogger('eduvmstore_logger')
 
@@ -48,11 +49,11 @@ class KeystoneAuthenticationMiddleware:
             return JsonResponse({'error': 'Invalid token'}, status=401)
 
         user = self.get_or_create_user(keystone_user_info)
-        if not self.check_user_access(request, user):
+        request.myuser = user
+        if not check_request_access(request):
             logger.error('Access denied for user: %s', user.id)
             return JsonResponse({'error': f'Access level of user {user.id} not sufficient'}, status=403)
 
-        request.myuser = user
         response = self.get_response(request)
         return response
 
@@ -97,29 +98,3 @@ class KeystoneAuthenticationMiddleware:
             }
             user =  create_user(user_dict)
         return user
-
-
-    def check_user_access(self, request, user) -> bool:
-        """
-        Check if the user has sufficient access level for the requested route.
-
-        :param HttpRequest request: The HTTP request object
-        :param Users user: The user instance to check access for
-        :return: True if access is allowed, False otherwise
-        :rtype: bool
-        """
-        required_access_level = self.get_required_access_level(request)
-        return user.role_id.access_level >= required_access_level
-
-    def get_required_access_level(self, request) -> int:
-        """
-        Determine the required access level for a specific request route.
-
-        :param HttpRequest request: The HTTP request object
-        :return: Required access level for the route
-        :rtype: int
-        """
-
-        url_name = resolve(request.path).url_name
-        method = request.method
-        return REQUIRED_ACCESS_LEVELS.get((url_name, method), DEFAULT_ACCESS_LEVEL)

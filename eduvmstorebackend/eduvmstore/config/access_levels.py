@@ -9,6 +9,7 @@ REQUIRED_ACCESS_LEVELS = {
     ("app-template-list-all", "GET"): 3101, #No Endpoint, access to see all AppTemplates
     ('app-template-reject', 'PATCH'): 3102,
     ('app-template-approve', 'PATCH'): 3103,
+    ('app-template-delete-approved', 'DELETE'): 4001, #No Endpoint, right to delete approved AppTemplates
 
     ('favorite-list', 'POST'): 1103,
     ('favorite-delete-by-app-template', 'DELETE'): 1104,
