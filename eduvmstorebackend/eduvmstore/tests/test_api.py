@@ -129,6 +129,40 @@ class AppTemplateViewSetTests(APITestCase):
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
+    def test_cannot_update_approved_app_template(self, mock_validate_token):
+        # Create an approved app template
+        mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
+        self.app_template.approved = True
+        self.app_template.save()
+
+        # Attempt to update the approved template
+        url = reverse('app-template-detail', args=[self.app_template.id])
+        data = {
+            "name": "Updated Name",
+            "description": "Updated description",
+            "short_description": "Updated",
+            "instantiation_notice": "Updated Notice",
+            "script": "Updated Script",
+            "instantiation_attributes": [],
+            "account_attributes": [],
+            "image_id": self.app_template.image_id,
+            "fixed_ram_gb": 2.0,
+            "fixed_disk_gb": 20.0,
+            "fixed_cores": 2.0,
+            "per_user_ram_gb": 1.0,
+            "per_user_disk_gb": 10.0,
+            "per_user_cores": 1.0
+        }
+
+        response = self.client.put(url, data, format='json', **self.get_auth_headers())
+
+        # Verify the update was rejected with a 400 Bad Request
+        self.assertEqual(response.status_code, 400)
+        # Verify that the app template was not updated
+        self.assertEqual(AppTemplates.objects.get(id=self.app_template.id).name, self.app_template.name)
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
     def test_filters_app_templates_by_search(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
         url = reverse('app-template-list') + '?search=API'
@@ -139,21 +173,21 @@ class AppTemplateViewSetTests(APITestCase):
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
-    def test_checks_name_collisions(self, mock_validate_token):
+    def test_checks_name_collision(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
-        url = reverse('app-template-check-name-collisions', kwargs={'name': self.app_template.name})
+        url = reverse('app-template-check-name-collision', kwargs={'name': self.app_template.name})
         response = self.client.get(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.data['collisions'])
+        self.assertTrue(response.data['collision'])
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
-    def test_checks_name_collisions_no_collision(self, mock_validate_token):
+    def test_checks_name_collision_no_collision(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
-        url = reverse('app-template-check-name-collisions', kwargs={'name': 'No Collision Template'})
+        url = reverse('app-template-check-name-collision', kwargs={'name': 'No Collision Template'})
         response = self.client.get(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(response.data['collisions'])
+        self.assertFalse(response.data['collision'])
 
     # As soft delete is currently not used the assert statements are commented out
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'

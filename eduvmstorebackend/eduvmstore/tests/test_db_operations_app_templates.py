@@ -4,7 +4,8 @@ from django.test import TestCase
 from eduvmstore.config.access_levels import DEFAULT_ROLES
 from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateInstantiationAttributes
 from eduvmstore.db.operations.app_templates import (
-    check_app_template_name_collisions, approve_app_template, soft_delete_app_template, reject_app_template
+    check_current_name_collision, approve_app_template, soft_delete_app_template, reject_app_template,
+    has_version_suffix
 )
 
 class AppTemplateOperationsTests(TestCase):
@@ -40,13 +41,37 @@ class AppTemplateOperationsTests(TestCase):
         self.user = self.create_user_and_role()
         self.app_template = self.create_app_template(self.user)
 
-    def test_checks_name_collisions(self):
-        collision = check_app_template_name_collisions(self.app_template.name)
+    def test_checks_name_collision(self):
+        collision = check_current_name_collision(self.app_template.name)
         self.assertTrue(collision)
+
+    def test_has_version_suffix(self):
+        # Should return True for names with proper version suffixes
+        self.assertTrue(has_version_suffix("example-V21"))
+        self.assertTrue(has_version_suffix("template-V1"))
+        self.assertTrue(has_version_suffix("long name with spaces-V0"))
+        self.assertTrue(has_version_suffix("name-V999"))
+
+        # Should return False for names without version suffixes
+        self.assertFalse(has_version_suffix("app_templateITIL3"))
+        self.assertFalse(has_version_suffix("V1"))  # No hyphen
+        self.assertFalse(has_version_suffix("template-v1"))  # Lowercase v
+        self.assertFalse(has_version_suffix("template-V"))  # No digits
+        self.assertFalse(has_version_suffix("template-V1a"))  # Non-digit after number
+        self.assertFalse(has_version_suffix("template-V1-suffix"))  # Something after
+        self.assertFalse(has_version_suffix("template V1"))  # Space instead of hyphen
 
     def test_approves_app_template_successfully(self):
         approved_template = approve_app_template(self.app_template.id)
+
+        self.assertEqual(AppTemplates.objects.count(),2)
         self.assertTrue(approved_template.approved)
+        self.app_template.refresh_from_db()
+        self.assertFalse(self.app_template.public)
+        self.assertEqual(approved_template.version, 1)
+        self.assertEqual(self.app_template.version, 2)
+        expected_name = self.app_template.name + "-V1"
+        self.assertEqual(approved_template.name, expected_name)
 
     def test_rejects_app_template_successfully(self):
         rejected_app_template = reject_app_template(self.app_template.id)

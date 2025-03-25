@@ -11,7 +11,7 @@ router.register(r'favorites', FavoritesViewSet, basename='favorite')
 
 urlpatterns = [
     *router.urls,
-    path('app-templates/name/<str:name>/collisions/',
-         AppTemplateViewSet.as_view({'get': 'check_name_collisions'}),
-         name='check-name-collisions'),
+    path('app-templates/name/<str:name>/collision/',
+         AppTemplateViewSet.as_view({'get': 'check_name_collision'}),
+         name='check-name-collision'),
 ]

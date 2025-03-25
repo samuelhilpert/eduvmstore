@@ -1,6 +1,6 @@
 REQUIRED_ACCESS_LEVELS = {
     ('app-template-list', 'GET'): 1001,
-    ('app-template-check-name-collisions', 'GET'): 1001,
+    ('app-template-check-name-collision', 'GET'): 1001,
     ('app-template-detail', 'GET'): 1002,
     ('app-template-list', 'POST'): 1101,
     ('app-template-favorites', 'GET'): 1102,

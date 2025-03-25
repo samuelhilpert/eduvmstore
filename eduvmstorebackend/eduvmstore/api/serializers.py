@@ -5,6 +5,7 @@ from rest_framework import serializers
 from eduvmstore.db.models import AppTemplates, Users, Favorites, Roles, AppTemplateInstantiationAttributes
 from eduvmstore.db.models import (AppTemplates, Users, Roles, AppTemplateInstantiationAttributes,
                                   AppTemplateAccountAttributes)
+from eduvmstore.db.operations.app_templates import has_version_suffix, extract_version_suffix
 
 logger = logging.getLogger("eduvmstore_logger")
 class AppTemplateInstantiationAttributesSerializer(serializers.ModelSerializer):
@@ -77,6 +78,22 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'deleted'
         ]
 
+    # Validation method for the name field (automatically triggered by Django Rest Framework)
+    def validate_name(self, value):
+        """
+        Validate that the app template name doesn't have a version suffix.
+
+        :param str value: The name to validate
+        :return: The validated name
+        :raises: ValidationError if name has version suffix
+        """
+        if has_version_suffix(value):
+            suffix = extract_version_suffix(value)
+            raise serializers.ValidationError(
+                f"App template name cannot end with the version suffix '{suffix}'. "
+            )
+        return value
+
     def create(self, validated_data) -> AppTemplates:
         """
         Custom create method to handle additional operations
@@ -108,13 +125,22 @@ class AppTemplateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data) -> AppTemplates:
         """
         Custom update method to handle additional operations
-        before saving an AppTemplates instance to the database.
+        before saving an AppTemplates instance to the database. Public AppTemplates
+        can't be updated.
 
         :param AppTemplates instance: The instance to update
         :param dict validated_data: Data validated through the serializer
         :return: Updated AppTemplates instance
         :rtype: AppTemplates
         """
+
+        if instance.approved:
+            raise serializers.ValidationError(
+                {"detail": "Approved app templates cannot be "
+                           "edited to avoid confusion for other users."
+                            "Clone the app template and edit the clone instead."},
+                code='forbidden'
+            )
 
         instantiation_attributes_data = validated_data.pop('instantiation_attributes')
         account_attributes_data = validated_data.pop('account_attributes')
