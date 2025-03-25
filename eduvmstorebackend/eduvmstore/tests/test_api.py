@@ -173,21 +173,21 @@ class AppTemplateViewSetTests(APITestCase):
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
-    def test_checks_name_collisions(self, mock_validate_token):
+    def test_checks_name_collision(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
-        url = reverse('app-template-check-name-collisions', kwargs={'name': self.app_template.name})
+        url = reverse('app-template-check-name-collision', kwargs={'name': self.app_template.name})
         response = self.client.get(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.data['collisions'])
+        self.assertTrue(response.data['collision'])
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
-    def test_checks_name_collisions_no_collision(self, mock_validate_token):
+    def test_checks_name_collision_no_collision(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
-        url = reverse('app-template-check-name-collisions', kwargs={'name': 'No Collision Template'})
+        url = reverse('app-template-check-name-collision', kwargs={'name': 'No Collision Template'})
         response = self.client.get(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(response.data['collisions'])
+        self.assertFalse(response.data['collision'])
 
     # As soft delete is currently not used the assert statements are commented out
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'

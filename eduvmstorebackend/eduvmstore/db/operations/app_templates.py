@@ -4,8 +4,11 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from eduvmstore.db.models import AppTemplates
 
+# Pattern to match version suffixes in AppTemplate names.
+# This pattern is forbidden as it is automatically used for approved AppTemplates
+VERSION_SUFFIX_PATTERN = r'-V\d+$'
 
-def check_app_template_name_collisions(name: str) -> bool:
+def check_current_name_collision(name: str) -> bool:
     """
     Check if the given AppTemplate name collides with any existing AppTemplate.
     or if it has the version suffix reserved for approved AppTemplates.
@@ -14,10 +17,6 @@ def check_app_template_name_collisions(name: str) -> bool:
     :return: True if a collision is found, False otherwise
     :rtype: bool
     """
-
-    if has_version_suffix(name):
-        return True
-
     return AppTemplates.objects.filter(name=name, deleted=False).exists()
 
 def has_version_suffix(name: str) -> bool:
@@ -29,7 +28,19 @@ def has_version_suffix(name: str) -> bool:
     :return: True if a version suffix is found, False otherwise
     :rtype: bool
     """
-    return re.search(r'-V\d+$', name)
+    return bool(re.search(VERSION_SUFFIX_PATTERN, name))
+
+
+def extract_version_suffix(name: str) -> str:
+    """
+    Extract the version suffix from an AppTemplate name if present.
+
+    :param str name: The name to check
+    :return: The extracted version suffix or empty string if none found
+    :rtype: str
+    """
+    match = re.search(VERSION_SUFFIX_PATTERN, name)
+    return match.group(0) if match else ""
 
 def approve_app_template(id: str) -> AppTemplates:
     """

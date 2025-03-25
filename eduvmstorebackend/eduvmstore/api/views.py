@@ -13,8 +13,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from eduvmstore.db.operations.app_templates import (approve_app_template,
-                                                    check_app_template_name_collisions,
-                                                    reject_app_template)
+                                                    check_current_name_collision,
+                                                    reject_app_template, has_version_suffix,
+                                                    extract_version_suffix)
 
 
 logger = logging.getLogger('eduvmstore_logger')
@@ -23,7 +24,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     ViewSet for handling AppTemplate model operations.
 
     This ViewSet provides default CRUD operations for the AppTemplates model,
-    including custom actions for approving templates and checking name collisions.
+    including custom actions for approving templates and checking for a name collision.
 
     :param serializer_class: Serializer class for AppTemplates model
     """
@@ -132,20 +133,32 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
             {"id": app_template.id, "public": app_template.public, "approved": app_template.approved},
             status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['get'], url_path='name/(?P<name>[^/.]+)\\/collisions',
-            name='check-name-collisions')
-    def check_name_collisions(self, request, name=None) -> Response:
+    @action(detail=False, methods=['get'], url_path='name/(?P<name>[^/.]+)\\/collision',
+            name='check-name-collision')
+    def check_name_collision(self, request, name=None) -> Response:
         """
-        Check for name collisions in AppTemplates.
+        Check for a name collision with existing and future AppTemplates.
 
         :param Request request: The HTTP request object
-        :param str name: Name to check for collisions
+        :param str name: Name to check for a collision
         :return: HTTP response with collision status
         :rtype: Response
         """
-        collisions = check_app_template_name_collisions(name)
+        current_collision = check_current_name_collision(name)
 
-        response_object = {"name": name, "collisions": collisions}
+        potential_future_collision = has_version_suffix(name)
+
+        reason = "No collision found."
+        if current_collision:
+            reason = "AppTemplate with this name already exists"
+        elif potential_future_collision:
+            suffix = extract_version_suffix(name)
+            reason = (f"Suffix '{suffix}' is not allowed in the name "
+                      "to prevent future collisions with approved AppTemplates")
+
+        response_object = {"name": name,
+                           "collision": current_collision or potential_future_collision,
+                           "reason": reason}
         return Response(response_object, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['GET'], url_path='favorites')

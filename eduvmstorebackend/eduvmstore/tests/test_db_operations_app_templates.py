@@ -4,7 +4,7 @@ from django.test import TestCase
 from eduvmstore.config.access_levels import DEFAULT_ROLES
 from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateInstantiationAttributes
 from eduvmstore.db.operations.app_templates import (
-    check_app_template_name_collisions, approve_app_template, soft_delete_app_template, reject_app_template,
+    check_current_name_collision, approve_app_template, soft_delete_app_template, reject_app_template,
     has_version_suffix
 )
 
@@ -41,11 +41,9 @@ class AppTemplateOperationsTests(TestCase):
         self.user = self.create_user_and_role()
         self.app_template = self.create_app_template(self.user)
 
-    def test_checks_name_collisions(self):
-        collision = check_app_template_name_collisions(self.app_template.name)
+    def test_checks_name_collision(self):
+        collision = check_current_name_collision(self.app_template.name)
         self.assertTrue(collision)
-        collisionVersionSuffix = check_app_template_name_collisions(self.app_template.name + "-V3")
-        self.assertTrue(collisionVersionSuffix)
 
     def test_has_version_suffix(self):
         # Should return True for names with proper version suffixes
