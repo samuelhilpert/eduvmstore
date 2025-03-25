@@ -122,6 +122,7 @@ class AppTemplateViewSetTests(APITestCase):
         response = self.client.put(url, data, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['name'], name)
+        self.assertIsNotNone(response.data['updated_at'])
         self.assertEqual(response.data["instantiation_attributes"][0]["name"],
                          updated_instantiation_attributes_name)
         self.assertEqual(response.data["approved"], False)

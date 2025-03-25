@@ -1,5 +1,5 @@
 import logging
-from urllib import request
+from django.utils.timezone import now
 
 from rest_framework import serializers
 from eduvmstore.db.models import AppTemplates, Users, Favorites, Roles, AppTemplateInstantiationAttributes
@@ -118,21 +118,27 @@ class AppTemplateSerializer(serializers.ModelSerializer):
 
         instantiation_attributes_data = validated_data.pop('instantiation_attributes')
         account_attributes_data = validated_data.pop('account_attributes')
+
+        AppTemplateInstantiationAttributes.objects.filter(app_template_id=instance).delete()
+        AppTemplateAccountAttributes.objects.filter(app_template_id=instance).delete()
+
         if instantiation_attributes_data:
-            # Update instantiation attributes by deleting all and creating only the new ones
-            AppTemplateInstantiationAttributes.objects.filter(app_template_id=instance).delete()
             self.create_instantiation_attributes(instance, instantiation_attributes_data)
         if account_attributes_data:
-            # Update account attributes by deleting all and creating only the new ones
-            AppTemplateAccountAttributes.objects.filter(app_template_id=instance).delete()
             self.create_account_attributes(instance, account_attributes_data)
 
-        model_fields = {field.name for field in instance._meta.fields}
-        for field, value in validated_data.items():
-            if field in model_fields:
-                setattr(instance, field, value)
-        instance.approved = False
+        model_fields = {field.name: field for field in instance._meta.fields}
+        for field_name, field in model_fields.items():
+            if field_name in validated_data:
+                setattr(instance, field_name, validated_data[field_name])
+            elif field_name not in self.Meta.read_only_fields:
+                if field.has_default():
+                    setattr(instance, field_name, field.default)
+                else:
+                    setattr(instance, field_name, None)
 
+        instance.updated_at = now()
+        instance.approved = False
         instance.save()
         return instance
 
