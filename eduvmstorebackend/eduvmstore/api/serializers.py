@@ -5,6 +5,7 @@ from rest_framework import serializers
 from eduvmstore.db.models import AppTemplates, Users, Favorites, Roles, AppTemplateInstantiationAttributes
 from eduvmstore.db.models import (AppTemplates, Users, Roles, AppTemplateInstantiationAttributes,
                                   AppTemplateAccountAttributes)
+from eduvmstore.db.operations.app_templates import has_version_suffix
 
 logger = logging.getLogger("eduvmstore_logger")
 class AppTemplateInstantiationAttributesSerializer(serializers.ModelSerializer):
@@ -76,6 +77,21 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'deleted_at',
             'deleted'
         ]
+
+    # Validation method for the name field (automatically triggered by Django Rest Framework)
+    def validate_name(self, value):
+        """
+        Validate that the app template name doesn't have a version suffix.
+
+        :param str value: The name to validate
+        :return: The validated name
+        :raises: ValidationError if name has version suffix
+        """
+        if has_version_suffix(value):
+            raise serializers.ValidationError(
+                "App template name cannot end with a version suffix (e.g. '-V1')."
+            )
+        return value
 
     def create(self, validated_data) -> AppTemplates:
         """

@@ -1,6 +1,5 @@
-import uuid
+import re
 from django.utils import timezone
-from django.db.models import Q
 
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from eduvmstore.db.models import AppTemplates
@@ -9,13 +8,28 @@ from eduvmstore.db.models import AppTemplates
 def check_app_template_name_collisions(name: str) -> bool:
     """
     Check if the given AppTemplate name collides with any existing AppTemplate.
+    or if it has the version suffix reserved for approved AppTemplates.
 
     :param str name: The name of the AppTemplate to check
     :return: True if a collision is found, False otherwise
     :rtype: bool
     """
+
+    if has_version_suffix(name):
+        return True
+
     return AppTemplates.objects.filter(name=name, deleted=False).exists()
 
+def has_version_suffix(name: str) -> bool:
+    """
+    Check if the given AppTemplate name has a version suffix.
+    Examples are '-V1', '-V2', etc.
+
+    :param str name: The name of the AppTemplate to check
+    :return: True if a version suffix is found, False otherwise
+    :rtype: bool
+    """
+    return re.search(r'-V\d+$', name)
 
 def approve_app_template(id: str) -> AppTemplates:
     """

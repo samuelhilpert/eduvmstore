@@ -4,7 +4,8 @@ from django.test import TestCase
 from eduvmstore.config.access_levels import DEFAULT_ROLES
 from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateInstantiationAttributes
 from eduvmstore.db.operations.app_templates import (
-    check_app_template_name_collisions, approve_app_template, soft_delete_app_template, reject_app_template
+    check_app_template_name_collisions, approve_app_template, soft_delete_app_template, reject_app_template,
+    has_version_suffix
 )
 
 class AppTemplateOperationsTests(TestCase):
@@ -43,6 +44,24 @@ class AppTemplateOperationsTests(TestCase):
     def test_checks_name_collisions(self):
         collision = check_app_template_name_collisions(self.app_template.name)
         self.assertTrue(collision)
+        collisionVersionSuffix = check_app_template_name_collisions(self.app_template.name + "-V3")
+        self.assertTrue(collisionVersionSuffix)
+
+    def test_has_version_suffix(self):
+        # Should return True for names with proper version suffixes
+        self.assertTrue(has_version_suffix("example-V21"))
+        self.assertTrue(has_version_suffix("template-V1"))
+        self.assertTrue(has_version_suffix("long name with spaces-V0"))
+        self.assertTrue(has_version_suffix("name-V999"))
+
+        # Should return False for names without version suffixes
+        self.assertFalse(has_version_suffix("app_templateITIL3"))
+        self.assertFalse(has_version_suffix("V1"))  # No hyphen
+        self.assertFalse(has_version_suffix("template-v1"))  # Lowercase v
+        self.assertFalse(has_version_suffix("template-V"))  # No digits
+        self.assertFalse(has_version_suffix("template-V1a"))  # Non-digit after number
+        self.assertFalse(has_version_suffix("template-V1-suffix"))  # Something after
+        self.assertFalse(has_version_suffix("template V1"))  # Space instead of hyphen
 
     def test_approves_app_template_successfully(self):
         approved_template = approve_app_template(self.app_template.id)
