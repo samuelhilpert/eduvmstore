@@ -1,6 +1,6 @@
 import re
 from django.utils import timezone
-
+from enum import Enum
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from eduvmstore.db.models import AppTemplates
 
@@ -8,16 +8,40 @@ from eduvmstore.db.models import AppTemplates
 # This pattern is forbidden as it is automatically used for approved AppTemplates
 VERSION_SUFFIX_PATTERN = r'-V\d+$'
 
-def check_current_name_collision(name: str) -> bool:
+class CollisionReason(Enum):
+    NO_COLLISION = "No collision for name '{name}' found"
+    DIRECT_MATCH = "AppTemplate with name '{name}' already exists"
+    VERSIONED_TEMPLATE_EXISTS = "A versioned template with this base name '{name}' exists"
+    VERSION_SUFFIX_RESERVED = "The version suffix '{suffix}' is reserved for approved templates"
+
+    def format(self, **kwargs):
+        return self.value.format(**kwargs)
+
+def check_name_collision(name: str) -> tuple[bool, CollisionReason, dict]:
     """
-    Check if the given AppTemplate name collides with any existing AppTemplate.
-    or if it has the version suffix reserved for approved AppTemplates.
+    Check if the given AppTemplate name collides with any existing AppTemplates.
+    Checks for direct matches, versioned templates with the same base name,
+    and reserved version suffixes.
 
     :param str name: The name of the AppTemplate to check
-    :return: True if a collision is found, False otherwise
-    :rtype: bool
+    :return: A tuple (collision_found, reason)
+    :rtype: tuple[bool, CollisionReason]
     """
-    return AppTemplates.objects.filter(name=name, deleted=False).exists()
+    # Check for direct name collision
+    if AppTemplates.objects.filter(name=name, deleted=False).exists():
+        return True, CollisionReason.DIRECT_MATCH, {"name": name}
+
+    # Check if name has a version suffix
+    if has_version_suffix(name):
+        suffix = extract_version_suffix(name)
+        return True, CollisionReason.VERSION_SUFFIX_RESERVED, {"suffix": suffix}
+
+    # Check if any versioned template exists with this name as base
+    versioned_name_pattern = f"^{re.escape(name)}{VERSION_SUFFIX_PATTERN}"
+    if AppTemplates.objects.filter(name__regex=versioned_name_pattern, deleted=False).exists():
+        return True, CollisionReason.VERSIONED_TEMPLATE_EXISTS, {"name": name}
+
+    return False, CollisionReason.NO_COLLISION, {"name": name}
 
 def has_version_suffix(name: str) -> bool:
     """
