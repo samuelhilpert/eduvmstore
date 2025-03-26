@@ -233,8 +233,8 @@ class AppTemplateViewSetTests(APITestCase):
 
         response = self.client.get(url, format='json',
                                    **self.get_auth_headers(token="insufficient_rights_token"))
-        print(response.data)
         self.assertEqual(len(response.data), 0)
+        self.assertNotIn(private_app_template.id, [template['id'] for template in response.data])
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
