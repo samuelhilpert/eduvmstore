@@ -92,7 +92,8 @@ class AppTemplateViewSetTests(APITestCase):
         self.assertEqual(response.data['volume_size_gb'], volume_size_gb)
         app_template_id = response.data['id']
         #Check that favorite item for self.admin_user and the app_template is created
-        self.assertIsNotNone(Favorites.objects.filter(app_template_id=app_template_id, user_id=self.admin_user))
+        self.assertIsNotNone(
+            Favorites.objects.filter(app_template_id=app_template_id, user_id=self.admin_user))
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
