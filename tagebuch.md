@@ -435,8 +435,24 @@
 - **Dauer**:    3 Stunden
 - **Arbeit**: Diskutieren und Umsetzen der Versionierungsstrategie (Kein Löschen von approved AT und Kopie bei approven mit neuem Namen aus Version)
 ---
+### Datum: 2025-03-25
+- **Entwickler**: Valentin
+- **Dauer**:    0.5 Stunden
+- **Arbeit**: Frontend Collision renaming
+---
+### Datum: 2025-03-25
+- **Entwickler**: Valentin
+- **Dauer**:    2 Stunden
+- **Arbeit**: Fixed error that on update version was reset to 1 (Fehler der Versionierungsimplementierung)
+---
+### Datum: 2025-03-26
+- **Entwickler**: Valentin
+- **Dauer**:    1 Stunde
+- **Arbeit**: Namen auch mit Versionssuffix in DB kollidieren lassen, refactor der Methode (Versionierungsimplementierung)
+---
 ### Datum: 2025-02-27
 - **Entwickler**: x
 - **Dauer**:    5 Stunden
 - **Arbeit**: x
 ---
+
