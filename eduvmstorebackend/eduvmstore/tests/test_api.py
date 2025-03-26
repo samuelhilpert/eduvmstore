@@ -1,4 +1,5 @@
 import logging
+from urllib.parse import urlencode
 from rest_framework.test import APITestCase
 from django.urls import reverse
 
@@ -14,10 +15,14 @@ logger = logging.getLogger('eduvmstore_logger')
 class AppTemplateViewSetTests(APITestCase):
 
     def create_user_and_role(self):
-        role = Roles.objects.create(name=DEFAULT_ROLES.get("EduVMStoreAdmin").get("name"),
+        admin_role = Roles.objects.create(name=DEFAULT_ROLES.get("EduVMStoreAdmin").get("name"),
                                     access_level=DEFAULT_ROLES.get("EduVMStoreAdmin").get("access_level"))
-        user = Users.objects.create(role_id=role)
-        return user
+        user_role = Roles.objects.create(name=DEFAULT_ROLES.get("EduVMStoreUser").get("name"),
+                                    access_level=DEFAULT_ROLES.get("EduVMStoreUser").get("access_level"))
+        admin_user = Users.objects.create(role_id=admin_role)
+        normal_user = Users.objects.create(role_id=user_role)
+        self.admin_user = admin_user
+        self.normal_user = normal_user
 
     def create_app_template(self):
         return AppTemplates.objects.create(
@@ -27,7 +32,7 @@ class AppTemplateViewSetTests(APITestCase):
             short_description="Test",
             instantiation_notice="Notice",
             script="Script",
-            creator_id=self.user,
+            creator_id=self.admin_user,
             public=True,
             approved=False,
             volume_size_gb=100,
@@ -43,14 +48,14 @@ class AppTemplateViewSetTests(APITestCase):
         return {'HTTP_X_AUTH_TOKEN': token}
 
     def setUp(self):
-        self.user = self.create_user_and_role()
-        self.client.force_authenticate(user=self.user)
+        self.create_user_and_role()
+        self.client.force_authenticate(user=self.admin_user)
         self.app_template = self.create_app_template()
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_creates_app_template_via_api_successfully(self, mock_validate_token):
-        mock_validate_token.return_value = {'id': self.user.id, 'name': 'Admin'}
+        mock_validate_token.return_value = {'id': self.admin_user.id, 'name': 'Admin'}
         url = reverse('app-template-list')
         name = "Test Create Template"
         volume_size_gb = 100
@@ -86,8 +91,9 @@ class AppTemplateViewSetTests(APITestCase):
         self.assertFalse(response.data['approved'])
         self.assertEqual(response.data['volume_size_gb'], volume_size_gb)
         app_template_id = response.data['id']
-        #Check that favorite item for self.user and the app_template is created
-        self.assertIsNotNone(Favorites.objects.filter(app_template_id=app_template_id, user_id=self.user))
+        #Check that favorite item for self.admin_user and the app_template is created
+        self.assertIsNotNone(
+            Favorites.objects.filter(app_template_id=app_template_id, user_id=self.admin_user))
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
@@ -166,6 +172,99 @@ class AppTemplateViewSetTests(APITestCase):
     def test_filters_app_templates_by_search(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
         url = reverse('app-template-list') + '?search=API'
+        response = self.client.get(url, format='json', **self.get_auth_headers())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], self.app_template.name)
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_list_app_templates_for_admin_with_private_templates(self, mock_validate_token):
+        mock_validate_token.return_value = {'id': self.admin_user.id, 'name': 'Admin'}
+        url = reverse('app-template-list') + '?public=False'
+
+        private_app_template = AppTemplates.objects.create(
+            image_id=uuid.uuid4(),
+            name="Private Template",
+            description="A private template",
+            short_description="Private",
+            instantiation_notice="Notice",
+            script="Script",
+            creator_id=self.normal_user,
+            public=False,
+            approved=False,
+            volume_size_gb=100,
+            fixed_ram_gb=1.0,
+            fixed_disk_gb=10.0,
+            fixed_cores=1.0,
+            per_user_ram_gb=0.5,
+            per_user_disk_gb=5.0,
+            per_user_cores=0.5
+        )
+
+        response = self.client.get(url, format='json', **self.get_auth_headers())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], private_app_template.name)
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_list_app_templates_for_private_templates_with_insufficient_rights(self, mock_validate_token):
+        mock_validate_token.return_value = {'id': self.normal_user.id, 'name': 'User'}
+        url = reverse('app-template-list') + '?public=False'
+
+        private_app_template = AppTemplates.objects.create(
+            image_id=uuid.uuid4(),
+            name="Private Template",
+            description="A private template",
+            short_description="Private",
+            instantiation_notice="Notice",
+            script="Script",
+            creator_id=self.admin_user,
+            public=False,
+            approved=False,
+            volume_size_gb=100,
+            fixed_ram_gb=1.0,
+            fixed_disk_gb=10.0,
+            fixed_cores=1.0,
+            per_user_ram_gb=0.5,
+            per_user_disk_gb=5.0,
+            per_user_cores=0.5
+        )
+
+        response = self.client.get(url, format='json',
+                                   **self.get_auth_headers(token="insufficient_rights_token"))
+        self.assertEqual(len(response.data), 0)
+        self.assertNotIn(private_app_template.id, [template['id'] for template in response.data])
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_list_app_templates_for_user_with_search_filter(self, mock_validate_token):
+        mock_validate_token.return_value = {'id': self.admin_user.id, 'name': 'Admin'}
+        url = reverse('app-template-list') + '?search=API'
+
+        response = self.client.get(url, format='json', **self.get_auth_headers())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], self.app_template.name)
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_list_app_templates_for_user_with_public_filter(self, mock_validate_token):
+        mock_validate_token.return_value = {'id': self.admin_user.id, 'name': 'Admin'}
+        url = reverse('app-template-list') + '?public=True'
+
+        response = self.client.get(url, format='json', **self.get_auth_headers())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], self.app_template.name)
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_list_app_templates_for_user_with_approved_filter(self, mock_validate_token):
+        mock_validate_token.return_value = {'id': self.admin_user.id, 'name': 'Admin'}
+        url = reverse('app-template-list') + '?approved=False'
+
         response = self.client.get(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
