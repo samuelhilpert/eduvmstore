@@ -28,7 +28,7 @@ class AppTemplates(models.Model):
     approved = models.BooleanField(default=False)
 
     # volume
-    volume_size_gb = models.FloatField(null=True)
+    volume_size_gb = models.FloatField(null=True, default=None)
 
     # resource requirements
     fixed_ram_gb = models.FloatField()
