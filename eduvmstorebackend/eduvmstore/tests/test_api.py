@@ -173,6 +173,104 @@ class AppTemplateViewSetTests(APITestCase):
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
+    def test_list_app_templates_for_admin_with_private_templates(self, mock_validate_token):
+        mock_validate_token.return_value = {'id': self.user.id, 'name': 'Admin'}
+        url = reverse('app-template-list') + '?public=False'
+
+        private_app_template = AppTemplates.objects.create(
+            image_id=uuid.uuid4(),
+            name="Private Template",
+            description="A private template",
+            short_description="Private",
+            instantiation_notice="Notice",
+            script="Script",
+            creator_id=self.user,
+            public=False,
+            approved=False,
+            volume_size_gb=100,
+            fixed_ram_gb=1.0,
+            fixed_disk_gb=10.0,
+            fixed_cores=1.0,
+            per_user_ram_gb=0.5,
+            per_user_disk_gb=5.0,
+            per_user_cores=0.5
+        )
+
+        response = self.client.get(url, format='json', **self.get_auth_headers())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], private_app_template.name)
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_list_app_templates_for_private_templates_with_insufficient_rights(self, mock_validate_token):
+        # Create a user with insufficient rights
+        role = Roles.objects.create(name=DEFAULT_ROLES.get("EduVMStoreUser").get("name"),
+                                    access_level=DEFAULT_ROLES.get("EduVMStoreUser").get("access_level"))
+        user_with_insufficient_rights = Users.objects.create(role_id=role)
+
+        mock_validate_token.return_value = {'id': user_with_insufficient_rights.id, 'name': 'User'}
+        url = reverse('app-template-list') + '?public=False'
+
+        private_app_template = AppTemplates.objects.create(
+            image_id=uuid.uuid4(),
+            name="Private Template",
+            description="A private template",
+            short_description="Private",
+            instantiation_notice="Notice",
+            script="Script",
+            creator_id=self.user,
+            public=False,
+            approved=False,
+            volume_size_gb=100,
+            fixed_ram_gb=1.0,
+            fixed_disk_gb=10.0,
+            fixed_cores=1.0,
+            per_user_ram_gb=0.5,
+            per_user_disk_gb=5.0,
+            per_user_cores=0.5
+        )
+
+        response = self.client.get(url, format='json',
+                                   **self.get_auth_headers(token="insufficient_rights_token"))
+        print(response.data)
+        self.assertEqual(len(response.data), 0)
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_list_app_templates_for_user_with_search_filter(self, mock_validate_token):
+        mock_validate_token.return_value = {'id': self.user.id, 'name': 'Admin'}
+        url = reverse('app-template-list') + '?search=API'
+
+        response = self.client.get(url, format='json', **self.get_auth_headers())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], self.app_template.name)
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_list_app_templates_for_user_with_public_filter(self, mock_validate_token):
+        mock_validate_token.return_value = {'id': self.user.id, 'name': 'Admin'}
+        url = reverse('app-template-list') + '?public=True'
+
+        response = self.client.get(url, format='json', **self.get_auth_headers())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], self.app_template.name)
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_list_app_templates_for_user_with_approved_filter(self, mock_validate_token):
+        mock_validate_token.return_value = {'id': self.user.id, 'name': 'Admin'}
+        url = reverse('app-template-list') + '?approved=False'
+
+        response = self.client.get(url, format='json', **self.get_auth_headers())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], self.app_template.name)
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
     def test_checks_name_collision(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
         url = reverse('app-template-check-name-collision', kwargs={'name': self.app_template.name})
