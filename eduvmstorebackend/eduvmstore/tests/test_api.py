@@ -1,4 +1,6 @@
 import logging
+
+from rest_framework import status
 from urllib.parse import urlencode
 from rest_framework.test import APITestCase
 from django.urls import reverse
@@ -54,6 +56,14 @@ class AppTemplateViewSetTests(APITestCase):
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
+    def test_unauthorized_api_access(self, mock_validate_token):
+        mock_validate_token.return_value = None
+        url = reverse('app-template-list')
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
     def test_creates_app_template_via_api_successfully(self, mock_validate_token):
         mock_validate_token.return_value = {'id': self.admin_user.id, 'name': 'Admin'}
         url = reverse('app-template-list')
@@ -94,6 +104,18 @@ class AppTemplateViewSetTests(APITestCase):
         #Check that favorite item for self.admin_user and the app_template is created
         self.assertIsNotNone(
             Favorites.objects.filter(app_template_id=app_template_id, user_id=self.admin_user))
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_app_template_creation_via_api_with_missing_fields(self, mock_validate_token):
+        mock_validate_token.return_value = {'id': self.admin_user.id, 'name': 'Admin'}
+        url = reverse('app-template-list')
+        data = {
+            "name": "Incomplete Template",
+            "description": "Missing required fields"
+        }
+        response = self.client.post(url, data, format='json', **self.get_auth_headers())
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
