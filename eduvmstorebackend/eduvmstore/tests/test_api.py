@@ -108,7 +108,7 @@ class AppTemplateViewSetTests(APITestCase):
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_app_template_creation_via_api_with_missing_fields(self, mock_validate_token):
-        mock_validate_token.return_value = {'id': self.user.id, 'name': 'Admin'}
+        mock_validate_token.return_value = {'id': self.admin_user.id, 'name': 'Admin'}
         url = reverse('app-template-list')
         data = {
             "name": "Incomplete Template",
