@@ -75,8 +75,15 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         public = self.request.query_params.get('public', None)
         approved = self.request.query_params.get('approved', None)
 
+        # Convert query parameters to boolean if they are not None
+        if public is not None:
+            public = public.lower() == 'true'
+        if approved is not None:
+            approved = approved.lower() == 'true'
+
         # If admin explicitly requests all private AppTemplates (for review purposes), show them
         if public is False and has_access_level(user,'app-template-list-all','GET'):
+            queryset = queryset.filter(public=True)
             queryset = AppTemplates.objects.filter(public=public)
 
         if search:
