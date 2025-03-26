@@ -16,7 +16,7 @@ from eduvmstore.db.operations.app_templates import (approve_app_template,
                                                     check_current_name_collision,
                                                     reject_app_template, has_version_suffix,
                                                     extract_version_suffix)
-
+from eduvmstore.utils.access_control import has_access_level
 
 logger = logging.getLogger('eduvmstore_logger')
 class AppTemplateViewSet(viewsets.ModelViewSet):
@@ -56,12 +56,11 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         :rtype: QuerySet
         """
         user = self.request.myuser
-        user_access_level = user.role_id.access_level
 
         # Only consider AppTemplates that are not deleted
         queryset = AppTemplates.objects.filter(deleted=False)
 
-        if user_access_level >= REQUIRED_ACCESS_LEVELS[('app-template-list-all', 'GET')]:
+        if has_access_level(user, 'app-template-list-all', 'GET'):
             # Users with sufficient access level can see their own AppTemplates
             # and all public (including not approved AppTemplates
             queryset = (queryset.filter(creator_id=user)
@@ -180,6 +179,28 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         serializer = AppTemplateSerializer(app_templates, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @override
+    def destroy(self, request, *args, **kwargs) ->Response:
+        """
+        Delete an AppTemplate.
+        Only allows deletion of approved AppTemplates
+        if the user has the required access level.
+
+        :param Request request: The HTTP request object
+        :return: HTTP response with the deletion status
+        :rtype: Response
+        """
+        app_template = self.get_object()
+        user = request.myuser
+        if (app_template.approved and
+                not has_access_level(user, 'app-template-delete-approved', 'DELETE')):
+            logger.error('Access denied for user: %s', user.id)
+            return Response(
+                {'error': f'Access level of user {user.id} not sufficient'
+                          f' to delete approved AppTemplates'}, status=403)
+
+        # Proceed with standard deletion
+        return super().destroy(request, *args, **kwargs)
 
 class FavoritesViewSet(viewsets.ModelViewSet):
     serializer_class = FavoritesSerializer
