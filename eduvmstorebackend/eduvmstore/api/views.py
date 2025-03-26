@@ -13,7 +13,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from eduvmstore.db.operations.app_templates import (approve_app_template,
-                                                    check_current_name_collision,
+                                                    check_name_collision,
                                                     reject_app_template, has_version_suffix,
                                                     extract_version_suffix)
 from eduvmstore.utils.access_control import has_access_level
@@ -143,21 +143,13 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         :return: HTTP response with collision status
         :rtype: Response
         """
-        current_collision = check_current_name_collision(name)
+        collision, reason, context = check_name_collision(name)
 
-        potential_future_collision = has_version_suffix(name)
-
-        reason = "No collision found."
-        if current_collision:
-            reason = "AppTemplate with this name already exists"
-        elif potential_future_collision:
-            suffix = extract_version_suffix(name)
-            reason = (f"Suffix '{suffix}' is not allowed in the name "
-                      "to prevent future collisions with approved AppTemplates")
-
-        response_object = {"name": name,
-                           "collision": current_collision or potential_future_collision,
-                           "reason": reason}
+        response_object = {
+            "name": name,
+            "collision": collision,
+            "reason": reason.format(**context)
+        }
         return Response(response_object, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['GET'], url_path='favorites')

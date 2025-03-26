@@ -4,8 +4,8 @@ from django.test import TestCase
 from eduvmstore.config.access_levels import DEFAULT_ROLES
 from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateInstantiationAttributes
 from eduvmstore.db.operations.app_templates import (
-    check_current_name_collision, approve_app_template, soft_delete_app_template, reject_app_template,
-    has_version_suffix
+    check_name_collision, approve_app_template, soft_delete_app_template, reject_app_template,
+    has_version_suffix, CollisionReason
 )
 
 class AppTemplateOperationsTests(TestCase):
@@ -41,9 +41,30 @@ class AppTemplateOperationsTests(TestCase):
         self.user = self.create_user_and_role()
         self.app_template = self.create_app_template(self.user)
 
-    def test_checks_name_collision(self):
-        collision = check_current_name_collision(self.app_template.name)
+    def test_checks_direct_name_collision(self):
+        collision, reason, context = check_name_collision(self.app_template.name)
         self.assertTrue(collision)
+        self.assertEqual(reason, CollisionReason.DIRECT_MATCH)
+
+    def test_checks_name_collision_with_versioned_templates(self):
+        base_name = "Template"
+        self.create_app_template(self.user, name=base_name +"-V1")
+        collision, reason, context = check_name_collision(base_name)
+        # Base name should also be a collision
+        self.assertTrue(collision)
+        self.assertEqual(reason, CollisionReason.VERSIONED_TEMPLATE_EXISTS)
+
+    def test_name_collision_with_version_suffix(self):
+        suffix = "-V23"
+        app_template_name = "innocent_name" + suffix
+        collision, reason, context = check_name_collision(app_template_name)
+        self.assertTrue(collision)
+        self.assertEqual(reason, CollisionReason.VERSION_SUFFIX_RESERVED)
+
+    def test_no_name_collision(self):
+        collision, reason, context = check_name_collision("NoCollision")
+        self.assertFalse(collision)
+        self.assertEqual(reason, CollisionReason.NO_COLLISION)
 
     def test_has_version_suffix(self):
         # Should return True for names with proper version suffixes
