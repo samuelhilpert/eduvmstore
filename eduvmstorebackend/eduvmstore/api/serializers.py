@@ -1,10 +1,10 @@
 import logging
 from django.utils.timezone import now
+from typing import Dict, List
 
 from rest_framework import serializers
-from eduvmstore.db.models import AppTemplates, Users, Favorites, Roles, AppTemplateInstantiationAttributes
 from eduvmstore.db.models import (AppTemplates, Users, Roles, AppTemplateInstantiationAttributes,
-                                  AppTemplateAccountAttributes)
+                                  AppTemplateAccountAttributes, Favorites)
 from eduvmstore.db.operations.app_templates import has_version_suffix, extract_version_suffix
 
 logger = logging.getLogger("eduvmstore_logger")
@@ -80,27 +80,27 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         ]
 
     # Validation method for the name field (automatically triggered by Django Rest Framework)
-    def validate_name(self, value):
+    def validate_name(self, name: str) -> str:
         """
         Validate that the app template name doesn't have a version suffix.
 
-        :param str value: The name to validate
+        :param str name: The name to validate
         :return: The validated name
         :raises: ValidationError if name has version suffix
         """
-        if has_version_suffix(value):
-            suffix = extract_version_suffix(value)
+        if has_version_suffix(name):
+            suffix = extract_version_suffix(name)
             raise serializers.ValidationError(
                 f"App template name cannot end with the version suffix '{suffix}'. "
             )
-        return value
+        return name
 
-    def create(self, validated_data) -> AppTemplates:
+    def create(self, validated_data: Dict) -> AppTemplates:
         """
         Custom create method to handle additional operations
         before saving an AppTemplates instance to the database.
 
-        :param dict validated_data: Data validated through the serializer
+        :param Dict validated_data: Data validated through the serializer
         :return: Newly created AppTemplates instance
         :rtype: AppTemplates
         """
@@ -111,26 +111,46 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         self.create_account_attributes(app_template, account_attributes_data)
         return app_template
 
-    def create_instantiation_attributes(self, app_template, instantiation_attributes_data):
+    def create_instantiation_attributes(self,
+                                        app_template: AppTemplates,
+                                        instantiation_attributes_data: List[Dict]) -> None:
+        """
+        Create AppTemplateInstantiationAttributes instances for an AppTemplate instance.
+
+        :param AppTemplates app_template: The AppTemplate instance to create the attributes for
+        :param List instantiation_attributes_data: List of instantiation attribute data
+        :return: None
+        :rtype: None
+        """
         for instantiation_attribute_data in instantiation_attributes_data:
             AppTemplateInstantiationAttributes.objects.create(
                 app_template_id=app_template,
                 **instantiation_attribute_data)
 
-    def create_account_attributes(self, app_template, account_attributes_data):
+    def create_account_attributes(self,
+                                  app_template: AppTemplates,
+                                  account_attributes_data: List[Dict]) -> None:
+        """
+        Create AppTemplateAccountAttributes instances for an AppTemplate instance.
+
+        :param AppTemplates app_template: The AppTemplate instance to create the attributes for
+        :param List[Dict] account_attributes_data: List of instantiation attribute data
+        :return: None
+        :rtype: None
+        """
         for account_attribute_data in account_attributes_data:
             AppTemplateAccountAttributes.objects.create(
                 app_template_id=app_template,
                 **account_attribute_data)
 
-    def update(self, instance, validated_data) -> AppTemplates:
+    def update(self, instance: AppTemplates, validated_data: Dict) -> AppTemplates:
         """
         Custom update method to handle additional operations
         before saving an AppTemplates instance to the database. Public AppTemplates
         can't be updated.
 
         :param AppTemplates instance: The instance to update
-        :param dict validated_data: Data validated through the serializer
+        :param Dict validated_data: Data validated through the serializer
         :return: Updated AppTemplates instance
         :rtype: AppTemplates
         """
@@ -179,7 +199,7 @@ class FavoritesSerializer(serializers.ModelSerializer):
         fields = ['id', 'user_id', 'app_template_id']
         read_only_fields = ['id', 'user_id']
 
-    def create(self, validated_data) -> Favorites:
+    def create(self, validated_data: Dict) -> Favorites:
         """
         Create method to handle additional operations
         before saving a Favorite instance to the database.
@@ -196,7 +216,6 @@ class FavoritesSerializer(serializers.ModelSerializer):
             defaults=validated_data
         )
         return favorite
-        #return Favorites.objects.create(**validated_data)
 
 
 class RoleSerializer(serializers.ModelSerializer):
@@ -216,12 +235,12 @@ class RoleSerializer(serializers.ModelSerializer):
             'id'
         ]
 
-    def create(self, validated_data) -> Roles:
+    def create(self, validated_data: Dict) -> Roles:
         """
         Custom create method to handle additional operations
         before saving a Roles instance to the database.
 
-        :param dict validated_data: Data validated through the serializer
+        :param Dict validated_data: Data validated through the serializer
         :return: Newly created Roles instance
         :rtype: Roles
         """
@@ -257,7 +276,7 @@ class UserSerializer(serializers.ModelSerializer):
                 'is_active',
             ]
 
-    def create(self, validated_data) -> Users:
+    def create(self, validated_data: Dict) -> Users:
         """
         Custom create method to handle additional operations
         before saving a Users instance to the database.

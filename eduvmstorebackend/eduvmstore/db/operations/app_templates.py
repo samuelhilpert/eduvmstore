@@ -1,4 +1,6 @@
 import re
+
+from django.db import transaction
 from django.utils import timezone
 from enum import Enum
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
@@ -66,6 +68,7 @@ def extract_version_suffix(name: str) -> str:
     match = re.search(VERSION_SUFFIX_PATTERN, name)
     return match.group(0) if match else ""
 
+@transaction.atomic
 def approve_app_template(id: str) -> AppTemplates:
     """
     Approve an AppTemplate by creating a copy with the 'approved' flag set to True.
@@ -84,10 +87,9 @@ def approve_app_template(id: str) -> AppTemplates:
         # https://docs.djangoproject.com/en/2.2/topics/db/queries/#copying-model-instances
         public_app_template = AppTemplates.objects.get(id=original_app_template.id, deleted=False)
         public_app_template.pk = None
-        public_app_template.name = original_app_template.name + "-V" +str(original_app_template.version)
+        public_app_template.name = f"{original_app_template.name}-V{original_app_template.version}"
         public_app_template.approved = True  # Approve the copy
         public_app_template.save()
-
 
         # No need for public visibility on original app_template
         # -> no request for approval
@@ -97,8 +99,9 @@ def approve_app_template(id: str) -> AppTemplates:
 
         return public_app_template
     except ObjectDoesNotExist:
-        raise ObjectDoesNotExist("AppTemplate not found.")
+        raise ObjectDoesNotExist(f"AppTemplate {id} not found.")
 
+@transaction.atomic
 def reject_app_template(id: str) -> AppTemplates:
     """
     Update the public and approved status of an AppTemplate to false.
@@ -115,9 +118,10 @@ def reject_app_template(id: str) -> AppTemplates:
         app_template.save()
         return app_template
     except ObjectDoesNotExist:
-        raise ObjectDoesNotExist("AppTemplate %s not found.", id)
+        raise ObjectDoesNotExist(f"AppTemplate {id} not found.")
 
 # Currently unused, potential enhancement for the future
+@transaction.atomic
 def soft_delete_app_template(id: str) -> None:
     """
     Soft delete an AppTemplate record by setting the 'deleted' flag and 'deleted_at' timestamp.
@@ -134,4 +138,4 @@ def soft_delete_app_template(id: str) -> None:
         template.updated_at = template.deleted_at
         template.save()
     except ObjectDoesNotExist:
-        raise ObjectDoesNotExist("AppTemplate not found.")
+        raise ObjectDoesNotExist(f"AppTemplate {id} not found.")
