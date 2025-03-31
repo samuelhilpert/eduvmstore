@@ -14,12 +14,8 @@ def has_access_level(user, url: str, method: str) ->bool:
     :return: True if access is allowed, False otherwise
     :rtype: bool
     """
-    logger.debug("Checking access level for user")
     required_level = get_required_access_level(url, method)
-    logger.debug(f"required level: {required_level}")
-    logger.debug(f"access_level: {user.role_id.access_level}")
     access = user.role_id.access_level >= required_level
-    logger.debug(f"after access calculation: {access}")
     if not access:
         logger.error(f'Access denied for user: {user.id}')
     return access
