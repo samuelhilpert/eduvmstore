@@ -3,8 +3,8 @@ import re
 from django.db import transaction
 from django.utils import timezone
 from enum import Enum
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from eduvmstore.db.models import AppTemplates
+from django.core.exceptions import ObjectDoesNotExist
+from eduvmstore.db.models import AppTemplates, AppTemplateAccountAttributes, AppTemplateInstantiationAttributes
 
 # Pattern to match version suffixes in AppTemplate names.
 # This pattern is forbidden as it is automatically used for approved AppTemplates
@@ -82,6 +82,9 @@ def approve_app_template(id: str) -> AppTemplates:
     """
     try:
         original_app_template = AppTemplates.objects.get(id=id, deleted=False)
+        original_account_attributes = AppTemplateAccountAttributes.objects.filter(app_template_id=id)
+        original_instantiation_attributes = (
+            AppTemplateInstantiationAttributes.objects.filter(app_template_id=id))
 
         # Create a copy by setting pk to None
         # https://docs.djangoproject.com/en/2.2/topics/db/queries/#copying-model-instances
@@ -90,6 +93,16 @@ def approve_app_template(id: str) -> AppTemplates:
         public_app_template.name = f"{original_app_template.name}-V{original_app_template.version}"
         public_app_template.approved = True  # Approve the copy
         public_app_template.save()
+
+        # Copy account and instantiation attributes
+        for account_attribute in original_account_attributes:
+            account_attribute.pk = None
+            account_attribute.app_template_id = public_app_template
+            account_attribute.save()
+        for instantiation_attribute in original_instantiation_attributes:
+            instantiation_attribute.pk = None
+            instantiation_attribute.app_template_id = public_app_template
+            instantiation_attribute.save()
 
         # No need for public visibility on original app_template
         # -> no request for approval
