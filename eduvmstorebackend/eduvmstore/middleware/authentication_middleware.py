@@ -1,14 +1,16 @@
 import logging
+from typing import Callable, Optional, Dict
+
 import requests
 
+# Use JsonResponse instead of Response as Response would require many additional fields
 from django.http import JsonResponse
-from django.urls import resolve
+from rest_framework.request import Request
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from eduvmstore.db.models import Users
 from eduvmstore.db.operations.users import get_user_by_id, create_user
-from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS, DEFAULT_ACCESS_LEVEL
 from eduvmstore.utils.access_control import check_request_access
 
 logger = logging.getLogger('eduvmstore_logger')
@@ -22,7 +24,7 @@ class KeystoneAuthenticationMiddleware:
 
     :param function get_response: Callable that processes the request after middleware execution
     """
-    def __init__(self, get_response) -> None:
+    def __init__(self, get_response: Callable) -> None:
         """
         Initialize the middleware with a get_response callable.
 
@@ -30,13 +32,13 @@ class KeystoneAuthenticationMiddleware:
         """
         self.get_response = get_response
 
-    def __call__(self, request) -> JsonResponse:
+    def __call__(self, request: Request) -> JsonResponse:
         """
         Process the request to validate the authentication token and user access.
 
-        :param HttpRequest request: The incoming HTTP request
-        :return: JsonResponse or the response from the view function
-        :rtype: JsonResponse or HttpResponse
+        :param Request request: The incoming HTTP request
+        :return: Response or the response from the view function
+        :rtype: Response or HttpResponse
         """
         token = request.headers.get('X-Auth-Token')
         if not token:
@@ -47,23 +49,21 @@ class KeystoneAuthenticationMiddleware:
         if keystone_user_info is None:
             logger.error('Invalid token')
             return JsonResponse({'error': 'Invalid token'}, status=401)
-
         user = self.get_or_create_user(keystone_user_info)
         request.myuser = user
         if not check_request_access(request):
-            logger.error('Access denied for user: %s', user.id)
             return JsonResponse({'error': f'Access level of user {user.id} not sufficient'}, status=403)
 
         response = self.get_response(request)
         return response
 
-    def validate_token_with_keystone(self, token) -> dict or None:
+    def validate_token_with_keystone(self, token: str) -> Optional[Dict]:
         """
         Validate the OpenStack authentication token with Keystone.
 
         :param str token: The OpenStack token to validate
         :return: Dictionary with Keystone user information if valid, else None
-        :rtype: dict or None
+        :rtype: Optional[Dict]
         """
         keystone_url = f"http://{settings.OPENSTACK['auth_url']}v3/auth/tokens"
         headers = {'X-Auth-Token': token, 'X-Subject-Token': token}
@@ -75,14 +75,14 @@ class KeystoneAuthenticationMiddleware:
                 logger.error('Keystone token validation failed with status code: %s', response.status_code)
                 return None
         except requests.RequestException as e:
-            logger.error('Keystone token validation request failed: %s', e)
+            logger.error(f'Keystone token validation request failed: {e}')
             return None
 
-    def get_or_create_user(self, keystone_user_info) -> Users:
+    def get_or_create_user(self, keystone_user_info: Dict) -> Users:
         """
         Retrieve or create a user based on Keystone user information.
 
-        :param dict keystone_user_info: Keystone user information dictionary
+        :param Dict keystone_user_info: Keystone user information dictionary
         :return: User instance
         :rtype: Users
         """

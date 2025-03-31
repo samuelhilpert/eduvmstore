@@ -1,7 +1,10 @@
+import logging
 from django.urls import resolve
 from eduvmstore.config.access_levels import DEFAULT_ACCESS_LEVEL, REQUIRED_ACCESS_LEVELS
+from rest_framework.request import Request
 
-def has_access_level(user, url, method) ->bool:
+logger = logging.getLogger('eduvmstore_logger')
+def has_access_level(user, url: str, method: str) ->bool:
     """
     Check if user has sufficient access level for a given operation.
 
@@ -12,10 +15,13 @@ def has_access_level(user, url, method) ->bool:
     :rtype: bool
     """
     required_level = get_required_access_level(url, method)
-    return user.role_id.access_level >= required_level
+    access = user.role_id.access_level >= required_level
+    if not access:
+        logger.error(f'Access denied for user: {user.id}')
+    return access
 
 
-def get_required_access_level(url, method) ->int:
+def get_required_access_level(url: str, method: str) ->int:
     """
     Get required access level for an operation.
 
@@ -27,11 +33,11 @@ def get_required_access_level(url, method) ->int:
     key = (url, method)
     return REQUIRED_ACCESS_LEVELS.get(key, DEFAULT_ACCESS_LEVEL)
 
-def check_request_access(request):
+def check_request_access(request: Request) ->bool:
     """
     Check if the user in the request has access to the current URL.
 
-    :param HttpRequest request: The request to check
+    :param Request request: The request to check
     :return: True if access is allowed, False otherwise
     :rtype: bool
     """
