@@ -450,9 +450,20 @@
 - **Dauer**:    1 Stunde
 - **Arbeit**: Namen auch mit Versionssuffix in DB kollidieren lassen, refactor der Methode (Versionierungsimplementierung)
 ---
-### Datum: 2025-02-27
-- **Entwickler**: x
-- **Dauer**:    5 Stunden
-- **Arbeit**: x
+### Datum: 2025-03-31
+- **Entwickler**: Valentin
+- **Dauer**:    3 Stunden
+- **Arbeit**: Refactoring mit Type Annotations im Backend
 ---
+### Datum: 2025-03-31
+- **Entwickler**: Valentin
+- **Dauer**:    1.5 Stunden
+- **Arbeit**: API Tests für Approve und reject und fix issue, dass instantiation und account_attributes ebenfalls kopiert werden
+---
+### Datum: 2025-03-31
+- **Entwickler**: a
+- **Dauer**:    x Stunden
+- **Arbeit**: y
+---
+
 
