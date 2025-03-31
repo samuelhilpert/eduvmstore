@@ -1,14 +1,12 @@
 import logging
 
 from rest_framework import status
-from urllib.parse import urlencode
 from rest_framework.test import APITestCase
 from django.urls import reverse
 
 from eduvmstore.config.access_levels import DEFAULT_ROLES
-from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateInstantiationAttributes, Favorites
 from eduvmstore.db.models import (AppTemplates, Users, Roles, AppTemplateInstantiationAttributes,
-                                  AppTemplateAccountAttributes)
+                                  AppTemplateAccountAttributes, Favorites)
 from unittest.mock import patch
 import uuid
 
@@ -27,7 +25,7 @@ class AppTemplateViewSetTests(APITestCase):
         self.normal_user = normal_user
 
     def create_app_template(self):
-        return AppTemplates.objects.create(
+        app_template = AppTemplates.objects.create(
             image_id=uuid.uuid4(),
             name="API Test Template",
             description="A test template",
@@ -45,6 +43,15 @@ class AppTemplateViewSetTests(APITestCase):
             per_user_disk_gb=5.0,
             per_user_cores=0.5
         )
+        AppTemplateInstantiationAttributes.objects.create(
+            app_template_id=app_template,
+            name="JavaVersion"
+        )
+        AppTemplateAccountAttributes.objects.create(
+            app_template_id=app_template,
+            name="Username"
+        )
+        return app_template
 
     def get_auth_headers(self, token="valid_token"):
         return {'HTTP_X_AUTH_TOKEN': token}
@@ -309,6 +316,26 @@ class AppTemplateViewSetTests(APITestCase):
         response = self.client.get(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.data['collision'])
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_approve_app_template_via_api_successfully(self, mock_validate_token):
+        mock_validate_token.return_value = {'id': self.admin_user.id, 'name': 'Admin'}
+        url = reverse('app-template-approve', args=[self.app_template.id])
+        response = self.client.patch(url, format='json', **self.get_auth_headers())
+        public_app_template_id = response.data["public_app_template"]["id"]
+        self.assertEqual(response.status_code, 200)
+        # Old app_template should not be approved and private
+        self.assertFalse(AppTemplates.objects.get(id=self.app_template.id).approved)
+        self.assertFalse(AppTemplates.objects.get(id=self.app_template.id).public)
+        self.assertEqual(AppTemplates.objects.all().count(), 2)
+        self.assertTrue(AppTemplates.objects.get(id=public_app_template_id).approved)
+        self.assertEqual(
+            AppTemplateAccountAttributes.objects.filter(app_template_id=self.app_template.id).count(),
+            1)
+        self.assertEqual(
+            AppTemplateInstantiationAttributes.objects.filter(app_template_id=self.app_template.id).count(),
+            1)
 
     # As soft delete is currently not used the assert statements are commented out
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
