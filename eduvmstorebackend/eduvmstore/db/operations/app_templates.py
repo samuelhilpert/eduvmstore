@@ -80,7 +80,8 @@ def approve_app_template(id: str) -> AppTemplates:
     try:
         original_app_template = AppTemplates.objects.get(id=id, deleted=False)
         original_account_attributes = AppTemplateAccountAttributes.objects.filter(app_template_id=id)
-        original_instantiation_attributes = AppTemplateInstantiationAttributes.objects.filter(app_template_id=id)
+        original_instantiation_attributes = (
+            AppTemplateInstantiationAttributes.objects.filter(app_template_id=id))
 
         # Create a copy by setting pk to None
         # https://docs.djangoproject.com/en/2.2/topics/db/queries/#copying-model-instances
