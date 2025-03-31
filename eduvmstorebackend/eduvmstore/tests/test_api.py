@@ -337,6 +337,16 @@ class AppTemplateViewSetTests(APITestCase):
             AppTemplateInstantiationAttributes.objects.filter(app_template_id=public_app_template_id).count(),
             1)
 
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_reject_app_template_via_api_successfully(self, mock_validate_token):
+        mock_validate_token.return_value = {'id': self.admin_user.id, 'name': 'Admin'}
+        url = reverse('app-template-reject', args=[self.app_template.id])
+        response = self.client.patch(url, format='json', **self.get_auth_headers())
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(AppTemplates.objects.get(id=self.app_template.id).approved)
+        self.assertFalse(AppTemplates.objects.get(id=self.app_template.id).public)
+
     # As soft delete is currently not used the assert statements are commented out
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
