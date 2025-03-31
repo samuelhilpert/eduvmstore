@@ -3,6 +3,7 @@ import logging
 from django.db.models import Q, QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 from typing_extensions import override
+from rest_framework.request import Request
 
 from eduvmstore.api.serializers import (AppTemplateSerializer, FavoritesSerializer,
                                         UserSerializer, RoleSerializer)
@@ -31,7 +32,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     serializer_class = AppTemplateSerializer
 
     @override
-    def perform_create(self, serializer) -> None:
+    def perform_create(self, serializer: AppTemplateSerializer) -> None:
         """
         Create an AppTemplates instance with initial field values.
         The creator id is the openstack user id of the authenticated user. The
@@ -63,12 +64,10 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         if has_access_level(user, 'app-template-list-all', 'GET'):
             # Users with sufficient access level can see their own AppTemplates
             # and all public (including not approved AppTemplates
-            queryset = (queryset.filter(creator_id=user)
-                        | queryset.filter(public=True))
+            queryset = queryset.filter(Q(creator_id=user) | Q(public=True))
         else:
             # Normal Users can only see public and approved AppTemplates plus own AppTemplates
-            queryset = (queryset.filter(creator_id=user)
-                        | queryset.filter(public=True, approved=True))
+            queryset = queryset.filter(Q(creator_id=user) | Q(public=True, approved=True))
 
         # Get query parameter
         search = self.request.query_params.get('search', None)
@@ -94,7 +93,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         return queryset
 
     @action(detail=True, methods=['patch'])
-    def approve(self, request, pk=None) -> Response:
+    def approve(self, request: Request, pk: str=None) -> Response:
         """
         Approve an AppTemplate to make it public and accessible for others.
 
@@ -117,7 +116,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
             }, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['patch'])
-    def reject(self, request, pk=None) -> Response:
+    def reject(self, request: Request, pk: str=None) -> Response:
         """
         Reject an AppTemplate. Sets public and approved to
         false making the AppTemplate only visible for the creator.
@@ -134,7 +133,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='name/(?P<name>[^/.]+)\\/collision',
             name='check-name-collision')
-    def check_name_collision(self, request, name=None) -> Response:
+    def check_name_collision(self, request: Request, name: str=None) -> Response:
         """
         Check for a name collision with existing and future AppTemplates.
 
@@ -161,7 +160,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         return Response(response_object, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['GET'], url_path='favorites')
-    def favorites(self, request) -> Response:
+    def favorites(self, request: Request) -> Response:
         """
         Lists all AppTemplate which are favorites of the current user.
 
@@ -174,13 +173,13 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
                                       .values_list('app_template_id', flat=True))
 
         # Filter for the list of app_template_ids
-        app_templates = AppTemplates.objects.filter(id__in=favorites_app_template_ids)
+        app_templates = self.get_queryset().filter(id__in=favorites_app_template_ids)
 
         serializer = AppTemplateSerializer(app_templates, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @override
-    def destroy(self, request, *args, **kwargs) ->Response:
+    def destroy(self, request: Request, *args, **kwargs) -> Response:
         """
         Delete an AppTemplate.
         Only allows deletion of approved AppTemplates
@@ -194,7 +193,6 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         user = request.myuser
         if (app_template.approved and
                 not has_access_level(user, 'app-template-delete-approved', 'DELETE')):
-            logger.error('Access denied for user: %s', user.id)
             return Response(
                 {'error': f'Access level of user {user.id} not sufficient'
                           f' to delete approved AppTemplates'}, status=403)
@@ -205,19 +203,19 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
 class FavoritesViewSet(viewsets.ModelViewSet):
     serializer_class = FavoritesSerializer
 
-    def get_queryset(self) ->QuerySet[Favorites]:
+    def get_queryset(self) -> QuerySet[Favorites]:
         """
         retrieve the queryset of Favorites. Each User can only access own favorites
 
         :return: queryset of Favorites
-        :rtype: Favorites
+        :rtype: QuerySet
         """
 
         user = self.request.myuser
         queryset = Favorites.objects.filter(user_id=user)
         return queryset
 
-    def perform_create(self, serializer) ->None:
+    def perform_create(self, serializer: FavoritesSerializer) -> None:
         """
         Adds AppTemplate to Favorites of current User
 
@@ -228,14 +226,14 @@ class FavoritesViewSet(viewsets.ModelViewSet):
         serializer.save(user_id=self.request.myuser)
 
     @action(detail=False, methods=['DELETE'], url_path='delete_by_app_template')
-    def delete_by_app_template(self, request) ->Response:
+    def delete_by_app_template(self, request: Request) -> Response:
         app_template_id = request.data.get('app_template_id')
         user_id = request.myuser
         try:
             favorite = Favorites.objects.get(app_template_id=app_template_id, user_id=user_id)
             favorite.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        except Favorites.DoesNotExist:
+        except Favorites.ObjectDoesNotExist:
             logger.info(f"Favorite for AppTemplate {app_template_id} not found")
             return Response({"detail": "Favorite not found."}, status=status.HTTP_404_NOT_FOUND)
 

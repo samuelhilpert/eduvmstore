@@ -1,19 +1,19 @@
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-
+from django.db import transaction
 from eduvmstore.config.access_levels import DEFAULT_ROLES
 from eduvmstore.db.models import Users
 from eduvmstore.db.operations.roles import get_role_by_name, create_role
+from typing import Dict
 
-
-def create_user(user_data: dict) -> Users:
+def create_user(user_data: Dict) -> Users:
     """
     Create a new User entry in the database using Django ORM. The role can either be specified by ID or name
         according to the default roles in eduvmstore/config/access_levels.py.
         If the default role is not found,
         this role is created.
 
-    :param dict user_data: Dictionary containing the User details. This is either id and role_id or id
+    :param Dict user_data: Dictionary containing the User details. This is either id and role_id or id
         and role_name.
         The role name is matched to the default roles in eduvmstore/config/access_levels.py
     :return: The newly created User object

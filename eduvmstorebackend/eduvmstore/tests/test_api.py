@@ -254,7 +254,7 @@ class FavoritesViewSetTests(APITestCase):
          data = {"app_template_id": self.app_template.id}
          response = self.client.post(url, data, format='json', **self.get_auth_headers())
          self.assertEqual(response.status_code, 201)
-         self.assertTrue(1, Favorites.objects.all().count())
+         self.assertEqual(1, Favorites.objects.all().count())
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
