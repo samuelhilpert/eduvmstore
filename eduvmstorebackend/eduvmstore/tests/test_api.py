@@ -331,10 +331,10 @@ class AppTemplateViewSetTests(APITestCase):
         self.assertEqual(AppTemplates.objects.all().count(), 2)
         self.assertTrue(AppTemplates.objects.get(id=public_app_template_id).approved)
         self.assertEqual(
-            AppTemplateAccountAttributes.objects.filter(app_template_id=self.app_template.id).count(),
+            AppTemplateAccountAttributes.objects.filter(app_template_id=public_app_template_id).count(),
             1)
         self.assertEqual(
-            AppTemplateInstantiationAttributes.objects.filter(app_template_id=self.app_template.id).count(),
+            AppTemplateInstantiationAttributes.objects.filter(app_template_id=public_app_template_id).count(),
             1)
 
     # As soft delete is currently not used the assert statements are commented out
