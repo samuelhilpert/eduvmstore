@@ -7,7 +7,7 @@ def create_role(role_data: dict) -> Roles:
     """
     Create a new Role entry in the database using Django ORM.
 
-    :param dict role_data: Dictionary containing the Role details
+    :param Dict role_data: Dictionary containing the Role details
     :return: The newly created Role object
     :rtype: Roles
     :raises ValidationError: If any required field is missing or invalid
@@ -70,7 +70,7 @@ def get_role_by_name(name: str) -> Roles:
     """
     Retrieve a Role entry from the database using its ID.
 
-    :param name: The unique name of the role.
+    :param str name: The unique name of the role.
     :return: The Role object if found.
     :raises ObjectDoesNotExist: If no Role is found with the given name.
     """

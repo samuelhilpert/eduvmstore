@@ -3,9 +3,8 @@ from django.utils.timezone import now
 from typing import Dict, List
 
 from rest_framework import serializers
-from eduvmstore.db.models import AppTemplates, Users, Favorites, Roles, AppTemplateInstantiationAttributes
 from eduvmstore.db.models import (AppTemplates, Users, Roles, AppTemplateInstantiationAttributes,
-                                  AppTemplateAccountAttributes)
+                                  AppTemplateAccountAttributes, Favorites)
 from eduvmstore.db.operations.app_templates import has_version_suffix, extract_version_suffix
 
 logger = logging.getLogger("eduvmstore_logger")
@@ -217,7 +216,6 @@ class FavoritesSerializer(serializers.ModelSerializer):
             defaults=validated_data
         )
         return favorite
-        #return Favorites.objects.create(**validated_data)
 
 
 class RoleSerializer(serializers.ModelSerializer):
