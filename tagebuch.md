@@ -460,10 +460,19 @@
 - **Dauer**:    1.5 Stunden
 - **Arbeit**: API Tests für Approve und reject und fix issue, dass instantiation und account_attributes ebenfalls kopiert werden
 ---
+### Datum: 2025-04-03
+- **Entwickler**: Monika, Emese, Marian, Samuel, Jared, Valentin
+- **Dauer**:    6 Stunden
+- **Arbeit**: Projektmeeting zu SSH Keys, Tutorial, Frontend Monsterdateien, 
+---
+### Datum: 2025-04-03 & 2025-04-03
+- **Entwickler**: Valentin
+- **Dauer**:    12 Stunden
+- **Arbeit**: All Instance Tab und Probleme mit git pull auf den Openstack Instanzen
+---
 ### Datum: 2025-03-31
 - **Entwickler**: a
 - **Dauer**:    x Stunden
 - **Arbeit**: y
 ---
-
 
