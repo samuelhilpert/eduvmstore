@@ -7,7 +7,7 @@ from rest_framework.request import Request
 
 from eduvmstore.api.serializers import (AppTemplateSerializer, FavoritesSerializer,
                                         UserSerializer, RoleSerializer)
-from eduvmstore.db.models import AppTemplates, Favorites, Users, Roles
+from eduvmstore.db.models import AppTemplates, Favorites, Users, Roles, InstanceLinks
 from eduvmstore.config.access_levels import REQUIRED_ACCESS_LEVELS
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -240,6 +240,16 @@ class FavoritesViewSet(viewsets.ModelViewSet):
             logger.info(f"Favorite for AppTemplate {app_template_id} not found")
             return Response({"detail": "Favorite not found."}, status=status.HTTP_404_NOT_FOUND)
 
+class InstanceLinksViewSet(viewsets.ModelViewSet):
+    """
+    Viewset for handling the linking of the Instances which were produced based of AppTemplates
+
+    This ViewSet provides default CRUD operations and an additional endpoint for updating all instanceIDs
+
+    :param serializer_class: Serializer for InstanceLinks
+    """
+    serializer_class = InstanceLinkSerializer
+    queryset = InstanceLinks.objects.all()
 
 class UserViewSet(viewsets.ModelViewSet):
     """

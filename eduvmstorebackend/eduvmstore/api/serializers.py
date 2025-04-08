@@ -4,7 +4,7 @@ from typing import Dict, List
 
 from rest_framework import serializers
 from eduvmstore.db.models import (AppTemplates, Users, Roles, AppTemplateInstantiationAttributes,
-                                  AppTemplateAccountAttributes, Favorites)
+                                  AppTemplateAccountAttributes, Favorites, InstanceLinks)
 from eduvmstore.db.operations.app_templates import has_version_suffix, extract_version_suffix
 
 logger = logging.getLogger("eduvmstore_logger")
@@ -217,6 +217,16 @@ class FavoritesSerializer(serializers.ModelSerializer):
         )
         return favorite
 
+class InstanceLinksSerializer(serializers.ModelSerializer):
+    """Serializer for the InstanceLink Model
+
+    This serializer handles the conversion of InstanceLink model instances
+    to and from JSON format, including validation and creation of new instances.
+    """
+    class Meta:
+        model = InstanceLinks
+        fields = ['id', 'app_template_id', 'instance_id']
+        read_only_fields = ['id']
 
 class RoleSerializer(serializers.ModelSerializer):
     """Serializer for the Roles model.

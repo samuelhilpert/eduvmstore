@@ -44,7 +44,8 @@ class AppTemplates(models.Model):
 class AppTemplateInstantiationAttributes(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     app_template_id = (
-        models.ForeignKey(AppTemplates, on_delete=models.CASCADE, related_name='instantiation_attributes'))
+        models.ForeignKey(AppTemplates, editable=False, on_delete=models.CASCADE,
+                          related_name='instantiation_attributes'))
     name = models.CharField(max_length=255)
 
     # No CRUD Info as AppTemplateInstantiationAttributes are strongly bound to AppTemplates
@@ -56,7 +57,8 @@ class AppTemplateInstantiationAttributes(models.Model):
 class AppTemplateAccountAttributes(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     app_template_id = (
-        models.ForeignKey(AppTemplates, on_delete=models.CASCADE, related_name='account_attributes'))
+        models.ForeignKey(AppTemplates, editable=False, on_delete=models.CASCADE,
+                          related_name='account_attributes'))
     name = models.CharField(max_length=255)
 
     # No CRUD Info as AppTemplateAccountAttributes are strongly bound to AppTemplates
@@ -65,6 +67,11 @@ class AppTemplateAccountAttributes(models.Model):
     def __str__(self):
         return self.name
 
+class InstanceLinks(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    app_template_id = (
+        models.ForeignKey(AppTemplates, editable=False, on_delete=models.CASCADE)
+    instance_id = models.UUIDField(db_index=True)
 
 class Users(models.Model):
     # default needs to be deleted, the moment, we get the user from keystone/token
