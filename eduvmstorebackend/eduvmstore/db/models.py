@@ -65,6 +65,17 @@ class AppTemplateAccountAttributes(models.Model):
     def __str__(self):
         return self.name
 
+class AppTemplateSecurityGroups(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    app_template_id = (
+        models.ForeignKey(AppTemplates, on_delete=models.CASCADE, related_name='security_groups'))
+    name = models.CharField(max_length=255)
+
+    # No CRUD Info as AppTemplateSecurityGroups are strongly bound to AppTemplates
+    # Due to the strong bound, there is no dedicated db-operation file to access
+    # security groups alone
+    def __str__(self):
+        return self.name
 
 class Users(models.Model):
     # default needs to be deleted, the moment, we get the user from keystone/token

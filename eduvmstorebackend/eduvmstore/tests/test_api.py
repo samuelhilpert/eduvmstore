@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from eduvmstore.config.access_levels import DEFAULT_ROLES
 from eduvmstore.db.models import (AppTemplates, Users, Roles, AppTemplateInstantiationAttributes,
-                                  AppTemplateAccountAttributes, Favorites)
+                                  AppTemplateAccountAttributes, Favorites, AppTemplateSecurityGroups)
 from unittest.mock import patch
 import uuid
 
@@ -51,6 +51,10 @@ class AppTemplateViewSetTests(APITestCase):
             app_template_id=app_template,
             name="Username"
         )
+        AppTemplateSecurityGroups.objects.create(
+            app_template_id=app_template,
+            name="default"
+        )
         return app_template
 
     def get_auth_headers(self, token="valid_token"):
@@ -92,6 +96,10 @@ class AppTemplateViewSetTests(APITestCase):
                 {"name": "Username"},
                 {"name": "Password"}
             ],
+            "security_groups": [
+                {"name": "default"},
+                {"name": "public"}
+            ],
             "volume_size_gb": volume_size_gb,
             "fixed_ram_gb": 1.0,
             "fixed_disk_gb": 10.0,
@@ -107,6 +115,9 @@ class AppTemplateViewSetTests(APITestCase):
         self.assertFalse(response.data['public'])
         self.assertFalse(response.data['approved'])
         self.assertEqual(response.data['volume_size_gb'], volume_size_gb)
+        self.assertEqual(len(response.data['security_groups']), 2)
+        self.assertEqual(response.data['security_groups'][0]['name'], "default")
+        self.assertEqual(response.data['security_groups'][1]['name'], "public")
         app_template_id = response.data['id']
         #Check that favorite item for self.admin_user and the app_template is created
         self.assertIsNotNone(
@@ -131,6 +142,7 @@ class AppTemplateViewSetTests(APITestCase):
         url = reverse('app-template-detail', args=[self.app_template.id])
         name = "API Updated Template"
         updated_instantiation_attributes_name = "Updated JavaVersion Field"
+        updated_security_group_name = "Updated Default Group"
         data = {
             "name": name,
             "description": "An updated template",
@@ -144,6 +156,10 @@ class AppTemplateViewSetTests(APITestCase):
             "account_attributes": [
                 {"name": "Username"},
                 {"name": "Password"}
+            ],
+            "security_groups": [
+                {"name": updated_security_group_name},
+                {"name": "open-access"}
             ],
             "image_id": self.app_template.image_id,
             "approved": True,
@@ -160,6 +176,9 @@ class AppTemplateViewSetTests(APITestCase):
         self.assertIsNotNone(response.data['updated_at'])
         self.assertEqual(response.data["instantiation_attributes"][0]["name"],
                          updated_instantiation_attributes_name)
+        self.assertEqual(len(response.data['security_groups']), 2)
+        self.assertEqual(response.data['security_groups'][0]['name'], updated_security_group_name)
+        self.assertEqual(response.data['security_groups'][1]['name'], "open-access")
         self.assertEqual(response.data["approved"], False)
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
@@ -335,6 +354,9 @@ class AppTemplateViewSetTests(APITestCase):
             1)
         self.assertEqual(
             AppTemplateInstantiationAttributes.objects.filter(app_template_id=public_app_template_id).count(),
+            1)
+        self.assertEqual(
+            AppTemplateSecurityGroups.objects.filter(app_template_id=public_app_template_id).count(),
             1)
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'

@@ -4,7 +4,8 @@ from django.db import transaction
 from django.utils import timezone
 from enum import Enum
 from django.core.exceptions import ObjectDoesNotExist
-from eduvmstore.db.models import AppTemplates, AppTemplateAccountAttributes, AppTemplateInstantiationAttributes
+from eduvmstore.db.models import AppTemplates, AppTemplateAccountAttributes, \
+    AppTemplateInstantiationAttributes, AppTemplateSecurityGroups
 
 # Pattern to match version suffixes in AppTemplate names.
 # This pattern is forbidden as it is automatically used for approved AppTemplates
@@ -85,6 +86,7 @@ def approve_app_template(id: str) -> AppTemplates:
         original_account_attributes = AppTemplateAccountAttributes.objects.filter(app_template_id=id)
         original_instantiation_attributes = (
             AppTemplateInstantiationAttributes.objects.filter(app_template_id=id))
+        original_security_groups = AppTemplateSecurityGroups.objects.filter(app_template_id=id)
 
         # Create a copy by setting pk to None
         # https://docs.djangoproject.com/en/2.2/topics/db/queries/#copying-model-instances
@@ -103,6 +105,10 @@ def approve_app_template(id: str) -> AppTemplates:
             instantiation_attribute.pk = None
             instantiation_attribute.app_template_id = public_app_template
             instantiation_attribute.save()
+        for security_group in original_security_groups:
+            security_group.pk = None
+            security_group.app_template_id = public_app_template
+            security_group.save()
 
         # No need for public visibility on original app_template
         # -> no request for approval
