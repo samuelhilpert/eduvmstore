@@ -4,7 +4,7 @@ from typing import Dict, List
 
 from rest_framework import serializers
 from eduvmstore.db.models import (AppTemplates, Users, Roles, AppTemplateInstantiationAttributes,
-                                  AppTemplateAccountAttributes, Favorites)
+                                  AppTemplateAccountAttributes, Favorites, AppTemplateSecurityGroups)
 from eduvmstore.db.operations.app_templates import has_version_suffix, extract_version_suffix
 
 logger = logging.getLogger("eduvmstore_logger")
@@ -32,6 +32,18 @@ class AppTemplateAccountAttributesSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
         read_only_fields = ['id']
 
+class AppTemplateSecurityGroupsSerializer(serializers.ModelSerializer):
+    """Serializer for the AppTemplateSecurityGroups model.
+
+    This serializer handles the conversion of AppTemplateSecurityGroups model
+    instances to and from JSON format, including validation and creation of new
+    instances.
+    """
+    class Meta:
+        model = AppTemplateSecurityGroups
+        fields = ['id', 'name']
+        read_only_fields = ['id']
+
 class AppTemplateSerializer(serializers.ModelSerializer):
     """Serializer for the AppTemplates model.
 
@@ -40,6 +52,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
     """
     instantiation_attributes = AppTemplateInstantiationAttributesSerializer(many=True, read_only=False)
     account_attributes = AppTemplateAccountAttributesSerializer(many=True, read_only=False)
+    security_groups = AppTemplateSecurityGroupsSerializer(many=True, read_only=False)
 
     class Meta:
         model = AppTemplates
@@ -57,6 +70,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'script',
             'instantiation_attributes',
             'account_attributes',
+            'security_groups',
             'public',
             'approved',
 
@@ -95,22 +109,6 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             )
         return name
 
-    def create(self, validated_data: Dict) -> AppTemplates:
-        """
-        Custom create method to handle additional operations
-        before saving an AppTemplates instance to the database.
-
-        :param Dict validated_data: Data validated through the serializer
-        :return: Newly created AppTemplates instance
-        :rtype: AppTemplates
-        """
-        instantiation_attributes_data = validated_data.pop('instantiation_attributes')
-        account_attributes_data = validated_data.pop('account_attributes')
-        app_template = AppTemplates.objects.create(**validated_data)
-        self.create_instantiation_attributes(app_template, instantiation_attributes_data)
-        self.create_account_attributes(app_template, account_attributes_data)
-        return app_template
-
     def create_instantiation_attributes(self,
                                         app_template: AppTemplates,
                                         instantiation_attributes_data: List[Dict]) -> None:
@@ -143,6 +141,44 @@ class AppTemplateSerializer(serializers.ModelSerializer):
                 app_template_id=app_template,
                 **account_attribute_data)
 
+    def create_security_groups(self,
+                               app_template: AppTemplates,
+                               security_groups_data: List[Dict]) -> None:
+        """
+        Create AppTemplateSecurityGroups instances for an AppTemplate instance.
+
+        :param AppTemplates app_template: The AppTemplate instance to create the attributes for
+        :param List[Dict] security_groups_data: List of instantiation attribute data
+        :return: None
+        :rtype: None
+        """
+        for security_group_data in security_groups_data:
+            AppTemplateSecurityGroups.objects.create(
+                app_template_id=app_template,
+                **security_group_data
+            )
+
+    def create(self, validated_data: Dict) -> AppTemplates:
+        """
+        Custom create method to handle additional operations
+        before saving an AppTemplates instance to the database.
+
+        :param Dict validated_data: Data validated through the serializer
+        :return: Newly created AppTemplates instance
+        :rtype: AppTemplates
+        """
+        instantiation_attributes_data = validated_data.pop('instantiation_attributes')
+        account_attributes_data = validated_data.pop('account_attributes')
+        security_groups_data = validated_data.pop('security_groups')
+        app_template = AppTemplates.objects.create(**validated_data)
+        if instantiation_attributes_data:
+            self.create_instantiation_attributes(app_template, instantiation_attributes_data)
+        if account_attributes_data:
+            self.create_account_attributes(app_template, account_attributes_data)
+        if security_groups_data:
+            self.create_security_groups(app_template, security_groups_data)
+        return app_template
+
     def update(self, instance: AppTemplates, validated_data: Dict) -> AppTemplates:
         """
         Custom update method to handle additional operations
@@ -159,20 +195,24 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"detail": "Approved app templates cannot be "
                            "edited to avoid confusion for other users."
-                            "Clone the app template and edit the clone instead."},
+                           "Clone the app template and edit the clone instead."},
                 code='forbidden'
             )
 
         instantiation_attributes_data = validated_data.pop('instantiation_attributes')
         account_attributes_data = validated_data.pop('account_attributes')
+        security_groups_data = validated_data.pop('security_groups')
 
-        AppTemplateInstantiationAttributes.objects.filter(app_template_id=instance).delete()
-        AppTemplateAccountAttributes.objects.filter(app_template_id=instance).delete()
 
         if instantiation_attributes_data:
+            AppTemplateInstantiationAttributes.objects.filter(app_template_id=instance).delete()
             self.create_instantiation_attributes(instance, instantiation_attributes_data)
         if account_attributes_data:
+            AppTemplateAccountAttributes.objects.filter(app_template_id=instance).delete()
             self.create_account_attributes(instance, account_attributes_data)
+        if security_groups_data:
+            AppTemplateSecurityGroups.objects.filter(app_template_id=instance).delete()
+            self.create_security_groups(instance, security_groups_data)
 
         model_fields = {field.name: field for field in instance._meta.fields}
         for field_name, field in model_fields.items():
