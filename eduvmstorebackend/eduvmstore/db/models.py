@@ -13,6 +13,7 @@ class AppTemplates(models.Model):
     short_description = models.CharField(max_length=255)
     instantiation_notice = models.TextField(blank=True, null=True)
     script = models.TextField(blank=True, null=True)
+    ssh_user_requested = models.BooleanField(default=False)
 
     # CRUD info
     creator_id = models.ForeignKey('Users', on_delete=models.DO_NOTHING, db_index=True)

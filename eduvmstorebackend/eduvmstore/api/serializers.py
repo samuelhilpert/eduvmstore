@@ -68,6 +68,7 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'short_description',
             'instantiation_notice',
             'script',
+            'ssh_user_requested',
             'instantiation_attributes',
             'account_attributes',
             'security_groups',

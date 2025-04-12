@@ -94,6 +94,7 @@ def approve_app_template(id: str) -> AppTemplates:
         public_app_template.pk = None
         public_app_template.name = f"{original_app_template.name}-V{original_app_template.version}"
         public_app_template.approved = True  # Approve the copy
+        public_app_template.ssh_user_requested = original_app_template.ssh_user_requested
         public_app_template.save()
 
         # Copy account and instantiation attributes

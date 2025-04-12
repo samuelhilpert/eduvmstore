@@ -32,6 +32,7 @@ class AppTemplateViewSetTests(APITestCase):
             short_description="Test",
             instantiation_notice="Notice",
             script="Script",
+            ssh_user_requested=True,
             creator_id=self.admin_user,
             public=True,
             approved=False,
@@ -88,6 +89,7 @@ class AppTemplateViewSetTests(APITestCase):
             "short_description": "Test",
             "instantiation_notice": "Notice",
             "script": "Script",
+            "ssh_user_requested": True,
             "instantiation_attributes": [
                 {"name": "JavaVersion"},
                 {"name": "InstallSpringboot"}
@@ -114,6 +116,7 @@ class AppTemplateViewSetTests(APITestCase):
         self.assertEqual(response.data['name'], name)
         self.assertFalse(response.data['public'])
         self.assertFalse(response.data['approved'])
+        self.assertTrue(response.data['ssh_user_requested'])
         self.assertEqual(response.data['volume_size_gb'], volume_size_gb)
         self.assertEqual(len(response.data['security_groups']), 2)
         self.assertEqual(response.data['security_groups'][0]['name'], "default")
@@ -149,6 +152,7 @@ class AppTemplateViewSetTests(APITestCase):
             "short_description": "Updated",
             "instantiation_notice": "Updated Notice",
             "script": "Updated Script",
+            "ssh_user_requested": False,
             "instantiation_attributes": [
                 {"name": updated_instantiation_attributes_name},
                 {"name": "SpringbootVersion"}
@@ -174,6 +178,7 @@ class AppTemplateViewSetTests(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['name'], name)
         self.assertIsNotNone(response.data['updated_at'])
+        self.assertFalse(response.data['ssh_user_requested'])
         self.assertEqual(response.data["instantiation_attributes"][0]["name"],
                          updated_instantiation_attributes_name)
         self.assertEqual(len(response.data['security_groups']), 2)
@@ -197,8 +202,10 @@ class AppTemplateViewSetTests(APITestCase):
             "short_description": "Updated",
             "instantiation_notice": "Updated Notice",
             "script": "Updated Script",
+            "ssh_user_requested": False,
             "instantiation_attributes": [],
             "account_attributes": [],
+            "security_groups": [],
             "image_id": self.app_template.image_id,
             "fixed_ram_gb": 2.0,
             "fixed_disk_gb": 20.0,
@@ -238,6 +245,7 @@ class AppTemplateViewSetTests(APITestCase):
             short_description="Private",
             instantiation_notice="Notice",
             script="Script",
+            ssh_user_requested=True,
             creator_id=self.normal_user,
             public=False,
             approved=False,
@@ -347,6 +355,7 @@ class AppTemplateViewSetTests(APITestCase):
         # Old app_template should not be approved and private
         self.assertFalse(AppTemplates.objects.get(id=self.app_template.id).approved)
         self.assertFalse(AppTemplates.objects.get(id=self.app_template.id).public)
+        self.assertTrue(AppTemplates.objects.get(id=self.app_template.id).ssh_user_requested)
         self.assertEqual(AppTemplates.objects.all().count(), 2)
         self.assertTrue(AppTemplates.objects.get(id=public_app_template_id).approved)
         self.assertEqual(
