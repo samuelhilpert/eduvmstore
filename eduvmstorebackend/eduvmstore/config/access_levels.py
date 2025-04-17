@@ -6,7 +6,7 @@ REQUIRED_ACCESS_LEVELS = {
     ('app-template-favorites', 'GET'): 1102,
     ('app-template-detail', 'PUT'): 1201,
     ('app-template-detail', 'DELETE'): 1202,
-    ("app-template-list-all", "GET"): 3101, #No Endpoint, access to see all AppTemplates
+    ('app-template-list-all', 'GET'): 3101, #No Endpoint, access to see all AppTemplates
     ('app-template-reject', 'PATCH'): 3102,
     ('app-template-approve', 'PATCH'): 3103,
     ('app-template-delete-approved', 'DELETE'): 4001, #No Endpoint, right to delete approved AppTemplates
@@ -14,7 +14,8 @@ REQUIRED_ACCESS_LEVELS = {
     ('favorite-list', 'POST'): 1103,
     ('favorite-delete-by-app-template', 'DELETE'): 1104,
 
-    ('user-list', 'GET'): 6001,
+    ('user-list', 'GET'): 1001, # Only see own user
+    ('user-list-all', 'GET'): 6001, # List all users
     ('user-detail', 'GET'): 1002,
     ('user-list', 'POST'): 6101,
     ('user-detail', 'PUT'): 6201,

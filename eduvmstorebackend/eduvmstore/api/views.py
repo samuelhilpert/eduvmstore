@@ -266,9 +266,9 @@ class UserViewSet(viewsets.ModelViewSet):
         # Only consider Users that are not deleted
         queryset = Users.objects.filter(deleted=False)
 
-        if user_access_level < REQUIRED_ACCESS_LEVELS[('user-list', 'GET')]:
+        if user_access_level < REQUIRED_ACCESS_LEVELS[('user-list-all', 'GET')]:
             # Users with insufficient access level can only see themselves
-            queryset = queryset.filter(id=user)
+            queryset = queryset.filter(id=user.id)
 
         return queryset
 
