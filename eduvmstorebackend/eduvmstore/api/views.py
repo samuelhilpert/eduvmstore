@@ -268,9 +268,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         if user_access_level < REQUIRED_ACCESS_LEVELS[('user-list-all', 'GET')]:
             # Users with insufficient access level can only see themselves
-            logger.debug(f"User {user.id} has access level {user_access_level}")
-            logger.debug(f"User {user}")
-            queryset = queryset.filter(id=user)
+            queryset = queryset.filter(id=user.id)
 
         return queryset
 
