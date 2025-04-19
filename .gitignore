@@ -163,3 +163,5 @@ cython_debug/
 
 # Logging data
 *log
+
+*.DS_Store
