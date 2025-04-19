@@ -1,7 +1,6 @@
 
 import logging
 from django.db.models import Q, QuerySet
-from django.core.exceptions import ObjectDoesNotExist
 from typing_extensions import override
 from rest_framework.request import Request
 
