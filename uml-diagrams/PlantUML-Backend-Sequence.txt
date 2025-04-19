@@ -25,11 +25,11 @@ handler -> middleware: Check Authentication
 middleware -> keystone: Validate Token
 
 alt Token Invalid
-  keystone -> middleware: Return Invalid Token
-  middleware -> client: Return Response("Invalid Token")
+  keystone --> middleware: Return Invalid Token
+  middleware --> client: Return Response("Invalid Token")
   note right of client: STOPPED
 else Token Valid
-  keystone -> middleware: Return Valid Token
+  keystone --> middleware: Return Valid Token
   note right of middleware: Continue normal Processing
 end
 
@@ -37,46 +37,46 @@ end
 middleware -> dboperations: Get/Create User
 dboperations -> models: Query User
 models -> db: Check User Exists
-db -> models: Return User Data
+db --> models: Return User Data
 alt User Exists
-    models -> dboperations: Return User
+    models --> dboperations: Return User
 else User Does Not Exist
-    models -> dboperations: Return no User found
+    models --> dboperations: Return no User found
     dboperations -> models: Create New User (& Role)
     models -> db: Insert User
-    db -> models: Confirm Creation
-    models -> dboperations: Return New User
+    db --> models: Confirm Creation
+    models --> dboperations: Return New User
 end
-dboperations -> middleware: Return User
+dboperations --> middleware: Return User
 
 middleware -> dboperations: Get Role Access Level
 dboperations -> models: Query Models
 models -> db: Access SQLite Database
-db -> models: Return Data
-models -> dboperations: Return Access Levels
-dboperations -> middleware: Role Access Level
+db --> models: Return Data
+models --> dboperations: Return Access Levels
+dboperations --> middleware: Role Access Level
 middleware -> access_levels: get Endpoint Access Level
-access_levels -> middleware: Endpoint Access Level
+access_levels --> middleware: Endpoint Access Level
 middleware -> middleware: Determine Access
-middleware -> handler: Finished
+middleware --> handler: Finished
 == Request handling ==
 handler -> urls: Forward Request
 urls -> views: Pass to Appropriate View
 
 views -> models: get filtered QuerySet
-models -> views: QuerySet
+models --> views: QuerySet
 alt Execute Endpoint with serializer
   views -> serializers: Endpoint specific Request
-  serializers -> views: Serialized Response
+  serializers --> views: Serialized Response
 else Execute Endpoint with DB Operations
   views -> dboperations: Endpoint specific Request
   dboperations -> models: Query Models
   models -> db: Access SQLite Database
-  db -> models: Return Data
-  models -> dboperations: Endpoint specific Data
-  dboperations -> views: Endpoint specific Data
+  db --> models: Return Data
+  models --> dboperations: Endpoint specific Data
+  dboperations --> views: Endpoint specific Data
 end
 
-views -> handler: HTTP Response
-handler -> client: Deliver Response
+views --> handler: HTTP Response
+handler --> client: Deliver Response
 @enduml
