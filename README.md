@@ -4,22 +4,43 @@
 
 This project involves the development of an **AppStore** for providing applications on an OpenStack platform.
 The goal is to enable instructors to deploy applications that can be used by students
-in the context of courses without requiring deep knowledge of OpenStack. 
+in the context of courses without requiring deep knowledge of OpenStack.
 The focus is on automated configuration and easy management.
 
 The frontend repo can be found here: https://github.com/samuelhilpert/eduvmstore-ui
 
 ### Main Features
+
 - **Automated Deployment**: Simplified deployment process with automated steps for configuring VMs,
-user accounts, network settings, etc.
+  user accounts, network settings, etc.
 - **Support for Various Applications**: The AppStore can provide pre-configured environments
-for different applications.
+  for different applications.
 
 This project is being implemented as part of the "Project" module at DHBW Mannheim
 from August 2024 to May 2025.
 
 ## Project DEV Setup and Run
+
+### Environment Setup
+
+To configure sensitive information and environment-specific settings, create a `.env` file in the
+`eduvmstorebackend/config` directory. Find the required variables below (replace
+`<...>` with your values):
+
+```dotenv
+# env
+SECRET_KEY=<your-secret-key>
+DEBUG=<True-or-False>
+ALLOWED_HOSTS=<your-allowed-hosts-separated-by-comma>
+CORS_ALLOW_ALL_ORIGINS=<True-or-False> 
+OPENSTACK_AUTH_URL=<your-openstack-auth-url>
+SQLITE_DB_NAME=<your-sqlite-db-name>
+```
+
+In production environment set these variables in the system environment instead of using a `.env` file.
+
 ### Local Database
+
 * `python eduvmstorebackend/manage.py makemigrations`
 * OR `python3 eduvmstorebackend/manage.py makemigrations`
 * `python3 eduvmstorebackend/manage.py migrate`
@@ -28,25 +49,30 @@ from August 2024 to May 2025.
 * In the pop-up, click on "Download missing Drivers", wait for the installation to complete, and click "OK"
 
 ### Start Backend Server Locally (Development):
+
 * Optional: `export ENABLE_KEYSTONE_AUTH=False`
-(is set by default, but needed after using the production environment)
+  (is set by default, but needed after using the production environment)
 * `python3 eduvmstorebackend/manage.py runserver 0.0.0.0:8000`
 * Access via `localhost:8000`
 
 ### Start Backend Server Locally (Production behavior with keystone authentication):
+
 * `export ENABLE_KEYSTONE_AUTH=True`
 * `python3 eduvmstorebackend/manage.py runserver localhost:8000`
 * Access via `localhost:8000`
 
 ### API Access
+
 * Access via `localhost:8000/api/<endpoint>`
 * `<endpoint>`: e.g., `<base-url>/app-templates/...`, `<base-url>/users/...`
 
 ### Run Tests
+
 * `python eduvmstorebackend/manage.py test`
 * OR `python3 eduvmstorebackend/manage.py test`
 
 ### Use Cloud-Init-Script for faster Setup
+
 * On `https://stack.dhbw.cloud/` create new instance
 * At Source choose Image as Boot Source, Ubuntu 22.04 as Image and no new Volume
 * Choose your Flavor of choice
