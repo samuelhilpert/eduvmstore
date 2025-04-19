@@ -5,7 +5,7 @@ from typing import Dict, List
 from rest_framework import serializers
 from eduvmstore.db.models import (AppTemplates, Users, Roles, AppTemplateInstantiationAttributes,
                                   AppTemplateAccountAttributes, Favorites, AppTemplateSecurityGroups)
-from eduvmstore.db.operations.app_templates import has_version_suffix, extract_version_suffix
+from eduvmstore.utils.string_utils import has_version_suffix, extract_version_suffix
 
 logger = logging.getLogger("eduvmstore_logger")
 class AppTemplateInstantiationAttributesSerializer(serializers.ModelSerializer):
