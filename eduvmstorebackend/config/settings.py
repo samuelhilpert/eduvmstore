@@ -20,7 +20,7 @@ CORS_ALLOW_ALL_ORIGINS = os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'True') == 'Tr
 
 # OpenStack configuration
 OPENSTACK = {
-    'auth_url': os.environ.get('OPENSTACK_AUTH_URL', 'http://localhost/identity/'),
+    'auth_url': os.environ.get('OPENSTACK_AUTH_URL', 'localhost/identity/'),
 }
 
 # Application definition
