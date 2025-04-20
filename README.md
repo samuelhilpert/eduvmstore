@@ -23,8 +23,8 @@ from August 2024 to May 2025.
 
 ### Environment Setup
 
-To configure sensitive information and environment-specific settings, create a `.env` file in the
-`eduvmstorebackend/config` directory. Find the required variables below (replace
+To configure sensitive information and environment-specific settings (for development and testing), create a
+`.env` file in the `eduvmstorebackend/config` directory. Find the required variables below (replace
 `<...>` with your values):
 
 ```dotenv
@@ -32,12 +32,16 @@ To configure sensitive information and environment-specific settings, create a `
 SECRET_KEY=<your-secret-key>
 DEBUG=<True-or-False>
 ALLOWED_HOSTS=<your-allowed-hosts-separated-by-comma>
-CORS_ALLOW_ALL_ORIGINS=<True-or-False> 
+CORS_ALLOW_ALL_ORIGINS=<True-or-False>
 OPENSTACK_AUTH_URL=<your-openstack-auth-url>
 SQLITE_DB_NAME=<your-sqlite-db-name>
 ```
 
-In production environment set these variables in the system environment instead of using a `.env` file.
+In **Production Environment** set these variables in the system environment instead of using a `.env` file.
+You can use the `export` command (e.g. `export OPENSTACK_AUTH_URL=<your-openstack-auth-url>`) in your terminal
+to set these variables on OS level.
+
+Alternatively, use a process manager like systemd or Docker to manage these variables.
 
 ### Local Database
 
