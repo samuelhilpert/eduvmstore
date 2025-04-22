@@ -28,14 +28,11 @@ from August 2024 to May 2025.
 * In the pop-up, click on "Download missing Drivers", wait for the installation to complete, and click "OK"
 
 ### Start Backend Server Locally (Development):
-* Optional: `export ENABLE_KEYSTONE_AUTH=False`
-(is set by default, but needed after using the production environment)
 * `python3 eduvmstorebackend/manage.py runserver 0.0.0.0:8000`
 * Access via `localhost:8000`
 
 ### Start Backend Server Locally (Production behavior with keystone authentication):
-* `export ENABLE_KEYSTONE_AUTH=True`
-* `python3 eduvmstorebackend/manage.py runserver localhost:8000`
+* `python3 eduvmstorebackend/manage.py runserver 0.0.0.0:8000`
 * Access via `localhost:8000`
 
 ### API Access
