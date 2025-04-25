@@ -1,7 +1,6 @@
 
 import logging
 from django.db.models import Q, QuerySet
-from django.core.exceptions import ObjectDoesNotExist
 from typing_extensions import override
 from rest_framework.request import Request
 
@@ -15,8 +14,7 @@ from rest_framework.response import Response
 
 from eduvmstore.db.operations.app_templates import (approve_app_template,
                                                     check_name_collision,
-                                                    reject_app_template, has_version_suffix,
-                                                    extract_version_suffix)
+                                                    reject_app_template)
 from eduvmstore.utils.access_control import has_access_level
 
 logger = logging.getLogger('eduvmstore_logger')

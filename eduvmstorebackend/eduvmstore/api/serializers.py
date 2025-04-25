@@ -5,7 +5,8 @@ from typing import Dict, List
 from rest_framework import serializers
 from eduvmstore.db.models import (AppTemplates, Users, Roles, AppTemplateInstantiationAttributes,
                                   AppTemplateAccountAttributes, Favorites, AppTemplateSecurityGroups)
-from eduvmstore.db.operations.app_templates import has_version_suffix, extract_version_suffix
+from eduvmstore.db.operations.app_templates import check_name_collision
+from eduvmstore.utils.string_utils import has_version_suffix, extract_version_suffix
 
 logger = logging.getLogger("eduvmstore_logger")
 
@@ -111,11 +112,9 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         :return: The validated name
         :raises: ValidationError if name has version suffix
         """
-        if has_version_suffix(name):
-            suffix = extract_version_suffix(name)
-            raise serializers.ValidationError(
-                f"App template name cannot end with the version suffix '{suffix}'. "
-            )
+        (collision, reason, context) = check_name_collision(name)
+        if collision:
+            raise serializers.ValidationError(reason.format(**context))
         return name
 
     def create_instantiation_attributes(self,
