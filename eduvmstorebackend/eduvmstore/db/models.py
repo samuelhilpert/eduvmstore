@@ -35,9 +35,6 @@ class AppTemplates(models.Model):
     fixed_ram_gb = models.FloatField()
     fixed_disk_gb = models.FloatField()
     fixed_cores = models.FloatField()
-    per_user_ram_gb = models.FloatField()
-    per_user_disk_gb = models.FloatField()
-    per_user_cores = models.FloatField()
 
     def __str__(self):
         return self.name

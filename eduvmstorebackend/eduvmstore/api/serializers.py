@@ -89,9 +89,6 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'fixed_ram_gb',
             'fixed_disk_gb',
             'fixed_cores',
-            'per_user_ram_gb',
-            'per_user_disk_gb',
-            'per_user_cores'
         ]
         read_only_fields = [
             'id',
