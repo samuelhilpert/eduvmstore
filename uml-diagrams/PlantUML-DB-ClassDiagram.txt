@@ -44,9 +44,6 @@ class AppTemplates {
     +fixed_ram_gb: Float
     +fixed_disk_gb: Float
     +fixed_cores: Float
-    +per_user_ram_gb: Float
-    +per_user_disk_gb: Float
-    +per_user_cores: Float
     +volume_size_gb: Float (nullable)
     -- Metadata --
     +creator_id: ForeignKey(Users) <<FK>>

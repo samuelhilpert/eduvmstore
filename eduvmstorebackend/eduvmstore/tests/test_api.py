@@ -40,9 +40,6 @@ class AppTemplateViewSetTests(APITestCase):
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
         )
         AppTemplateInstantiationAttributes.objects.create(
             app_template_id=app_template,
@@ -106,9 +103,6 @@ class AppTemplateViewSetTests(APITestCase):
             "fixed_ram_gb": 1.0,
             "fixed_disk_gb": 10.0,
             "fixed_cores": 1.0,
-            "per_user_ram_gb": 0.5,
-            "per_user_disk_gb": 5.0,
-            "per_user_cores": 0.5,
             "approved": True # Try to create app_template as public illegaly (should end in False)
         }
         response = self.client.post(url, data, format='json', **self.get_auth_headers())
@@ -170,9 +164,6 @@ class AppTemplateViewSetTests(APITestCase):
             "fixed_ram_gb": 2.0,
             "fixed_disk_gb": 20.0,
             "fixed_cores": 2.0,
-            "per_user_ram_gb": 1.0,
-            "per_user_disk_gb": 10.0,
-            "per_user_cores": 1.0
         }
         response = self.client.put(url, data, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 200)
@@ -210,9 +201,6 @@ class AppTemplateViewSetTests(APITestCase):
             "fixed_ram_gb": 2.0,
             "fixed_disk_gb": 20.0,
             "fixed_cores": 2.0,
-            "per_user_ram_gb": 1.0,
-            "per_user_disk_gb": 10.0,
-            "per_user_cores": 1.0
         }
 
         response = self.client.put(url, data, format='json', **self.get_auth_headers())
@@ -253,9 +241,6 @@ class AppTemplateViewSetTests(APITestCase):
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
         )
 
         response = self.client.get(url, format='json', **self.get_auth_headers())
@@ -283,9 +268,6 @@ class AppTemplateViewSetTests(APITestCase):
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
         )
 
         response = self.client.get(url, format='json',
@@ -421,9 +403,6 @@ class FavoritesViewSetTests(APITestCase):
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
         )
         return app_template
 
