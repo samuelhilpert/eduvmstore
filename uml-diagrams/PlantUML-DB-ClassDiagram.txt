@@ -1,0 +1,91 @@
+@startuml
+skinparam linetype ortho
+left to right direction
+together{
+class Roles {
+    +id: UUID <<PK>>
+    +name: CharField(255) <<Unique>>
+    +access_level: Integer
+}
+
+class Users {
+    +id: UUID <<PK>>
+    +role_id: ForeignKey(Roles) <<FK>>
+    -- Metadata --
+    +created_at: DateTimeField
+    +updated_at: DateTimeField
+    +deleted_at: DateTimeField (nullable)
+    +deleted: Boolean
+}
+
+
+
+class Favorites {
+    +id: UUID <<PK>>
+    +user_id: ForeignKey(Users) <<FK>>
+    +app_template_id: ForeignKey(AppTemplates) <<FK>>
+}
+}
+
+package "Logical AppTemplates" as app_template_package{
+class AppTemplates {
+    +id: UUID <<PK>>
+    -- General Information --
+    +image_id: UUID
+    +name: CharField(255) <<Unique>>
+    +description: TextField
+    +short_description: CharField(255)
+    +instantiation_notice: TextField (nullable)
+    +script: TextField (nullable)
+    -- Visibility and Approval --
+    +public: Boolean
+    +approved: Boolean
+    -- Resource Requirements --
+    +fixed_ram_gb: Float
+    +fixed_disk_gb: Float
+    +fixed_cores: Float
+    +per_user_ram_gb: Float
+    +per_user_disk_gb: Float
+    +per_user_cores: Float
+    +volume_size_gb: Float (nullable)
+    -- Metadata --
+    +creator_id: ForeignKey(Users) <<FK>>
+    +created_at: DateTimeField
+    +updated_at: DateTimeField
+    +deleted_at: DateTimeField (nullable)
+    +deleted: Boolean
+    +version: Integer
+}
+
+
+class AppTemplateInstantiationAttributes {
+    +id: UUID <<PK>>
+    +app_template_id: ForeignKey(AppTemplates) <<FK>>
+    +name: CharField(255)
+}
+
+class AppTemplateAccountAttributes {
+    +id: UUID <<PK>>
+    +app_template_id: ForeignKey(AppTemplates) <<FK>>
+    +name: CharField(255)
+}
+
+class AppTemplateSecurityGroups {
+    +id: UUID <<PK>>
+    +app_template_id: ForeignKey(AppTemplates) <<FK>>
+    +name: CharField(255)
+}
+}
+
+
+' Define relationships
+' Define relationships with explicit directions
+AppTemplates "1" -- "0..*" AppTemplateInstantiationAttributes : has
+AppTemplates "1" -- "0..*" AppTemplateAccountAttributes : has
+AppTemplates "1" -- "0..*" AppTemplateSecurityGroups : has
+Users "1" -- "0..*" AppTemplates : creates
+Users "1" -- "0..*" Favorites : owns
+AppTemplates "1" --down-- "0..*" Favorites : favorited by
+Users "1" --down-- "1" Roles : has
+
+@enduml

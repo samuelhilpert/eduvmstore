@@ -1,0 +1,41 @@
+@startuml
+skinparam linetype ortho
+top to bottom direction
+
+actor "Client" as client
+
+package "API Layer" {
+    component "URL Dispatcher" as urls
+    component "Views" as views
+    component "Serializers" as serializers
+}
+
+package "Database" {
+    component "Models" as models
+    component "Database Operations" as dboperations
+    component "SQLite DB" as db
+}
+
+package "Middleware" {
+    component "Authentication Middleware" as middleware
+    component "Access Levels" as access_levels
+}
+
+interface Keystone as keystone
+
+client --right--> urls: "Sends Request"
+views --left--> client: "Send Response"
+
+urls --> views: "Route Request"
+views <--> serializers: "Uses for data formatting"
+serializers <--> models: "Map data structures"
+views <--> dboperations: "Fetch/Update Data"
+dboperations <--> models: "Interact with Models"
+models <--> db: "Save to DB"
+
+middleware <--> keystone: "Authentication"
+middleware <----> models: "Get User Access Level"
+middleware <--> access_levels: "Get Enpoint Access Level"
+
+
+@enduml
