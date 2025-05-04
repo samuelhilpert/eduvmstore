@@ -4,6 +4,7 @@ import re
 # This pattern is forbidden as it is automatically used for approved AppTemplates
 VERSION_SUFFIX_PATTERN = r'-V\d+$'
 
+
 def has_version_suffix(name: str) -> bool:
     """
     Check if the given AppTemplate name has a version suffix.
@@ -26,6 +27,7 @@ def extract_version_suffix(name: str) -> str:
     """
     match = re.search(VERSION_SUFFIX_PATTERN, name)
     return match.group(0) if match else ""
+
 
 def create_version_pattern(name: str) -> str:
     """

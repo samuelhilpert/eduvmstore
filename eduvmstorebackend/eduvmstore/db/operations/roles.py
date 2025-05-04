@@ -3,6 +3,7 @@ import uuid
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from eduvmstore.db.models import Roles
 
+
 def create_role(role_data: dict) -> Roles:
     """
     Create a new Role entry in the database using Django ORM.
@@ -52,6 +53,7 @@ def update_role(id: str, update_role_data: dict) -> Roles:
     except ValidationError as e:
         raise e
 
+
 def get_role_by_id(id: str) -> Roles:
     """
     Retrieve a Role entry from the database using its ID.
@@ -65,6 +67,7 @@ def get_role_by_id(id: str) -> Roles:
         return Roles.objects.get(id=id)
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist(f"Role with id {id} not found")
+
 
 def get_role_by_name(name: str) -> Roles:
     """
