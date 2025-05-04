@@ -1,31 +1,34 @@
-# EduVMStore
+# EduVMStore Backend
 
-## Project Overview
+## Overview
 
-This project involves the development of an **AppStore** for providing applications on an OpenStack platform.
-The goal is to enable instructors to deploy applications that can be used by students
-in the context of courses without requiring deep knowledge of OpenStack.
-The focus is on automated configuration and easy management.
+EduVMStore is a backend service designed to power an AppStore for deploying applications on an OpenStack platform. It allows instructors to easily provide pre-configured applications to students, facilitating a smoother educational experience without requiring deep technical knowledge of OpenStack.
 
-The frontend repo can be found here: https://github.com/samuelhilpert/eduvmstore-ui
+This project is developed as part of the "Projektkonzeption und -realisierung" module at DHBW Mannheim (August 2024 - May 2025).
 
-### Main Features
+Frontend repository: [eduvmstore-ui](https://github.com/samuelhilpert/eduvmstore-ui)
 
-- **Automated Deployment**: Simplified deployment process with automated steps for configuring VMs,
-  user accounts, network settings, etc.
-- **Support for Various Applications**: The AppStore can provide pre-configured environments
-  for different applications.
+---
 
-This project is being implemented as part of the "Project" module at DHBW Mannheim
-from August 2024 to May 2025.
+## Key Features
 
-## Project DEV Setup and Run
+* **Automated Deployment**: Handles virtual machine setup, user configuration, and network management.
+* **Multi-Application Support**: Provides pre-configured environments for various educational tools.
+* **Streamlined Management**: Offers simple interfaces for managing deployments and resources.
 
-### Environment Setup
+---
 
-To configure sensitive information and environment-specific settings (for development and testing), create a
-`.env` file in the `eduvmstorebackend/config` directory. Find the required variables below (replace
-`<...>` with your values):
+## Getting Started
+
+### Prerequisites
+
+* Python 3.12
+* `pip` package manager
+* OpenStack environment (for deployment)
+
+### Environment Configuration
+
+To manage development and testing configurations, create a `.env` file in the `eduvmstorebackend/config` directory. Populate it with the following variables:
 
 ```dotenv
 # env
@@ -37,58 +40,97 @@ OPENSTACK_AUTH_URL=<your-openstack-auth-url>
 SQLITE_DB_NAME=<your-sqlite-db-name>
 ```
 
-In **Production Environment** set these variables in the system environment instead of using a `.env` file.
-You can use the `export` command (e.g. `export OPENSTACK_AUTH_URL=<your-openstack-auth-url>`) in your terminal
-to set these variables on OS level.
+For production deployments, set these variables using system environment tools like `export` or service managers such as systemd or Docker.
 
-Alternatively, use a process manager like systemd or Docker to manage these variables.
+---
 
-### Local Database
+## Database Setup
 
-* `python eduvmstorebackend/manage.py makemigrations`
-* OR `python3 eduvmstorebackend/manage.py makemigrations`
-* `python3 eduvmstorebackend/manage.py migrate`
-* OR `python eduvmstorebackend/manage.py migrate`
-* Double-click the `db.sqlite3` file
-* In the pop-up, click on "Download missing Drivers", wait for the installation to complete, and click "OK"
+Run the following commands to initialize the database schema:
 
-### Start Backend Server Locally (Development):
+```bash
+python3 eduvmstorebackend/manage.py makemigrations
+python3 eduvmstorebackend/manage.py migrate
+```
 
-* Optional: `export ENABLE_KEYSTONE_AUTH=False`
-  (is set by default, but needed after using the production environment)
-* `python3 eduvmstorebackend/manage.py runserver 0.0.0.0:8000`
-* Access via `localhost:8000`
+---
 
-### Start Backend Server Locally (Production behavior with keystone authentication):
+## Running the Server
 
-* `export ENABLE_KEYSTONE_AUTH=True`
-* `python3 eduvmstorebackend/manage.py runserver localhost:8000`
-* Access via `localhost:8000`
+Start the backend development server using:
 
-### API Access
+```bash
+python3 eduvmstorebackend/manage.py runserver 0.0.0.0:8000
+```
 
-* Access via `localhost:8000/api/<endpoint>`
-* `<endpoint>`: e.g., `<base-url>/app-templates/...`, `<base-url>/users/...`
+Access the server at: `http://localhost:8000`
 
-### Run Tests
+---
 
-* `python eduvmstorebackend/manage.py test`
-* OR `python3 eduvmstorebackend/manage.py test`
+## API Usage
 
-### Use Cloud-Init-Script for faster Setup
+Base URL: `http://localhost:8000/api/`
 
-* On `https://stack.dhbw.cloud/` create new instance
-* At Source choose Image as Boot Source, Ubuntu 22.04 as Image and no new Volume
-* Choose your Flavor of choice
-* For Network choose provider_912
-* The Security Group should allow ingress TCP connections on port 8000 and 22
-* Choose your SSH Keypair of choice to access the VM through ssh
-* At Configuration upload the Cloud-Init-Script backendscript.yaml
-* Launch the Instance
-* Access the Instance using `ssh ubuntu@<instance-ip> -i <path-to-keyfile>`
-* Execute `/initilization_script`
-* To manage the Backend-Service you can use:
-* `sudo systemctl enable eduvmstorebackend`
-* `sudo systemctl start eduvmstorebackend`
-* `sudo systemctl stop eduvmstorebackend`
-* `sudo systemctl restart eduvmstorebackend`
+Example endpoints:
+
+* `app-templates/`
+* `users/`
+
+---
+
+## Running Tests
+
+Execute the test suite to validate your setup:
+
+```bash
+python3 eduvmstorebackend/manage.py test
+```
+
+---
+
+## Deployment on OpenStack
+
+### Quick Setup with Cloud-Init Script
+
+1. Go to [stack.dhbw.cloud](https://stack.dhbw.cloud/) and create a new instance.
+
+2. Instance Configuration:
+
+   * Image: Ubuntu 22.04
+   * Flavor: Select according to your resource needs
+   * Network: Use `provider_912`
+   * Security Group: Allow TCP on ports 8000 and 22
+   * SSH Keypair: Use your public SSH key
+
+3. Upload `backendscript.yaml` in the configuration section.
+
+4. Launch and connect via SSH:
+
+   ```bash
+   ssh ubuntu@<instance-ip> -i <path-to-keyfile>
+   ```
+
+5. Execute the initialization script:
+
+   ```bash
+   /initialization_script
+   ```
+
+---
+
+### Managing the Backend Service
+
+Control the backend service using systemd:
+
+```bash
+sudo systemctl enable eduvmstorebackend
+sudo systemctl start eduvmstorebackend
+sudo systemctl stop eduvmstorebackend
+sudo systemctl restart eduvmstorebackend
+```
+
+---
+
+## License
+
+This project is licensed under the MIT License. For full details, see the [LICENSE](./LICENSE) file.
