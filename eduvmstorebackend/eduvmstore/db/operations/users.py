@@ -6,6 +6,7 @@ from eduvmstore.db.models import Users
 from eduvmstore.db.operations.roles import get_role_by_name, create_role
 from typing import Dict
 
+
 def create_user(user_data: Dict) -> Users:
     """
     Create a new User entry in the database using Django ORM. The role can either be specified by ID or name
@@ -30,14 +31,14 @@ def create_user(user_data: Dict) -> Users:
             case 'admin':
                 role_name = DEFAULT_ROLES['EduVMStoreAdmin']['name']
                 default_access_level = DEFAULT_ROLES['EduVMStoreAdmin']['access_level']
-            case _ :
+            case _:
                 role_name = DEFAULT_ROLES['EduVMStoreUser']['name']
                 default_access_level = DEFAULT_ROLES['EduVMStoreUser']['access_level']
 
         try:
             role_id = get_role_by_name(role_name)
         except ObjectDoesNotExist:
-            role_id = create_role({'name' : role_name, 'access_level': default_access_level})
+            role_id = create_role({'name': role_name, 'access_level': default_access_level})
 
         user_data['role_id'] = role_id
 
@@ -53,6 +54,7 @@ def create_user(user_data: Dict) -> Users:
     except ValidationError as e:
         raise e
 
+
 def get_user_by_id(id: str) -> Users:
     """
     Retrieve a User entry from the database using its ID, including role information.
@@ -66,6 +68,7 @@ def get_user_by_id(id: str) -> Users:
         return Users.objects.select_related('role_id').get(id=id, deleted=False)
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist(f"User with id {id} not found.")
+
 
 # Currently unused, potential enhancement for the future
 def soft_delete_user(id: str) -> None:

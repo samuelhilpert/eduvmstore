@@ -16,6 +16,7 @@ class CollisionReason(Enum):
     def format(self, **kwargs):
         return self.value.format(**kwargs)
 
+
 def check_name_collision(name: str) -> tuple[bool, CollisionReason, dict]:
     """
     Check if the given AppTemplate name collides with any existing AppTemplates.
@@ -30,17 +31,18 @@ def check_name_collision(name: str) -> tuple[bool, CollisionReason, dict]:
     if AppTemplates.objects.filter(name=name, deleted=False).exists():
         return True, CollisionReason.DIRECT_MATCH, {"name": name}
 
-    # Check if name has a version suffix
+    # Check if the name has a version suffix
     if has_version_suffix(name):
         suffix = extract_version_suffix(name)
         return True, CollisionReason.VERSION_SUFFIX_RESERVED, {"suffix": suffix}
 
-    # Check if any versioned template exists with this name as base
+    # Check if any versioned template exists with this name as a base
     versioned_name_pattern = create_version_pattern(name)
     if AppTemplates.objects.filter(name__regex=versioned_name_pattern, deleted=False).exists():
         return True, CollisionReason.VERSIONED_TEMPLATE_EXISTS, {"name": name}
 
     return False, CollisionReason.NO_COLLISION, {"name": name}
+
 
 @transaction.atomic
 def approve_app_template(id: str) -> AppTemplates:
@@ -94,6 +96,7 @@ def approve_app_template(id: str) -> AppTemplates:
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist(f"AppTemplate {id} not found.")
 
+
 @transaction.atomic
 def reject_app_template(id: str) -> AppTemplates:
     """
@@ -112,6 +115,7 @@ def reject_app_template(id: str) -> AppTemplates:
         return app_template
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist(f"AppTemplate {id} not found.")
+
 
 # Currently unused, potential enhancement for the future
 @transaction.atomic

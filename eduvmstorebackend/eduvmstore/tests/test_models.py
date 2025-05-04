@@ -5,6 +5,7 @@ from django.test import TestCase
 from eduvmstore.config.access_levels import DEFAULT_ROLES
 from eduvmstore.db.models import AppTemplates, Users, Roles
 
+
 class AppTemplatesModelTests(TestCase):
 
     def create_user_and_role(self):

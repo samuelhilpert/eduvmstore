@@ -1,4 +1,3 @@
-
 import logging
 from django.db.models import Q, QuerySet
 from typing_extensions import override
@@ -18,6 +17,8 @@ from eduvmstore.db.operations.app_templates import (approve_app_template,
 from eduvmstore.utils.access_control import has_access_level
 
 logger = logging.getLogger('eduvmstore_logger')
+
+
 class AppTemplateViewSet(viewsets.ModelViewSet):
     """
     ViewSet for handling AppTemplate model operations.
@@ -78,8 +79,8 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         if approved is not None:
             approved = approved.lower() == 'true'
 
-        # If admin explicitly requests all private AppTemplates (for review purposes), show them
-        if public is False and has_access_level(user,'app-template-list-all','GET'):
+        # If an admin explicitly requests all private AppTemplates (for review purposes), show them
+        if public is False and has_access_level(user, 'app-template-list-all', 'GET'):
             queryset = queryset.filter(public=True)
             queryset = AppTemplates.objects.filter(public=public)
 
@@ -102,7 +103,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         return queryset
 
     @action(detail=True, methods=['patch'])
-    def approve(self, request: Request, pk: str=None) -> Response:
+    def approve(self, request: Request, pk: str = None) -> Response:
         """
         Approve an AppTemplate to make it public and accessible for others.
 
@@ -117,7 +118,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
             {
                 "original_app_template": {
                     "id": original_app_template_id
-                    },
+                },
                 "public_app_template": {
                     "id": public_app_template.id,
                     "approved": public_app_template.approved
@@ -125,10 +126,10 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
             }, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['patch'])
-    def reject(self, request: Request, pk: str=None) -> Response:
+    def reject(self, request: Request, pk: str = None) -> Response:
         """
         Reject an AppTemplate. Sets public and approved to
-        false making the AppTemplate only visible for the creator.
+        false, making the AppTemplate only visible for the creator.
 
         :param Request request: The HTTP request object
         :return: HTTP response with the approval status
@@ -142,7 +143,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='name/(?P<name>[^/.]+)\\/collision',
             name='check-name-collision')
-    def check_name_collision(self, request: Request, name: str=None) -> Response:
+    def check_name_collision(self, request: Request, name: str = None) -> Response:
         """
         Check for a name collision with existing and future AppTemplates.
 
@@ -163,7 +164,7 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['GET'], url_path='favorites')
     def favorites(self, request: Request) -> Response:
         """
-        Lists all AppTemplate which are favorites of the current user.
+        Lists all AppTemplate, which are favorites of the current user.
 
         :param Request request: The HTTP request object
         :return: HTTP response with the list of favorite AppTemplates
@@ -201,14 +202,15 @@ class AppTemplateViewSet(viewsets.ModelViewSet):
         # Proceed with standard deletion
         return super().destroy(request, *args, **kwargs)
 
+
 class FavoritesViewSet(viewsets.ModelViewSet):
     serializer_class = FavoritesSerializer
 
     def get_queryset(self) -> QuerySet[Favorites]:
         """
-        retrieve the queryset of Favorites. Each User can only access own favorites
+        Retrieves the queryset of Favorites. Each User can only access their own favorites.
 
-        :return: queryset of Favorites
+        :return: Queryset of Favorites
         :rtype: QuerySet
         """
 
@@ -269,6 +271,7 @@ class UserViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(id=user.id)
 
         return queryset
+
 
 class RoleViewSet(viewsets.ModelViewSet):
     """

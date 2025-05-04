@@ -7,6 +7,7 @@ from eduvmstore.db.operations.app_templates import (
     check_name_collision, approve_app_template, soft_delete_app_template, reject_app_template,
     CollisionReason)
 
+
 class AppTemplateOperationsTests(TestCase):
 
     def create_user_and_role(self):
@@ -53,7 +54,7 @@ class AppTemplateOperationsTests(TestCase):
 
     def test_checks_name_collision_with_versioned_templates(self):
         base_name = "Template"
-        self.create_app_template(self.user, name=base_name +"-V1")
+        self.create_app_template(self.user, name=base_name + "-V1")
         collision, reason, context = check_name_collision(base_name)
         # Base name should also be a collision
         self.assertTrue(collision)
@@ -74,7 +75,7 @@ class AppTemplateOperationsTests(TestCase):
     def test_approves_app_template_successfully(self):
         approved_app_template = approve_app_template(self.app_template.id)
 
-        self.assertEqual(AppTemplates.objects.count(),2)
+        self.assertEqual(AppTemplates.objects.count(), 2)
         self.assertTrue(approved_app_template.approved)
         self.app_template.refresh_from_db()
         self.assertFalse(self.app_template.public)
@@ -87,7 +88,8 @@ class AppTemplateOperationsTests(TestCase):
             AppTemplateAccountAttributes.objects.filter(app_template_id=approved_app_template.id).count(),
             1)
         self.assertEqual(
-            AppTemplateInstantiationAttributes.objects.filter(app_template_id=approved_app_template.id).count(),
+            AppTemplateInstantiationAttributes.objects.filter(
+                app_template_id=approved_app_template.id).count(),
             1)
 
     def test_rejects_app_template_successfully(self):

@@ -15,6 +15,7 @@ from eduvmstore.utils.access_control import check_request_access
 
 logger = logging.getLogger('eduvmstore_logger')
 
+
 class KeystoneAuthenticationMiddleware:
     """
     Middleware for Keystone authentication and user access control.
@@ -24,6 +25,7 @@ class KeystoneAuthenticationMiddleware:
 
     :param function get_response: Callable that processes the request after middleware execution
     """
+
     def __init__(self, get_response: Callable) -> None:
         """
         Initialize the middleware with a get_response callable.
@@ -96,5 +98,5 @@ class KeystoneAuthenticationMiddleware:
                 'id': user_id,
                 'keystone_role_name': keystone_role
             }
-            user =  create_user(user_dict)
+            user = create_user(user_dict)
         return user

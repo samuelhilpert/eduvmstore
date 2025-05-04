@@ -1,6 +1,7 @@
 from django.test import TestCase
 from eduvmstore.utils.string_utils import has_version_suffix, extract_version_suffix, create_version_pattern
 
+
 class AppTemplateOperationsTests(TestCase):
     def test_has_version_suffix(self):
         # Should return True for names with proper version suffixes

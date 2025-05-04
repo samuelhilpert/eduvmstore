@@ -4,7 +4,9 @@ from eduvmstore.config.access_levels import DEFAULT_ACCESS_LEVEL, REQUIRED_ACCES
 from rest_framework.request import Request
 
 logger = logging.getLogger('eduvmstore_logger')
-def has_access_level(user, url: str, method: str) ->bool:
+
+
+def has_access_level(user, url: str, method: str) -> bool:
     """
     Check if user has sufficient access level for a given operation.
 
@@ -21,9 +23,9 @@ def has_access_level(user, url: str, method: str) ->bool:
     return access
 
 
-def get_required_access_level(url: str, method: str) ->int:
+def get_required_access_level(url: str, method: str) -> int:
     """
-    Get required access level for an operation.
+    Get the required access level for an operation.
 
     :param str url: URL name
     :param str method: HTTP method (GET, POST, etc.)
@@ -33,7 +35,8 @@ def get_required_access_level(url: str, method: str) ->int:
     key = (url, method)
     return REQUIRED_ACCESS_LEVELS.get(key, DEFAULT_ACCESS_LEVEL)
 
-def check_request_access(request: Request) ->bool:
+
+def check_request_access(request: Request) -> bool:
     """
     Check if the user in the request has access to the current URL.
 
