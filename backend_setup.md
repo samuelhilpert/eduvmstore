@@ -1,8 +1,10 @@
-## Backend DEV Setup and Run
+# Backend DEV Setup and Run
 Use the following instructions to set up and run the Backend.
-You need to have the repository cloned and be in the main folder of the project to run the commands. This folder is the one that contains the `eduvmstorebackend` folder.
-Alternatively you can start a VM using the cloud init script described below.
+You can choose to manually setup the environment or use a cloud init script for faster Setup.
 
+## 1 Manual Setup (recommended for development)
+This installation assumes you are already at the desired location of the project.
+You need to have the repository cloned and be in the main folder of the project to run the commands. This folder is the one that contains the `eduvmstorebackend` folder.
 ### Setup Environament and Environment Variables (only once)
 ```bash
 python3 -m venv venv
@@ -52,21 +54,28 @@ OR
 python3 eduvmstorebackend/manage.py test
 ```
 
-## Alternative: Use Cloud-Init-Script for faster Setup
-* On `https://stack.dhbw.cloud/` create new instance
-* At Source choose Image as Boot Source, Ubuntu 22.04 as Image and no new Volume
-* Choose your Flavor of choice
-* For Network choose provider_912
-* The Security Group should allow ingress TCP connections on port 8000 and 22
-* Choose your SSH Keypair of choice to access the VM through ssh
-* At Configuration upload the Cloud-Init-Script [backendscript.yaml](/backendscript.yaml)
-* Launch the Instance
-* Access the Instance using `ssh ubuntu@<instance-ip> -i <path-to-keyfile>`
+## 2 Alternative: Use Cloud-Init-Script (recommended for production)
+* On `https://stack.dhbw.cloud/` create new instance (Virtual Machine)
+  - At Source choose Image Ubuntu 22.04 
+  - Select no new Volume
+  - Choose your Flavor of choice (Recommendation: m1_extra_large for production, mb1.medium for development)
+  - Choose Network: provider_912
+  - Choose a Security Group that inhabits the following: Allows inbound (ingress) on ports 22 and 8000 
+  - Choose your SSH Keypair of your choice: Used to access the VM through ssh 
+  - At Configuration upload the Cloud-Init-Script [backendscript.yaml](/backendscript.yaml)
+  - Launch the Instance
+
+* Access the Instance using 
+```bash
+ssh ubuntu@<instance-ip> -i <path-to-keyfile>
+```
 * Execute 
 ```bash
 /initilization_script
 ```
 * To manage the Backend-Service you can use:
+
+For initial starting use enable and start:
 ```bash
 sudo systemctl enable eduvmstorebackend
 ```
