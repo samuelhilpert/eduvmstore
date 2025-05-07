@@ -4,35 +4,55 @@ You need to have the repository cloned and be in the main folder of the project 
 Alternatively you can start a VM using the cloud init script described below.
 
 ### Setup Environament and Environment Variables (only once)
+```bash
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+```
 
 ### Local Database (first time + everytime you change the models.py)
 Ensure that the local Database is up to date and ready for use.
-* `python eduvmstorebackend/manage.py makemigrations`
-* OR `python3 eduvmstorebackend/manage.py makemigrations`
-* `python3 eduvmstorebackend/manage.py migrate`
-* OR `python eduvmstorebackend/manage.py migrate`
+```bash
+python eduvmstorebackend/manage.py makemigrations
+python eduvmstorebackend/manage.py migrate
+```
+OR 
+```bash
+python3 eduvmstorebackend/manage.py makemigrations
+python3 eduvmstorebackend/manage.py migrate
+```
+After the commands:
 * Double-click the `db.sqlite3` (if this is the first time)
 * In the pop-up, click on "Download missing Drivers", wait for the installation to complete, and click "OK"
 
 ### Start Backend Server Locally:
-* `python3 eduvmstorebackend/manage.py runserver 0.0.0.0:8000`
+```bash
+python3 eduvmstorebackend/manage.py runserver 0.0.0.0:8000
+```
 * Access via `localhost:8000` or if run inside a VM via `<vm-ip>:8000`
+
 
 ### API Access
 * Access via `localhost:8000/api/<endpoint>`
 * `<endpoint>`: e.g., `<base-url>/app-templates/...`, `<base-url>/users/...`
 * You can use the Bruno Endpoints for that:
-  * Open the Folder 
+  * Download Bruno Desktop (https://www.usebruno.com/)
+  * Open the folder [APICollectionEduVMStore](/APICollectionEduVMStore) with Bruno
+  * Choose/Configure the Environment (IP-Addresses: OpenStack for Authentication und BASE_URL (Backend) and Openstack Username an Password need to be set the first time)
+  * Send the authentication request (this sets a variable in Bruno with the authentication token and uses it for all other endpoints)
+  * Choose and send the Endpoint you want to test (at some endpoints variables for other endpoints are set)
 
 ### Run Tests
 Runs the unit tests for the project.
-* `python eduvmstorebackend/manage.py test`
-* OR `python3 eduvmstorebackend/manage.py test`
+```bash
+python eduvmstorebackend/manage.py test
+```
+OR 
+```bash
+python3 eduvmstorebackend/manage.py test
+```
 
-### Use Cloud-Init-Script for faster Setup
+## Alternative: Use Cloud-Init-Script for faster Setup
 * On `https://stack.dhbw.cloud/` create new instance
 * At Source choose Image as Boot Source, Ubuntu 22.04 as Image and no new Volume
 * Choose your Flavor of choice
@@ -42,9 +62,21 @@ Runs the unit tests for the project.
 * At Configuration upload the Cloud-Init-Script [backendscript.yaml](/backendscript.yaml)
 * Launch the Instance
 * Access the Instance using `ssh ubuntu@<instance-ip> -i <path-to-keyfile>`
-* Execute `/initilization_script`
+* Execute 
+```bash
+/initilization_script
+```
 * To manage the Backend-Service you can use:
-* `sudo systemctl enable eduvmstorebackend`
-* `sudo systemctl start eduvmstorebackend`
-* `sudo systemctl stop eduvmstorebackend`
-* `sudo systemctl restart eduvmstorebackend`
+```bash
+sudo systemctl enable eduvmstorebackend
+```
+```bash
+sudo systemctl start eduvmstorebackend
+```
+```bash
+sudo systemctl stop eduvmstorebackend
+````
+```bash
+sudo systemctl restart eduvmstorebackend
+```
+
