@@ -339,3 +339,16 @@ class UserSerializer(serializers.ModelSerializer):
         :rtype: Users
         """
         return Users.objects.create(**validated_data)
+
+    def update(self, instance: Users, validated_data: Dict) -> Users:
+        """
+        Custom update method to handle additional operations
+        before saving a Users instance to the database. (Setting the updated_at field)
+
+        :param AppTemplates instance: The instance to update
+        :param Dict validated_data: Data validated through the serializer
+        :return: Updated AppTemplates instance
+        :rtype: AppTemplates
+        """
+        instance.updated_at = now()
+        return instance
