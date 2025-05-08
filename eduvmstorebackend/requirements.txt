@@ -5,3 +5,4 @@ openstacksdk==4.0.0
 ruff==0.11.4
 vulture==2.12
 bandit==1.7.10
+python-dotenv==1.1.0

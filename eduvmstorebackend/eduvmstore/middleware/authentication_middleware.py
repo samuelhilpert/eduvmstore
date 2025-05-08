@@ -70,12 +70,15 @@ class KeystoneAuthenticationMiddleware:
         keystone_url = f"http://{settings.OPENSTACK['auth_url']}v3/auth/tokens"
         headers = {'X-Auth-Token': token, 'X-Subject-Token': token}
         try:
-            response = requests.get(keystone_url, headers=headers)
+            response = requests.get(keystone_url, headers=headers, timeout=10)
             if response.status_code == 200:
                 return response.json()['token']['user']
             else:
                 logger.error('Keystone token validation failed with status code: %s', response.status_code)
                 return None
+        except requests.Timeout:
+            logger.error('Keystone token validation request timed out')
+            return None
         except requests.RequestException as e:
             logger.error(f'Keystone token validation request failed: {e}')
             return None

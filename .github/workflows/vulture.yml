@@ -30,6 +30,6 @@ jobs:
       - name: Run Vulture
         run: |
           vulture . \
-          --ignore-names "SECRET_KEY,DEBUG,ALLOWED_HOSTS,INSTALLED_APPS,MIDDLEWARE,ROOT_URLCONF,TEMPLATES,WSGI_APPLICATION,DATABASES,AUTH_PASSWORD_VALIDATORS,LANGUAGE_CODE,TIME_ZONE,USE_I18N,USE_TZ,STATIC_URL,DEFAULT_AUTO_FIELD,application,urlpatterns" \
-          --exclude eduvmstorebackend/eduvmstore/db/models.py,eduvmstorebackend/eduvmstore/db/migrations
+          --ignore-names "INSTALLED_APPS,MIDDLEWARE,ROOT_URLCONF,TEMPLATES,WSGI_APPLICATION,DATABASES,AUTH_PASSWORD_VALIDATORS,LANGUAGE_CODE,TIME_ZONE,USE_I18N,USE_TZ,STATIC_URL,DEFAULT_AUTO_FIELD,application,urlpatterns" \
+          --exclude eduvmstorebackend/eduvmstore/db/models.py,eduvmstorebackend/eduvmstore/migrations/,eduvmstorebackend/eduvmstore/tests/
       
