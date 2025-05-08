@@ -5,6 +5,7 @@ from django.test import TestCase
 from eduvmstore.config.access_levels import DEFAULT_ROLES
 from eduvmstore.db.models import AppTemplates, Users, Roles
 
+
 class AppTemplatesModelTests(TestCase):
 
     def create_user_and_role(self):
@@ -25,13 +26,10 @@ class AppTemplatesModelTests(TestCase):
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
         )
         self.assertEqual(app_template.name, "Test Template")
         self.assertFalse(app_template.deleted)
-        self.assertEqual(app_template.per_user_ram_gb, 0.5)
+        self.assertEqual(app_template.fixed_ram_gb, 1.0)
 
     def test_does_not_create_app_template_with_duplicate_name(self):
         user = self.create_user_and_role()
@@ -45,9 +43,6 @@ class AppTemplatesModelTests(TestCase):
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
         )
         with self.assertRaises(Exception):
             AppTemplates.objects.create(
@@ -60,9 +55,6 @@ class AppTemplatesModelTests(TestCase):
                 fixed_ram_gb=1.0,
                 fixed_disk_gb=10.0,
                 fixed_cores=1.0,
-                per_user_ram_gb=0.5,
-                per_user_disk_gb=5.0,
-                per_user_cores=0.5
             )
 
     def test_updates_app_template_successfully(self):
@@ -77,9 +69,6 @@ class AppTemplatesModelTests(TestCase):
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
         )
         app_template.name = "Updated Template"
         app_template.save()
@@ -97,9 +86,6 @@ class AppTemplatesModelTests(TestCase):
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
         )
         app_template.deleted = True
         app_template.deleted_at = now()

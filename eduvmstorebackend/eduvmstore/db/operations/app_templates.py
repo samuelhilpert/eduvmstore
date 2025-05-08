@@ -1,15 +1,11 @@
-import re
-
 from django.db import transaction
 from django.utils import timezone
 from enum import Enum
 from django.core.exceptions import ObjectDoesNotExist
 from eduvmstore.db.models import AppTemplates, AppTemplateAccountAttributes, \
     AppTemplateInstantiationAttributes, AppTemplateSecurityGroups
+from eduvmstore.utils.string_utils import has_version_suffix, extract_version_suffix, create_version_pattern
 
-# Pattern to match version suffixes in AppTemplate names.
-# This pattern is forbidden as it is automatically used for approved AppTemplates
-VERSION_SUFFIX_PATTERN = r'-V\d+$'
 
 class CollisionReason(Enum):
     NO_COLLISION = "No collision for name '{name}' found"
@@ -19,6 +15,7 @@ class CollisionReason(Enum):
 
     def format(self, **kwargs):
         return self.value.format(**kwargs)
+
 
 def check_name_collision(name: str) -> tuple[bool, CollisionReason, dict]:
     """
@@ -34,40 +31,18 @@ def check_name_collision(name: str) -> tuple[bool, CollisionReason, dict]:
     if AppTemplates.objects.filter(name=name, deleted=False).exists():
         return True, CollisionReason.DIRECT_MATCH, {"name": name}
 
-    # Check if name has a version suffix
+    # Check if the name has a version suffix
     if has_version_suffix(name):
         suffix = extract_version_suffix(name)
         return True, CollisionReason.VERSION_SUFFIX_RESERVED, {"suffix": suffix}
 
-    # Check if any versioned template exists with this name as base
-    versioned_name_pattern = f"^{re.escape(name)}{VERSION_SUFFIX_PATTERN}"
+    # Check if any versioned template exists with this name as a base
+    versioned_name_pattern = create_version_pattern(name)
     if AppTemplates.objects.filter(name__regex=versioned_name_pattern, deleted=False).exists():
         return True, CollisionReason.VERSIONED_TEMPLATE_EXISTS, {"name": name}
 
     return False, CollisionReason.NO_COLLISION, {"name": name}
 
-def has_version_suffix(name: str) -> bool:
-    """
-    Check if the given AppTemplate name has a version suffix.
-    Examples are '-V1', '-V2', etc.
-
-    :param str name: The name of the AppTemplate to check
-    :return: True if a version suffix is found, False otherwise
-    :rtype: bool
-    """
-    return bool(re.search(VERSION_SUFFIX_PATTERN, name))
-
-
-def extract_version_suffix(name: str) -> str:
-    """
-    Extract the version suffix from an AppTemplate name if present.
-
-    :param str name: The name to check
-    :return: The extracted version suffix or empty string if none found
-    :rtype: str
-    """
-    match = re.search(VERSION_SUFFIX_PATTERN, name)
-    return match.group(0) if match else ""
 
 @transaction.atomic
 def approve_app_template(id: str) -> AppTemplates:
@@ -121,6 +96,7 @@ def approve_app_template(id: str) -> AppTemplates:
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist(f"AppTemplate {id} not found.")
 
+
 @transaction.atomic
 def reject_app_template(id: str) -> AppTemplates:
     """
@@ -139,6 +115,7 @@ def reject_app_template(id: str) -> AppTemplates:
         return app_template
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist(f"AppTemplate {id} not found.")
+
 
 # Currently unused, potential enhancement for the future
 @transaction.atomic

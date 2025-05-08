@@ -12,13 +12,15 @@ import uuid
 
 logger = logging.getLogger('eduvmstore_logger')
 
+
 class AppTemplateViewSetTests(APITestCase):
 
     def create_user_and_role(self):
         admin_role = Roles.objects.create(name=DEFAULT_ROLES.get("EduVMStoreAdmin").get("name"),
-                                    access_level=DEFAULT_ROLES.get("EduVMStoreAdmin").get("access_level"))
+                                          access_level=DEFAULT_ROLES.get("EduVMStoreAdmin").get(
+                                              "access_level"))
         user_role = Roles.objects.create(name=DEFAULT_ROLES.get("EduVMStoreUser").get("name"),
-                                    access_level=DEFAULT_ROLES.get("EduVMStoreUser").get("access_level"))
+                                         access_level=DEFAULT_ROLES.get("EduVMStoreUser").get("access_level"))
         admin_user = Users.objects.create(role_id=admin_role)
         normal_user = Users.objects.create(role_id=user_role)
         self.admin_user = admin_user
@@ -40,9 +42,6 @@ class AppTemplateViewSetTests(APITestCase):
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
         )
         AppTemplateInstantiationAttributes.objects.create(
             app_template_id=app_template,
@@ -106,10 +105,7 @@ class AppTemplateViewSetTests(APITestCase):
             "fixed_ram_gb": 1.0,
             "fixed_disk_gb": 10.0,
             "fixed_cores": 1.0,
-            "per_user_ram_gb": 0.5,
-            "per_user_disk_gb": 5.0,
-            "per_user_cores": 0.5,
-            "approved": True # Try to create app_template as public illegaly (should end in False)
+            "approved": True  # Try to create app_template as public illegally (should end in False)
         }
         response = self.client.post(url, data, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 201)
@@ -122,7 +118,7 @@ class AppTemplateViewSetTests(APITestCase):
         self.assertEqual(response.data['security_groups'][0]['name'], "default")
         self.assertEqual(response.data['security_groups'][1]['name'], "public")
         app_template_id = response.data['id']
-        #Check that favorite item for self.admin_user and the app_template is created
+        # Check that favorite item for self.admin_user and the app_template is created
         self.assertIsNotNone(
             Favorites.objects.filter(app_template_id=app_template_id, user_id=self.admin_user))
 
@@ -170,9 +166,6 @@ class AppTemplateViewSetTests(APITestCase):
             "fixed_ram_gb": 2.0,
             "fixed_disk_gb": 20.0,
             "fixed_cores": 2.0,
-            "per_user_ram_gb": 1.0,
-            "per_user_disk_gb": 10.0,
-            "per_user_cores": 1.0
         }
         response = self.client.put(url, data, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 200)
@@ -210,9 +203,6 @@ class AppTemplateViewSetTests(APITestCase):
             "fixed_ram_gb": 2.0,
             "fixed_disk_gb": 20.0,
             "fixed_cores": 2.0,
-            "per_user_ram_gb": 1.0,
-            "per_user_disk_gb": 10.0,
-            "per_user_cores": 1.0
         }
 
         response = self.client.put(url, data, format='json', **self.get_auth_headers())
@@ -253,9 +243,6 @@ class AppTemplateViewSetTests(APITestCase):
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
         )
 
         response = self.client.get(url, format='json', **self.get_auth_headers())
@@ -283,9 +270,6 @@ class AppTemplateViewSetTests(APITestCase):
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
         )
 
         response = self.client.get(url, format='json',
@@ -378,25 +362,26 @@ class AppTemplateViewSetTests(APITestCase):
         self.assertFalse(AppTemplates.objects.get(id=self.app_template.id).approved)
         self.assertFalse(AppTemplates.objects.get(id=self.app_template.id).public)
 
-    # As soft delete is currently not used the assert statements are commented out
+    # As soft delete is currently not used, the assert statements are commented out
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_soft_deletes_app_template_via_api_successfully(self, mock_validate_token):
         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
-        #instantiation_attribute = AppTemplateInstantiationAttributes.objects.create(
+        # instantiation_attribute = AppTemplateInstantiationAttributes.objects.create(
         #    app_template_id=self.app_template,
         #    name="JavaVersion"
-        #)
+        # )
 
         url = reverse('app-template-detail', args=[self.app_template.id])
         response = self.client.delete(url, format='json', **self.get_auth_headers())
         self.assertEqual(response.status_code, 204)
-        #self.app_template.refresh_from_db()
+        # self.app_template.refresh_from_db()
 
-        #self.assertTrue(self.app_template.deleted)
-        #self.assertIsNotNone(self.app_template.deleted_at)
-        #instantiation_attribute.refresh_from_db()
-        #self.assertIsNotNone(instantiation_attribute.name)
+        # self.assertTrue(self.app_template.deleted)
+        # self.assertIsNotNone(self.app_template.deleted_at)
+        # instantiation_attribute.refresh_from_db()
+        # self.assertIsNotNone(instantiation_attribute.name)
+
 
 class FavoritesViewSetTests(APITestCase):
 
@@ -421,9 +406,6 @@ class FavoritesViewSetTests(APITestCase):
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5
         )
         return app_template
 
@@ -438,12 +420,12 @@ class FavoritesViewSetTests(APITestCase):
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
     def test_adds_app_template_to_favorites(self, mock_validate_token):
-         mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
-         url = reverse('favorite-list')
-         data = {"app_template_id": self.app_template.id}
-         response = self.client.post(url, data, format='json', **self.get_auth_headers())
-         self.assertEqual(response.status_code, 201)
-         self.assertEqual(1, Favorites.objects.all().count())
+        mock_validate_token.return_value = {'id': str(uuid.uuid4()), 'name': 'Admin'}
+        url = reverse('favorite-list')
+        data = {"app_template_id": self.app_template.id}
+        response = self.client.post(url, data, format='json', **self.get_auth_headers())
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(1, Favorites.objects.all().count())
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')

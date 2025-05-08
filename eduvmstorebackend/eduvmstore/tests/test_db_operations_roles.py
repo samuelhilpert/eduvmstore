@@ -4,6 +4,7 @@ from django.test import TestCase
 from eduvmstore.db.models import Roles
 from eduvmstore.db.operations.roles import create_role, update_role, get_role_by_id, get_role_by_name
 
+
 class RoleOperationsTests(TestCase):
 
     def setUp(self):

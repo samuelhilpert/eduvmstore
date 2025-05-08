@@ -5,6 +5,7 @@ from eduvmstore.db.models import Roles, Users
 from eduvmstore.db.operations.users import create_user, get_user_by_id, soft_delete_user
 import uuid
 
+
 class UserOperationsTests(TestCase):
 
     def create_role(self):

@@ -78,6 +78,7 @@ DATABASES = {
 }
 
 # Password validation
+# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -124,6 +125,7 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
+        # Root logger configuration
         '': {
             'handlers': ['console'],
             'level': 'WARNING',
@@ -133,12 +135,16 @@ LOGGING = {
 logging.config.dictConfig(LOGGING)
 
 # Internationalization
+# https://docs.djangoproject.com/en/5.1/topics/i18n/
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.1/howto/static-files/
+
 STATIC_URL = 'static/'
 
 # Default primary key field type

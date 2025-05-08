@@ -5,9 +5,12 @@ from typing import Dict, List
 from rest_framework import serializers
 from eduvmstore.db.models import (AppTemplates, Users, Roles, AppTemplateInstantiationAttributes,
                                   AppTemplateAccountAttributes, Favorites, AppTemplateSecurityGroups)
-from eduvmstore.db.operations.app_templates import has_version_suffix, extract_version_suffix
+from eduvmstore.db.operations.app_templates import check_name_collision
+from eduvmstore.utils.string_utils import has_version_suffix, extract_version_suffix
 
 logger = logging.getLogger("eduvmstore_logger")
+
+
 class AppTemplateInstantiationAttributesSerializer(serializers.ModelSerializer):
     """Serializer for the AppInstantiationAttributes model.
 
@@ -15,10 +18,12 @@ class AppTemplateInstantiationAttributesSerializer(serializers.ModelSerializer):
     instances to and from JSON format, including validation and creation of new
     instances.
     """
+
     class Meta:
         model = AppTemplateInstantiationAttributes
         fields = ['id', 'name']
         read_only_fields = ['id']
+
 
 class AppTemplateAccountAttributesSerializer(serializers.ModelSerializer):
     """Serializer for the AppAccountAttributes model.
@@ -27,10 +32,12 @@ class AppTemplateAccountAttributesSerializer(serializers.ModelSerializer):
     instances to and from JSON format, including validation and creation of new
     instances.
     """
+
     class Meta:
         model = AppTemplateAccountAttributes
         fields = ['id', 'name']
         read_only_fields = ['id']
+
 
 class AppTemplateSecurityGroupsSerializer(serializers.ModelSerializer):
     """Serializer for the AppTemplateSecurityGroups model.
@@ -39,10 +46,12 @@ class AppTemplateSecurityGroupsSerializer(serializers.ModelSerializer):
     instances to and from JSON format, including validation and creation of new
     instances.
     """
+
     class Meta:
         model = AppTemplateSecurityGroups
         fields = ['id', 'name']
         read_only_fields = ['id']
+
 
 class AppTemplateSerializer(serializers.ModelSerializer):
     """Serializer for the AppTemplates model.
@@ -80,9 +89,6 @@ class AppTemplateSerializer(serializers.ModelSerializer):
             'fixed_ram_gb',
             'fixed_disk_gb',
             'fixed_cores',
-            'per_user_ram_gb',
-            'per_user_disk_gb',
-            'per_user_cores'
         ]
         read_only_fields = [
             'id',
@@ -103,11 +109,9 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         :return: The validated name
         :raises: ValidationError if name has version suffix
         """
-        if has_version_suffix(name):
-            suffix = extract_version_suffix(name)
-            raise serializers.ValidationError(
-                f"App template name cannot end with the version suffix '{suffix}'. "
-            )
+        (collision, reason, context) = check_name_collision(name)
+        if collision:
+            raise serializers.ValidationError(reason.format(**context))
         return name
 
     def create_instantiation_attributes(self,
@@ -200,20 +204,24 @@ class AppTemplateSerializer(serializers.ModelSerializer):
                 code='forbidden'
             )
 
-        instantiation_attributes_data = validated_data.pop('instantiation_attributes')
-        account_attributes_data = validated_data.pop('account_attributes')
-        security_groups_data = validated_data.pop('security_groups')
+        instantiation_attributes_data = validated_data.pop('instantiation_attributes', None)
+        account_attributes_data = validated_data.pop('account_attributes', None)
+        security_groups_data = validated_data.pop('security_groups', None)
 
-
-        if instantiation_attributes_data:
+        if instantiation_attributes_data is not None:
             AppTemplateInstantiationAttributes.objects.filter(app_template_id=instance).delete()
-            self.create_instantiation_attributes(instance, instantiation_attributes_data)
-        if account_attributes_data:
+            if instantiation_attributes_data:
+                self.create_instantiation_attributes(instance, instantiation_attributes_data)
+
+        if account_attributes_data is not None:
             AppTemplateAccountAttributes.objects.filter(app_template_id=instance).delete()
-            self.create_account_attributes(instance, account_attributes_data)
-        if security_groups_data:
+            if account_attributes_data:
+                self.create_account_attributes(instance, account_attributes_data)
+
+        if security_groups_data is not None:
             AppTemplateSecurityGroups.objects.filter(app_template_id=instance).delete()
-            self.create_security_groups(instance, security_groups_data)
+            if security_groups_data:
+                self.create_security_groups(instance, security_groups_data)
 
         model_fields = {field.name: field for field in instance._meta.fields}
         for field_name, field in model_fields.items():
@@ -229,12 +237,14 @@ class AppTemplateSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
 class FavoritesSerializer(serializers.ModelSerializer):
     """Serializer for the Favorite model.
 
     This serializer handles the conversion of Favorite model instances
     to and from JSON format, including validation and creation of new instances.
     """
+
     class Meta:
         model = Favorites
         fields = ['id', 'user_id', 'app_template_id']
@@ -265,6 +275,7 @@ class RoleSerializer(serializers.ModelSerializer):
     This serializer handles the conversion of Roles model instances
     to and from JSON format, including validation and creation of new instances.
     """
+
     class Meta:
         model = Roles
         fields = [
@@ -287,6 +298,7 @@ class RoleSerializer(serializers.ModelSerializer):
         """
         return Roles.objects.create(**validated_data)
 
+
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for the Users model.
 
@@ -300,22 +312,22 @@ class UserSerializer(serializers.ModelSerializer):
                                                  required=False)
 
     class Meta:
-            model = Users
-            fields = [
-                'id',
-                'created_at',
-                'updated_at',
-                'role',
-                'role_id',
-            ]
-            read_only_fields = [
-                'id',
-                'created_at',
-                'updated_at',
-                'deleted_at',
-                'deleted',
-                'is_active',
-            ]
+        model = Users
+        fields = [
+            'id',
+            'created_at',
+            'updated_at',
+            'role',
+            'role_id',
+        ]
+        read_only_fields = [
+            'id',
+            'created_at',
+            'updated_at',
+            'deleted_at',
+            'deleted',
+            'is_active',
+        ]
 
     def create(self, validated_data: Dict) -> Users:
         """

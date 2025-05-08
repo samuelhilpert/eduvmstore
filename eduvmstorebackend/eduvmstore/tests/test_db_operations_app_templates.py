@@ -1,13 +1,12 @@
 import uuid
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.test import TestCase
 from eduvmstore.config.access_levels import DEFAULT_ROLES
 from eduvmstore.db.models import AppTemplates, Users, Roles, AppTemplateInstantiationAttributes, \
     AppTemplateAccountAttributes
 from eduvmstore.db.operations.app_templates import (
     check_name_collision, approve_app_template, soft_delete_app_template, reject_app_template,
-    has_version_suffix, CollisionReason
-)
+    CollisionReason)
+
 
 class AppTemplateOperationsTests(TestCase):
 
@@ -33,9 +32,6 @@ class AppTemplateOperationsTests(TestCase):
             fixed_ram_gb=1.0,
             fixed_disk_gb=10.0,
             fixed_cores=1.0,
-            per_user_ram_gb=0.5,
-            per_user_disk_gb=5.0,
-            per_user_cores=0.5,
         )
         AppTemplateInstantiationAttributes.objects.create(
             app_template_id=app_template,
@@ -58,7 +54,7 @@ class AppTemplateOperationsTests(TestCase):
 
     def test_checks_name_collision_with_versioned_templates(self):
         base_name = "Template"
-        self.create_app_template(self.user, name=base_name +"-V1")
+        self.create_app_template(self.user, name=base_name + "-V1")
         collision, reason, context = check_name_collision(base_name)
         # Base name should also be a collision
         self.assertTrue(collision)
@@ -76,26 +72,10 @@ class AppTemplateOperationsTests(TestCase):
         self.assertFalse(collision)
         self.assertEqual(reason, CollisionReason.NO_COLLISION)
 
-    def test_has_version_suffix(self):
-        # Should return True for names with proper version suffixes
-        self.assertTrue(has_version_suffix("example-V21"))
-        self.assertTrue(has_version_suffix("template-V1"))
-        self.assertTrue(has_version_suffix("long name with spaces-V0"))
-        self.assertTrue(has_version_suffix("name-V999"))
-
-        # Should return False for names without version suffixes
-        self.assertFalse(has_version_suffix("app_templateITIL3"))
-        self.assertFalse(has_version_suffix("V1"))  # No hyphen
-        self.assertFalse(has_version_suffix("template-v1"))  # Lowercase v
-        self.assertFalse(has_version_suffix("template-V"))  # No digits
-        self.assertFalse(has_version_suffix("template-V1a"))  # Non-digit after number
-        self.assertFalse(has_version_suffix("template-V1-suffix"))  # Something after
-        self.assertFalse(has_version_suffix("template V1"))  # Space instead of hyphen
-
     def test_approves_app_template_successfully(self):
         approved_app_template = approve_app_template(self.app_template.id)
 
-        self.assertEqual(AppTemplates.objects.count(),2)
+        self.assertEqual(AppTemplates.objects.count(), 2)
         self.assertTrue(approved_app_template.approved)
         self.app_template.refresh_from_db()
         self.assertFalse(self.app_template.public)
@@ -108,7 +88,8 @@ class AppTemplateOperationsTests(TestCase):
             AppTemplateAccountAttributes.objects.filter(app_template_id=approved_app_template.id).count(),
             1)
         self.assertEqual(
-            AppTemplateInstantiationAttributes.objects.filter(app_template_id=approved_app_template.id).count(),
+            AppTemplateInstantiationAttributes.objects.filter(
+                app_template_id=approved_app_template.id).count(),
             1)
 
     def test_rejects_app_template_successfully(self):

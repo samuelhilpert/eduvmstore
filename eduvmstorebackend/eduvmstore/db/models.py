@@ -18,11 +18,11 @@ class AppTemplates(models.Model):
     # CRUD info
     creator_id = models.ForeignKey('Users', on_delete=models.DO_NOTHING, db_index=True)
     created_at = models.DateTimeField(default=now, editable=False)
-    updated_at = models.DateTimeField(default=now)
-    # soft delete currenly unused, potential enhancement for the future
+    updated_at = models.DateTimeField(auto_now=True)
+    # soft delete currently unused, potential enhancement for the future
     deleted_at = models.DateTimeField(null=True)
     deleted = models.BooleanField(default=False)
-    version = models.IntegerField(default=1) # versioning for approval naming
+    version = models.IntegerField(default=1)  # versioning for approval naming
 
     # visibility
     public = models.BooleanField(default=False)
@@ -35,12 +35,10 @@ class AppTemplates(models.Model):
     fixed_ram_gb = models.FloatField()
     fixed_disk_gb = models.FloatField()
     fixed_cores = models.FloatField()
-    per_user_ram_gb = models.FloatField()
-    per_user_disk_gb = models.FloatField()
-    per_user_cores = models.FloatField()
 
     def __str__(self):
         return self.name
+
 
 class AppTemplateInstantiationAttributes(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -54,6 +52,7 @@ class AppTemplateInstantiationAttributes(models.Model):
     def __str__(self):
         return self.name
 
+
 class AppTemplateAccountAttributes(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     app_template_id = (
@@ -65,6 +64,7 @@ class AppTemplateAccountAttributes(models.Model):
     # account attributes alone
     def __str__(self):
         return self.name
+
 
 class AppTemplateSecurityGroups(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -78,20 +78,22 @@ class AppTemplateSecurityGroups(models.Model):
     def __str__(self):
         return self.name
 
+
 class Users(models.Model):
-    # default needs to be deleted, the moment, we get the user from keystone/token
+    # default needs to be deleted, the moment we get the user from keystone/token
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     role_id = models.ForeignKey('Roles', on_delete=models.DO_NOTHING)
     is_active = models.BooleanField(default=True)
 
     # CRUD info
     created_at = models.DateTimeField(default=now)
-    updated_at = models.DateTimeField(default=now)
+    updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True)
     deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.id)
+
 
 class Roles(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -100,6 +102,7 @@ class Roles(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Favorites(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

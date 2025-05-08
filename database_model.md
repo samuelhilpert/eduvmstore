@@ -15,9 +15,6 @@ AppTemplate:
 - fixed_ram_gb: DECIMAL(5,2)
 - fixed_disk_gb: DECIMAL(5,2)
 - fixed_cores: DECIMAL(3,2)
-- per_user_ram_gb: DECIMAL(5,2)
-- per_user_disk_gb: DECIMAL(5,2)
-- per_user_cores: DECIMAL(3,2)
 
 
 User
