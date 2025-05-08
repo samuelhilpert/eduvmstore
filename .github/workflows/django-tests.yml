@@ -31,12 +31,12 @@ jobs:
 
       - name: Set environment variables
         env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DEBUG: ${{ secrets.DEBUG }}
-          ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
-          CORS_ALLOW_ALL_ORIGINS: ${{ secrets.CORS_ALLOW_ALL_ORIGINS }}
-          OPENSTACK_AUTH_URL: ${{ secrets.OPENSTACK_AUTH_URL }}
-          SQLITE_DB_NAME: ${{ secrets.SQLITE_DB_NAME }}
+          SECRET_KEY: ${{ SECRET_KEY }}
+          DEBUG: ${{ DEBUG }}
+          ALLOWED_HOSTS: ${{ ALLOWED_HOSTS }}
+          CORS_ALLOW_ALL_ORIGINS: ${{ CORS_ALLOW_ALL_ORIGINS }}
+          OPENSTACK_AUTH_URL: ${{ OPENSTACK_AUTH_URL }}
+          SQLITE_DB_NAME: ${{ SQLITE_DB_NAME }}
         run: echo "Environment variables set."
 
       - name: Run migrations
