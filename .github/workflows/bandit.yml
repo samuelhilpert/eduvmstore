@@ -30,6 +30,6 @@ jobs:
           pip install bandit
 
       - name: Run Bandit
-        run: bandit -r . --exclude eduvmstorebackend/eduvmstore/tests/,eduvmstorebackend/eduvmstore/migrations/
+        run: bandit -r . --exclude ./eduvmstorebackend/eduvmstore/tests/,./eduvmstorebackend/eduvmstore/migrations/
 
 
