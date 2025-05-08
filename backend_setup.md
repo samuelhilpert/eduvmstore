@@ -55,7 +55,7 @@ python3 eduvmstorebackend/manage.py test
 ```
 
 ## 2 Alternative: Use Cloud-Init-Script (recommended for production)
-* On `https://stack.dhbw.cloud/` create new instance (Virtual Machine)
+* On `https://stack.dhbw.cloud/` create a new instance (Virtual Machine)
   - At Source choose Image Ubuntu 22.04 
   - Select no new Volume
   - Choose your Flavor of choice (Recommendation: m1_extra_large for production, mb1.medium for development)
