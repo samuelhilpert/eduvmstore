@@ -9,7 +9,7 @@ Beware that the suggestions are in German as the developers are German and those
 3. Noch mehr Beispiele aus der Praxis 
 3. Security Groups automatisch bei der Instanziierung erstellen (besonders für die BeispielappTemplates sinnvoll)
 4. Tooltips auch für die variablen Felder 
-5. Ausprobieren von noch nativeren Openstack Angular Integration 
+5. Ausprobieren von noch nativeren Openstack Angular Integration (siehe auch [search-engine-horizon-experiment](https://github.com/samuelhilpert/eduvmstore-ui/compare/dev...search-engine-horizon-experiment) Branch im Frontend Repo)
 6. Nutzerfeedback und Probleme aus der Produktivschaltung 
 7. Verbindung mit dem DHBW-Rollenmanagement für das automatische Anlegen eines Kurses  (z.B. nur noch auswählen WWI22SEA mit automatische PW-Generierung statt CSV-Datei mit allen Studenten)
 8. Gegebenenfalls für einfacheren Betrieb/Geringere Fehlertoleranz: Verschieben der Backendlogik in das Horizon Plugin (dann sind keine API-Calls mehr notwendig, eine strenge Separierung findet sowieso nicht statt, da das Frontend auch Logik (wie Instanziierung durch die engere Integration mit Openstack durchführt)
