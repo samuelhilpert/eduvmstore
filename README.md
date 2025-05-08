@@ -2,9 +2,12 @@
 
 ## Overview
 
-EduVMStore is a backend service designed to power an AppStore for deploying applications on an OpenStack platform. It allows instructors to easily provide pre-configured applications to students, facilitating a smoother educational experience without requiring deep technical knowledge of OpenStack.
+EduVMStore is a backend service designed to power an AppStore for deploying applications on an OpenStack
+platform. It allows instructors to easily provide pre-configured applications to students, facilitating a
+smoother educational experience without requiring deep technical knowledge of OpenStack.
 
-This project is developed as part of the "Projektkonzeption und -realisierung" module at DHBW Mannheim (August 2024 - May 2025).
+This project is developed as part of the "Projektkonzeption und -realisierung" module at DHBW Mannheim (August
+2024 - May 2025).
 
 Frontend repository: [eduvmstore-ui](https://github.com/samuelhilpert/eduvmstore-ui)
 
@@ -25,10 +28,13 @@ Frontend repository: [eduvmstore-ui](https://github.com/samuelhilpert/eduvmstore
 * Python 3.12
 * `pip` package manager
 * OpenStack environment (for deployment)
+* Required Python packages and Django version are listed in
+  the [requirements.txt](./eduvmstorebackend/requirements.txt) file.
 
 ### Environment Configuration
 
-To manage development and testing configurations, create a `.env` file in the `eduvmstorebackend/config` directory. Populate it with the following variables:
+To manage development and testing configurations, create a `.env` file in the `eduvmstorebackend/config`
+directory. Populate it with the following variables:
 
 ```dotenv
 # env
@@ -40,7 +46,8 @@ OPENSTACK_AUTH_URL=<your-openstack-auth-url>
 SQLITE_DB_NAME=<your-sqlite-db-name>
 ```
 
-For production deployments, set these variables using system environment tools like `export` or service managers such as systemd or Docker.
+For production deployments, set these variables using system environment tools like `export` or service
+managers such as systemd or Docker.
 
 ---
 
@@ -96,11 +103,11 @@ python3 eduvmstorebackend/manage.py test
 
 2. Instance Configuration:
 
-   * Image: Ubuntu 22.04
-   * Flavor: Select according to your resource needs
-   * Network: Use `provider_912`
-   * Security Group: Allow TCP on ports 8000 and 22
-   * SSH Keypair: Use your public SSH key
+    * Image: Ubuntu 22.04
+    * Flavor: Select according to your resource needs
+    * Network: Use `provider_912`
+    * Security Group: Allow TCP on ports 8000 and 22
+    * SSH Keypair: Use your public SSH key
 
 3. Upload `backendscript.yaml` in the configuration section.
 
