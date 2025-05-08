@@ -10,6 +10,10 @@ patch {
   auth: none
 }
 
+headers {
+  X-Auth-Token: {{token_id}}
+}
+
 body:json {
   {
     "role_id" : "{{new_role_id}}"
