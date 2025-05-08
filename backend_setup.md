@@ -6,18 +6,7 @@ production deployment.
 
 ---
 
-## Prerequisites
-
-Ensure the following tools and components are available on your system:
-
-* Python 3.12
-* `pip` package manager
-* Virtualization environment (e.g., local VM or OpenStack)
-* Required packages listed in [`requirements.txt`](eduvmstorebackend/requirements.txt)
-
----
-
-### Environment Configuration
+## Environment Configuration
 
 To manage environment-specific settings (e.g., secrets, debug mode), create a `.env` file in the following
 location for **development**:
@@ -30,9 +19,9 @@ Recommended content (replace placeholders with actual values and configure as ne
 
 ```dotenv
 SECRET_KEY=<your-secret-key>
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-CORS_ALLOW_ALL_ORIGINS=True
+DEBUG=<True-or-False>
+ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0,<your-backend-host-ip>
+CORS_ALLOW_ALL_ORIGINS=<True-or-False>
 OPENSTACK_AUTH_URL=<your-openstack-auth-url>
 SQLITE_DB_NAME=db.sqlite3
 ```
@@ -46,12 +35,22 @@ These variables are loaded using `python-decouple`.
 
 ## 1. Manual Setup (Recommended for Development)
 
+### Prerequisites
+
+Ensure the following tools and components are available on your system:
+
+* Python 3.12
+* `pip` package manager
+
 ### 1.1 Clone the Repository
 
 Navigate to the folder where you want to store the project and clone the repository:
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/samuelhilpert/eduvmstore.git
+```
+
+```bash
 cd eduvmstore
 ```
 
@@ -59,7 +58,13 @@ cd eduvmstore
 
 ```bash
 python3 -m venv venv
+```
+
+```bash
 source venv/bin/activate
+```
+
+```bash
 pip install -r eduvmstorebackend/requirements.txt
 ```
 
@@ -67,6 +72,9 @@ pip install -r eduvmstorebackend/requirements.txt
 
 ```bash
 python3 eduvmstorebackend/manage.py makemigrations
+```
+
+```bash
 python3 eduvmstorebackend/manage.py migrate
 ```
 
@@ -90,9 +98,7 @@ Access the backend via:
 
 All API endpoints are exposed under:
 
-```
-http://<host>:8000/api/
-```
+`http://<host>:8000/api/`
 
 Example endpoints:
 
@@ -102,7 +108,7 @@ Example endpoints:
 ### 1.6 API Testing with Bruno
 
 1. Download: [Bruno Desktop](https://www.usebruno.com/)
-2. Open the folder: [`APICollectionEduVMStore`](/APICollectionEduVMStore)
+2. Open the folder: [`APICollectionEduVMStore`](/APICollectionEduVMStore) with Bruno
 3. Configure environments (IP, BASE\_URL, OpenStack credentials)
 4. Send the authentication request (sets token for other endpoints)
 5. Use other endpoints interactively
@@ -133,7 +139,7 @@ This approach automates backend provisioning on OpenStack.
     * **Volume**: No volume
     * **Flavor**: `m1_extra_large` (prod) or `mb1.medium` (dev)
     * **Network**: `provider_912`
-    * **Security Group**: Allow TCP on ports `22`, `8000`
+    * **Security Group**: Allow inbound (ingress) on ports `22` and `8000`
     * **SSH Key**: Choose a keypair
     * **Init Script**: Upload [`backendscript.yaml`](/backendscript.yaml)
 
@@ -164,7 +170,16 @@ app as a system service.
 
 ```bash
 sudo systemctl enable eduvmstorebackend
+```
+
+```bash
 sudo systemctl start eduvmstorebackend
+```
+
+```bash
 sudo systemctl stop eduvmstorebackend
+```
+
+```bash
 sudo systemctl restart eduvmstorebackend
 ```
