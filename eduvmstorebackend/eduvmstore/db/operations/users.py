@@ -101,6 +101,7 @@ def delete_user(user_to_delete: Users, current_user: Users = None) -> None:
         private_app_templates.delete()
 
         # For public AppTemplates, transfer ownership to the current admin performing the deletion
+        # Updated at needs to be manually set as this is a direct sql update
         public_app_templates.update(
             creator_id=current_user,
             updated_at=timezone.now()

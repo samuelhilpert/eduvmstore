@@ -290,13 +290,12 @@ class UserViewSet(viewsets.ModelViewSet):
         
         user_to_delete = self.get_object()
         current_user = request.myuser
-
         try:
             delete_user(user_to_delete, current_user)
             return Response(status=status.HTTP_204_NO_CONTENT)
         except ValidationError as e:
             return Response(
-                {'error': str(e)},
+                {'error': e.message},
                 status=status.HTTP_409_CONFLICT
             )
 
