@@ -643,9 +643,7 @@ class UserViewSetTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         # Check that admin is deleted
-        self.assertFalse(Users.objects.filter(id=self.admin_user.id, deleted=False).exists())
-        self.assertTrue(Users.objects.get(id=self.admin_user.id).deleted)
+        self.assertFalse(Users.objects.filter(id=self.admin_user.id).exists())
 
         # Check that private templates are deleted
-        self.assertFalse(AppTemplates.objects.filter(id=private_template.id, deleted=False).exists())
-        self.assertTrue(AppTemplates.objects.get(id=private_template.id).deleted)
+        self.assertFalse(AppTemplates.objects.filter(id=private_template.id).exists())
