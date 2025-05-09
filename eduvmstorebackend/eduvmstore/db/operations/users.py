@@ -78,8 +78,8 @@ def delete_user(user_to_delete: Users, current_user: Users = None) -> None:
     - Public AppTemplates: transferred to the deleting admin user as updated creator
     - If the user is deleting themselves and has public AppTemplates, raise a ValidationError
 
-    :param str user_to_delete_id: The UUID of the user to delete
-    :param str current_user_id: The UUID of the admin user performing the deletion
+    :param str user_to_delete: The UUID of the user to delete
+    :param str current_user: The UUID of the admin user performing the deletion
     :return: None
     :raises ObjectDoesNotExist: If the user is not found
     :raises ValidationError: If trying to delete self with public AppTemplates
