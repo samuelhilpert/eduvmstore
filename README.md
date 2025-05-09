@@ -17,7 +17,7 @@ implementation the frontend, being directly integrated in horizon (Openstack), h
 - **Support for Various Applications**: The AppStore can provide pre-configured environments
   for different applications.
 
-This project is being implemented as part of the "Project" module at DHBW Mannheim
+This project is being implemented as part of the "Projektkonzeption und -realisierung" module at DHBW Mannheim
 from August 2024 to May 2025.
 
 ### Installation and Configuration
