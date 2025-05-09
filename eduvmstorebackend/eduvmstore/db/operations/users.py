@@ -97,7 +97,7 @@ def delete_user(user_to_delete: Users, current_user: Users = None) -> None:
             raise ValidationError("Cannot delete your own user while public AppTemplates are assigned to you."
                                   "Delete/Update them first.")
 
-        # Process AppTemplates (releated data is deleted automatically via model cascade)
+        # Process AppTemplates (related data is deleted automatically via model cascade)
         private_app_templates.delete()
 
         # For public AppTemplates, transfer ownership to the current admin performing the deletion
