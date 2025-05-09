@@ -24,3 +24,4 @@ Beware that the suggestions are in German as the developers are German and those
 17. Ablaufdatum für Instanzen —>Danach automatisch gelöscht 
 18. Inkludieren von RessourcenManagement —>Möglichkeit, Flavours automatisch auf Basis der Konfigurationen in der Instanziierung erstellen lassen
 19. Implementation unabhängiger vom Betriebssystem der VM machen, um z.B. Windows VMs zu unterstützen
+20. Mehr Reporting und Analysemöglichkeiten zum besseren Verständnis der Nutzung des EduVMStores (z.B. welche AppTemplates sind am beliebtesten, zu welchen Zeiten werden AppTemplates erstellt ...)
