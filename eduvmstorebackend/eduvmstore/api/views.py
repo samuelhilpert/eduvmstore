@@ -1,4 +1,6 @@
 import logging
+
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db.models import Q, QuerySet
 from typing_extensions import override
 from rest_framework.request import Request
@@ -14,6 +16,7 @@ from rest_framework.response import Response
 from eduvmstore.db.operations.app_templates import (approve_app_template,
                                                     check_name_collision,
                                                     reject_app_template)
+from eduvmstore.db.operations.users import delete_user
 from eduvmstore.utils.access_control import has_access_level
 
 logger = logging.getLogger('eduvmstore_logger')
@@ -272,6 +275,29 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    @override
+    def destroy(self, request: Request, *args, **kwargs) -> Response:
+        """
+        Delete a user and handle their AppTemplates:
+        - Private AppTemplates: deleted with related objects
+        - Public AppTemplates: transferred to the deleting admin user as updated creator
+        - If the user is deleting themselves and has public AppTemplates, return an error
+
+        :param Request request: The HTTP request object
+        :return: HTTP response with the deletion status
+        :rtype: Response
+        """
+        
+        user_to_delete = self.get_object()
+        current_user = request.myuser
+        try:
+            delete_user(user_to_delete, current_user)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except ValidationError as e:
+            return Response(
+                {'error': e.message},
+                status=status.HTTP_409_CONFLICT
+            )
 
 class RoleViewSet(viewsets.ModelViewSet):
     """

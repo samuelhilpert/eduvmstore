@@ -22,7 +22,7 @@ SECRET_KEY=<your-secret-key>
 DEBUG=<True-or-False>
 ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0,<your-backend-host-ip>
 CORS_ALLOW_ALL_ORIGINS=<True-or-False>
-OPENSTACK_AUTH_URL=<your-openstack-auth-url>
+OPENSTACK_AUTH_URL=<your-openstack-auth-url (e.g., 1.1.1.1/identity/)>
 SQLITE_DB_NAME=db.sqlite3
 ```
 

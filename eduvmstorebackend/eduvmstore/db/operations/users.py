@@ -2,8 +2,9 @@ from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import transaction
 from eduvmstore.config.access_levels import DEFAULT_ROLES
-from eduvmstore.db.models import Users
+from eduvmstore.db.models import Users, AppTemplates
 from eduvmstore.db.operations.roles import get_role_by_name, create_role
+
 from typing import Dict
 
 
@@ -69,6 +70,45 @@ def get_user_by_id(id: str) -> Users:
     except ObjectDoesNotExist:
         raise ObjectDoesNotExist(f"User with id {id} not found.")
 
+@transaction.atomic
+def delete_user(user_to_delete: Users, current_user: Users = None) -> None:
+    """
+    Delete a user and handle their AppTemplates:
+    - Private AppTemplates: deleted (related objects are deleted automatically via model cascade)
+    - Public AppTemplates: transferred to the deleting admin user as updated creator
+    - If the user is deleting themselves and has public AppTemplates, raise a ValidationError
+
+    :param str user_to_delete: The UUID of the user to delete
+    :param str current_user: The UUID of the admin user performing the deletion
+    :return: None
+    :raises ObjectDoesNotExist: If the user is not found
+    :raises ValidationError: If trying to delete self with public AppTemplates
+    """
+    try:
+        # Check if user is deleting themselves
+        is_self_deletion = (user_to_delete.id == current_user.id)
+
+        # Get user's AppTemplates
+        public_app_templates = AppTemplates.objects.filter(creator_id=user_to_delete, public=True)
+        private_app_templates = AppTemplates.objects.filter(creator_id=user_to_delete, public=False)
+
+        # Self-deletion with public AppTemplate not allowed
+        if is_self_deletion and public_app_templates.exists():
+            raise ValidationError("Cannot delete your own user while public AppTemplates are assigned to you."
+                                  "Delete/Update them first.")
+
+        # Process AppTemplates (related data is deleted automatically via model cascade)
+        private_app_templates.delete()
+
+        # For public AppTemplates, transfer ownership to the current admin performing the deletion
+        # Updated at needs to be manually set as this is a direct sql update
+        public_app_templates.update(
+            creator_id=current_user,
+            updated_at=timezone.now()
+        )
+        user_to_delete.delete()
+    except ValidationError as e:
+        raise e
 
 # Currently unused, potential enhancement for the future
 def soft_delete_user(id: str) -> None:

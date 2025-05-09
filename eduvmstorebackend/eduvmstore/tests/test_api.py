@@ -451,3 +451,199 @@ class FavoritesViewSetTests(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['name'], self.app_template.name)
+
+
+class UserViewSetTests(APITestCase):
+
+    def create_user_and_role(self):
+        admin_role = Roles.objects.create(
+            name=DEFAULT_ROLES.get("EduVMStoreAdmin").get("name"),
+            access_level=DEFAULT_ROLES.get("EduVMStoreAdmin").get("access_level"),
+        )
+        user_role = Roles.objects.create(
+            name=DEFAULT_ROLES.get("EduVMStoreUser").get("name"),
+            access_level=DEFAULT_ROLES.get("EduVMStoreUser").get("access_level"),
+        )
+        admin_user = Users.objects.create(role_id=admin_role)
+        normal_user = Users.objects.create(role_id=user_role)
+        self.admin_user = admin_user
+        self.normal_user = normal_user
+
+    def get_auth_headers(self, token="valid_token"):
+        return {'HTTP_X_AUTH_TOKEN': token}
+
+    def setUp(self):
+        self.create_user_and_role()
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_normal_user_cannot_delete_user(self, mock_validate_token):
+        # Create a normal user
+        mock_validate_token.return_value = {'id': self.normal_user.id, 'name': 'User'}
+
+        # Create a user to delete
+        target_user = Users.objects.create(role_id=self.normal_user.role_id)
+
+        url = reverse('user-detail', args=[target_user.id])
+        response = self.client.delete(url, format='json', **self.get_auth_headers())
+
+        # Normal user should not be able to delete other users
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        # Verify user still exists
+        self.assertTrue(Users.objects.filter(id=target_user.id).exists())
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_admin_deletes_user_with_private_templates(self, mock_validate_token):
+        # Admin user
+        mock_validate_token.return_value = {'id': self.admin_user.id, 'name': 'Admin'}
+
+        # Create user to delete
+        target_user = Users.objects.create(role_id=self.normal_user.role_id)
+
+        # Create private template owned by target user
+        private_template = AppTemplates.objects.create(
+            image_id=uuid.uuid4(),
+            name="Target User Private Template",
+            description="A private template from target user",
+            short_description="Private",
+            creator_id=target_user,
+            public=False,
+            approved=False,
+            fixed_ram_gb=1.0,
+            fixed_disk_gb=10.0,
+            fixed_cores=1.0,
+        )
+
+        # Create instantiation attribute for the private template
+        AppTemplateInstantiationAttributes.objects.create(
+            app_template_id=private_template,
+            name="JavaVersion"
+        )
+
+        # Create favorite entry for the private template
+        Favorites.objects.create(user_id=self.normal_user, app_template_id=private_template)
+
+        # Delete the user
+        url = reverse('user-detail', args=[target_user.id])
+        response = self.client.delete(url, format='json', **self.get_auth_headers())
+
+        # Should succeed
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        # Check that user is deleted
+        self.assertFalse(Users.objects.filter(id=target_user.id).exists())
+
+        # Check that private templates are deleted
+        self.assertFalse(AppTemplates.objects.filter(id=private_template.id).exists())
+        self.assertFalse(
+            AppTemplateInstantiationAttributes.objects.filter(app_template_id=private_template.id).exists())
+
+        # Check that favorites are deleted as well
+        self.assertFalse(Favorites.objects.filter(app_template_id=private_template.id).exists())
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_admin_deletes_user_with_public_templates(self, mock_validate_token):
+        # Admin user
+        mock_validate_token.return_value = {'id': self.admin_user.id, 'name': 'Admin'}
+
+        # Create user to delete
+        target_user = Users.objects.create(role_id=self.normal_user.role_id)
+
+        # Create public template owned by target user
+        public_app_template = AppTemplates.objects.create(
+            image_id=uuid.uuid4(),
+            name="Target User Public Template-V1",
+            description="A public template from target user",
+            short_description="Public",
+            creator_id=target_user,
+            public=True,
+            approved=True,
+            fixed_ram_gb=1.0,
+            fixed_disk_gb=10.0,
+            fixed_cores=1.0,
+        )
+
+        original_updated_at = public_app_template.updated_at
+
+        # Delete the user
+        url = reverse('user-detail', args=[target_user.id])
+        response = self.client.delete(url, format='json', **self.get_auth_headers())
+
+        # Should succeed
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        # Check that user is deleted
+        self.assertFalse(Users.objects.filter(id=target_user.id).exists())
+
+        # Check that public template now belongs to the admin
+        public_app_template.refresh_from_db()
+        self.assertEqual(public_app_template.creator_id.id, self.admin_user.id)
+
+        # Check that updated_at field has been changed
+        self.assertNotEqual(public_app_template.updated_at, original_updated_at)
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_admin_cannot_delete_self_with_public_templates(self, mock_validate_token):
+        # Admin user
+        mock_validate_token.return_value = {'id': self.admin_user.id, 'name': 'Admin'}
+
+        # Create public template owned by admin
+        AppTemplates.objects.create(
+            image_id=uuid.uuid4(),
+            name="Admin Public Template",
+            description="A public template from admin",
+            short_description="Public",
+            creator_id=self.admin_user,
+            public=True,
+            approved=True,
+            fixed_ram_gb=1.0,
+            fixed_disk_gb=10.0,
+            fixed_cores=1.0,
+        )
+
+        # Admin tries to delete themselves
+        url = reverse('user-detail', args=[self.admin_user.id])
+        response = self.client.delete(url, format='json', **self.get_auth_headers())
+
+        # Should fail
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+        # Verify admin still exists
+        self.assertTrue(Users.objects.filter(id=self.admin_user.id).exists())
+
+    @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
+           '.validate_token_with_keystone')
+    def test_admin_can_delete_self_with_only_private_templates(self, mock_validate_token):
+        # Admin user
+        mock_validate_token.return_value = {'id': self.admin_user.id, 'name': 'Admin'}
+
+        # Create private template owned by admin
+        private_template = AppTemplates.objects.create(
+            image_id=uuid.uuid4(),
+            name="Admin Private Template",
+            description="A private template from admin",
+            short_description="Private",
+            creator_id=self.admin_user,
+            public=False,
+            approved=False,
+            fixed_ram_gb=1.0,
+            fixed_disk_gb=10.0,
+            fixed_cores=1.0,
+        )
+
+        # Admin tries to delete themselves
+        url = reverse('user-detail', args=[self.admin_user.id])
+        response = self.client.delete(url, format='json', **self.get_auth_headers())
+
+        # Should succeed
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        # Check that admin is deleted
+        self.assertFalse(Users.objects.filter(id=self.admin_user.id).exists())
+
+        # Check that private templates are deleted
+        self.assertFalse(AppTemplates.objects.filter(id=private_template.id).exists())
