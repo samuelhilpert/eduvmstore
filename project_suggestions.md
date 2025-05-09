@@ -23,3 +23,4 @@ Beware that the suggestions are in German as the developers are German and those
 16. Inklusion mehrerer VMs in einem AppTemplate: Beispiel Datenbank und Backend in zwei unterschiedlichen VMs zusammen (aufeinander abgestimmt) instanziierbar 
 17. Ablaufdatum für Instanzen —>Danach automatisch gelöscht 
 18. Inkludieren von RessourcenManagement —>Möglichkeit, Flavours automatisch auf Basis der Konfigurationen in der Instanziierung erstellen lassen
+19. Implementation unabhängiger vom Betriebssystem der VM machen, um z.B. Windows VMs zu unterstützen.
