@@ -86,7 +86,7 @@ class UserOperationsTests(TestCase):
 
     def test_delete_user_with_public_templates_transfers_ownership(self):
         # Create public template owned by target user
-        public_template = AppTemplates.objects.create(
+        public_app_template = AppTemplates.objects.create(
             id=str(uuid.uuid4()),
             image_id=str(uuid.uuid4()),
             name="Public Template",
@@ -100,7 +100,7 @@ class UserOperationsTests(TestCase):
         )
 
         # Track the original updated_at time
-        original_updated_at = public_template.updated_at
+        original_updated_at = public_app_template.updated_at
 
         # Delete the user
         delete_user(self.normal_user, self.admin_user)
@@ -109,13 +109,13 @@ class UserOperationsTests(TestCase):
         self.assertFalse(Users.objects.filter(id=self.normal_user.id).exists())
 
         # Check that public template ownership was transferred
-        public_template.refresh_from_db()
-        self.assertEqual(public_template.creator_id.id, self.admin_user.id)
-        self.assertNotEqual(public_template.updated_at, original_updated_at)
+        public_app_template.refresh_from_db()
+        self.assertEqual(public_app_template.creator_id.id, self.admin_user.id)
+        self.assertNotEqual(public_app_template.updated_at, original_updated_at)
 
     def test_user_cannot_delete_self_with_public_templates(self):
         # Create public template owned by the user
-        public_template = AppTemplates.objects.create(
+        AppTemplates.objects.create(
             id=str(uuid.uuid4()),
             name="Public Template",
             image_id=str(uuid.uuid4()),

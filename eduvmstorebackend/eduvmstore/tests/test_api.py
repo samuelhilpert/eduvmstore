@@ -553,7 +553,7 @@ class UserViewSetTests(APITestCase):
         target_user = Users.objects.create(role_id=self.normal_user.role_id)
 
         # Create public template owned by target user
-        public_template = AppTemplates.objects.create(
+        public_app_template = AppTemplates.objects.create(
             image_id=uuid.uuid4(),
             name="Target User Public Template-V1",
             description="A public template from target user",
@@ -566,7 +566,7 @@ class UserViewSetTests(APITestCase):
             fixed_cores=1.0,
         )
 
-        original_updated_at = public_template.updated_at
+        original_updated_at = public_app_template.updated_at
 
         # Delete the user
         url = reverse('user-detail', args=[target_user.id])
@@ -579,11 +579,11 @@ class UserViewSetTests(APITestCase):
         self.assertFalse(Users.objects.filter(id=target_user.id).exists())
 
         # Check that public template now belongs to the admin
-        public_template.refresh_from_db()
-        self.assertEqual(public_template.creator_id.id, self.admin_user.id)
+        public_app_template.refresh_from_db()
+        self.assertEqual(public_app_template.creator_id.id, self.admin_user.id)
 
         # Check that updated_at field has been changed
-        self.assertNotEqual(public_template.updated_at, original_updated_at)
+        self.assertNotEqual(public_app_template.updated_at, original_updated_at)
 
     @patch('eduvmstore.middleware.authentication_middleware.KeystoneAuthenticationMiddleware'
            '.validate_token_with_keystone')
@@ -592,7 +592,7 @@ class UserViewSetTests(APITestCase):
         mock_validate_token.return_value = {'id': self.admin_user.id, 'name': 'Admin'}
 
         # Create public template owned by admin
-        public_template = AppTemplates.objects.create(
+        AppTemplates.objects.create(
             image_id=uuid.uuid4(),
             name="Admin Public Template",
             description="A public template from admin",
