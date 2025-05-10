@@ -63,6 +63,8 @@ class AppTemplateSerializer(serializers.ModelSerializer):
     account_attributes = AppTemplateAccountAttributesSerializer(many=True, read_only=False)
     security_groups = AppTemplateSecurityGroupsSerializer(many=True, read_only=False)
 
+    script = serializers.CharField(trim_whitespace=False, required=False, allow_blank=True)
+
     class Meta:
         model = AppTemplates
         fields = [
