@@ -80,6 +80,7 @@ class AppTemplateViewSetTests(APITestCase):
         url = reverse('app-template-list')
         name = "Test Create Template"
         volume_size_gb = 100
+        script = "  - path etc/Script\n    -| abc "
         # Leave out public as it is not required
         data = {
             "image_id": str(uuid.uuid4()),
@@ -87,7 +88,7 @@ class AppTemplateViewSetTests(APITestCase):
             "description": "A test template",
             "short_description": "Test",
             "instantiation_notice": "Notice",
-            "script": "Script",
+            "script": script,
             "ssh_user_requested": True,
             "instantiation_attributes": [
                 {"name": "JavaVersion"},
@@ -112,6 +113,7 @@ class AppTemplateViewSetTests(APITestCase):
         self.assertEqual(response.data['name'], name)
         self.assertFalse(response.data['public'])
         self.assertFalse(response.data['approved'])
+        self.assertEqual(response.data['script'], script)
         self.assertTrue(response.data['ssh_user_requested'])
         self.assertEqual(response.data['volume_size_gb'], volume_size_gb)
         self.assertEqual(len(response.data['security_groups']), 2)
