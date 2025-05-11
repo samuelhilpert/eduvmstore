@@ -30,5 +30,5 @@ jobs:
       - name: Run Vulture
         run: |
           vulture . \
-          --ignore-names "SECRET_KEY,DEBUG,ALLOWED_HOSTS,CORS_ALLOW_ALL_ORIGINS,model,instantiation_attributes,account_attributes,security_groups,script,validate_name,updated_at,created,serializer_class,perform_create,approve,pk,reject,favorites,delete_by_app_template,default_auto_field,soft_delete_app_template,deleted,update_role,get_role_by_id,soft_delete_user,KeystoneAuthenticationMiddleware" \
+          --ignore-names "SECRET_KEY,DEBUG,ALLOWED_HOSTS,CORS_ALLOW_ALL_ORIGINS,model,instantiation_attributes,account_attributes,security_groups,script,validate_name,updated_at,created,serializer_class,perform_create,approve,pk,reject,favorites,delete_by_app_template,default_auto_field,soft_delete_app_template,deleted,update_role,get_role_by_id,soft_delete_user,KeystoneAuthenticationMiddleware,application,INSTALLED_APPS,MIDDLEWARE,ROOT_URLCONF,TEMPLATES,WSGI_APPLICATION,DATABASES,AUTH_PASSWORD_VALIDATORS,LANGUAGE_CODE,TIME_ZONE,USE_I18N,USE_TZ,STATIC_URL,DEFAULT_AUTO_FIELD,urlpatterns,EduvmstoreConfig,image_id,description,short_description,instantiation_notice,creator_id,created_at,volume_size_gb,fixed_ram_gb,fixed_disk_gb,fixed_cores,is_active,constraints" \
           --exclude eduvmstorebackend/eduvmstore/migrations/,eduvmstorebackend/eduvmstore/tests/
