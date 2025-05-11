@@ -1,0 +1,19 @@
+meta {
+  name: SearchAppTemplates
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/app-templates/?search=AI
+  body: none
+  auth: none
+}
+
+query {
+  search: AI
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
+}

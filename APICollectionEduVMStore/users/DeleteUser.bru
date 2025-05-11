@@ -1,0 +1,15 @@
+meta {
+  name: DeleteUser
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{base_url}}/api/users/{{new_user_id}}
+  body: none
+  auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
+}

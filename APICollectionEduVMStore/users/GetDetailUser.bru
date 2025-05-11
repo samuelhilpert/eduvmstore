@@ -1,0 +1,15 @@
+meta {
+  name: GetDetailUser
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/users/{{new_user_id}}
+  body: none
+  auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
+}

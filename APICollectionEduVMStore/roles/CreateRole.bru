@@ -1,0 +1,26 @@
+meta {
+  name: CreateRole
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/roles/
+  body: json
+  auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
+}
+
+body:json {
+  {
+    "name" : "User",
+    "access_level" : "2000"
+  }
+}
+
+vars:post-response {
+  new_role_id: res("id")
+}

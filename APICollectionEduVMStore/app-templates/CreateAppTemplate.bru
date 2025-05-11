@@ -1,0 +1,49 @@
+meta {
+  name: CreateAppTemplate
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/api/app-templates/
+  body: json
+  auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
+}
+
+body:json {
+  {
+  "name": "New AppTemplate",
+  "description": "A VM template for AI development",
+  "short_description": "AI Dev VM",
+  "instantiation_notice": "AI VM will be ready soon",
+  "script": "runcmd:\n  - cat /etc/users.txt > /etc/testtesttest\n  - |\n    while IFS=':' read -r username password; do\n    if ! id \"$username\" &>/dev/null; then\n    useradd -m -s \"/bin/bash\" \"$username\"\n    echo \"$username:$password\" | chpasswd\n    fi\n    done < /etc/users.txt",
+  "ssh_user_requested": true,
+  "instantiation_attributes": [
+      { "name": "JavaVersion" },
+      { "name": "SpringbootVersion" }
+    ],
+  "account_attributes": [
+      { "name": "Username" },
+      { "name": "Password" }
+    ],
+  "security_groups": [
+      { "name": "default" },
+      { "name": "public" }
+    ],
+  "image_id": "f23e4567-e89b-12d3-a456-426614174001",
+  "public": true,
+  "volume_size_gb": 80,
+  "fixed_ram_gb": 8.0,
+  "fixed_disk_gb": 100.0,
+  "fixed_cores": 4
+  }
+}
+
+vars:post-response {
+  new_app_template_id: res("id")
+  name_app_template: res("name")
+}

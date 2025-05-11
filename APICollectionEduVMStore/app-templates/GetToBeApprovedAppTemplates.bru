@@ -1,0 +1,20 @@
+meta {
+  name: GetToBeApprovedAppTemplates
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/api/app-templates/?public=True&approved=False
+  body: none
+  auth: none
+}
+
+params:query {
+  public: True
+  approved: False
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
+}

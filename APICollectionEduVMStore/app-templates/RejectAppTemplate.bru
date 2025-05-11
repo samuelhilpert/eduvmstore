@@ -1,0 +1,15 @@
+meta {
+  name: RejectAppTemplate
+  type: http
+  seq: 9
+}
+
+patch {
+  url: {{base_url}}/api/app-templates/{{new_app_template_id}}/reject/
+  body: none
+  auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
+}

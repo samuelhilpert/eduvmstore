@@ -1,0 +1,48 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+packages:
+  - git
+  - python3
+  - python3-pip
+  - python3-venv
+
+write_files:
+  - path: /lib/systemd/system/eduvmstorebackend.service
+    content: |
+      [Unit]
+      Description=eduvmstore Backend Server
+      After=network.target
+      
+      [Service]
+      User=devuser
+      WorkingDirectory=/home/ubuntu
+      ExecStart=/bin/bash -c 'source pythonenv/bin/activate && python3 eduvmstore/eduvmstorebackend/manage.py runserver 0.0.0.0:8000'
+      Restart=always
+      Environment="PYTHONUNBUFFERED=1"
+      TimeoutSec=300
+      KillMode=process
+      RestartSec=10
+      SyslogIdentifier=eduvmstore_backend_server
+      StandardOutput=syslog
+      StandardError=syslog
+      
+      [Install]
+      WantedBy=multi-user.target
+    permissions: '0644'
+    owner: root:root
+
+write_files:
+  - path: /initialization_script
+    content: |
+      PYTHON_ENV_DIR="$HOME/pythonenv"
+      REPO_DIR="$HOME/eduvmstore"
+      BACKEND_DIR="$REPO_DIR/eduvmstorebackend"
+      git clone https://github.com/samuelhilpert/eduvmstore.git $REPO_DIR
+      python3 -m venv $PYTHON_ENV_DIR
+      source $PYTHON_ENV_DIR/bin/activate
+      pip install -r $BACKEND_DIR/requirements.txt
+      python $BACKEND_DIR/manage.py migrate
+    permissions: '0755'
+    owner: root:root

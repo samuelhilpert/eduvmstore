@@ -1,0 +1,25 @@
+meta {
+  name: CreateUser
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/api/users/
+  body: json
+  auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
+}
+
+body:json {
+  {
+    "role_id" : "{{new_role_id}}"
+  }
+}
+
+vars:post-response {
+  new_user_id: res("id")
+}

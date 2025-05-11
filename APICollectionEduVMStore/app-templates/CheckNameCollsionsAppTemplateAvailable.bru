@@ -1,0 +1,19 @@
+meta {
+  name: CheckNameCollsionsAppTemplateAvailable
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{base_url}}/api/app-templates/name/{{free_name_app_template}}/collision
+  body: none
+  auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
+}
+
+vars:pre-request {
+  free_name_app_template: No one will choose this name
+}

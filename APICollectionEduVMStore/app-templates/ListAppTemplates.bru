@@ -1,0 +1,15 @@
+meta {
+  name: ListAppTemplates
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/app-templates/
+  body: none
+  auth: none
+}
+
+headers {
+  X-Auth-Token: {{token_id}}
+}
