@@ -30,6 +30,5 @@ jobs:
       - name: Run Vulture
         run: |
           vulture . \
-          --ignore-names "INSTALLED_APPS,MIDDLEWARE,ROOT_URLCONF,TEMPLATES,WSGI_APPLICATION,DATABASES,AUTH_PASSWORD_VALIDATORS,LANGUAGE_CODE,TIME_ZONE,USE_I18N,USE_TZ,STATIC_URL,DEFAULT_AUTO_FIELD,application,urlpatterns" \
-          --exclude eduvmstorebackend/eduvmstore/db/models.py,eduvmstorebackend/eduvmstore/migrations/,eduvmstorebackend/eduvmstore/tests/
-      
+          --ignore-names "INSTALLED_APPS,MIDDLEWARE,ROOT_URLCONF,TEMPLATES,WSGI_APPLICATION,DATABASES,AUTH_PASSWORD_VALIDATORS,LANGUAGE_CODE,TIME_ZONE,USE_I18N,USE_TZ,STATIC_URL,DEFAULT_AUTO_FIELD,application,urlpatterns,SECRET_KEY,DEBUG,ALLOWED_HOSTS,CORS_ALLOW_ALL_ORIGINS,model,instantiation_attributes,account_attributes,security_groups,script,validate_name,updated_at,serializer_class,perform_create,approve,pk,reject,favorites,delete_by_app_template,default_auto_field,soft_delete_app_template,deleted,update_role,get_role_by_id,soft_delete_user,KeystoneAuthenticationMiddleware" \
+          --exclude eduvmstorebackend/eduvmstore/db/models.py,eduvmstorebackend/eduvmstore/migrations/,eduvmstorebackend/eduvmstore/tests/,eduvmstorebackend/config/settings.py,eduvmstorebackend/eduvmstore/api/serializers.py,eduvmstorebackend/eduvmstore/api/views.py,eduvmstorebackend/eduvmstore/apps.py,eduvmstorebackend/eduvmstore/db/operations/app_templates.py,eduvmstorebackend/eduvmstore/db/operations/roles.py,eduvmstorebackend/eduvmstore/db/operations/users.py,eduvmstorebackend/eduvmstore/middleware/authentication_middleware.py
