@@ -2,7 +2,7 @@
 
 ## Vorbereitungsschritte vorher treffen
 - **Zugriff auf die Demo-OpenStack-Umgebung prüfen**
-  - http://141.72.12.111
+  - http://141.72.13.84
   
 - **Ungewollte AppTemplates und Instanzen löschen**
   - Instanz und AppTemplates, die in vergangenen Demos erstellt wurden, löschen.
